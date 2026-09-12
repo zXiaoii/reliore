@@ -1,4 +1,4 @@
-﻿import {
+import {
   Campaign,
   AdSet,
   WorkTask,
@@ -607,21 +607,29 @@ class OperationsStore {
     this.broadcast();
   }
 
+  private pendingNotify = false;
+
   private notifyAll() {
-    const tasksCopy = [...this.tasks];
-    this.taskListeners.forEach((l) => l(tasksCopy));
+    if (this.pendingNotify) return;
+    this.pendingNotify = true;
+    setTimeout(() => {
+      this.pendingNotify = false;
+      console.log('[Store] notifyAll firing updates to React');
+      const tasksCopy = [...this.tasks];
+      this.taskListeners.forEach((l) => l(tasksCopy));
 
-    const campsCopy = [...this.campaigns];
-    this.campaignListeners.forEach((l) => l(campsCopy));
+      const campsCopy = [...this.campaigns];
+      this.campaignListeners.forEach((l) => l(campsCopy));
 
-    const adSetsCopy = [...this.adSets];
-    this.adSetListeners.forEach((l) => l(adSetsCopy));
+      const adSetsCopy = [...this.adSets];
+      this.adSetListeners.forEach((l) => l(adSetsCopy));
 
-    const settsCopy = { ...this.settings };
-    this.settingListeners.forEach((l) => l(settsCopy));
+      const settsCopy = { ...this.settings };
+      this.settingListeners.forEach((l) => l(settsCopy));
 
-    const usrsCopy = [...this.users];
-    this.userListeners.forEach((l) => l(usrsCopy));
+      const usrsCopy = [...this.users];
+      this.userListeners.forEach((l) => l(usrsCopy));
+    }, 10);
   }
 
   public subscribeTasks(listener: Listener<WorkTask[]>): () => void {
