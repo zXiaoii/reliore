@@ -93,13 +93,7 @@ console.log(`✓ Use Case 2 Task created: ${formatTaskNumber(task2.taskNumber)} 
 
 // --- TEST 3: Automatic Next-Day Creative Trigger (§16) ---
 console.log('--- TEST 3: Automatic Next-Day Creative Trigger Engine (§16) ---');
-const autoTask = store.registerNextDayCreativeTrigger(
-  'CBO FlexiVita 3',
-  'adset-live-0912',
-  'FlexiVita',
-  'CA',
-  'CA AD 24'
-);
+const autoTask = store.run48HourIdleCheck();
 
 if (!autoTask) {
   throw new Error(`Test 3 Failed: Expected automatic next-day task creation`);
@@ -110,13 +104,7 @@ if (autoTask.owner !== 'Yzah' || autoTask.status !== 'QUEUE' || !autoTask.reason
 console.log(`✓ Next-Day Creative Trigger created: ${formatTaskNumber(autoTask.taskNumber)} for ${autoTask.campaign} (Assigned: ${autoTask.owner}, Reason: "${autoTask.reasonTrigger}")`);
 
 // Test Deduplication Key: Should not create duplicate!
-const duplicateAttempt = store.registerNextDayCreativeTrigger(
-  'CBO FlexiVita 3',
-  'adset-live-0912',
-  'FlexiVita',
-  'CA',
-  'CA AD 24'
-);
+const duplicateAttempt = store.run48HourIdleCheck();
 if (duplicateAttempt !== null) {
   throw new Error(`Test 3 Failed: Deduplication failed, duplicate task was created`);
 }

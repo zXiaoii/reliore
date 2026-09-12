@@ -865,7 +865,7 @@ class OperationsStore {
       action: params.action,
       owner: assignedCreative,
       ownerUid: 'yzah-03',
-      status: 'QUEUE',
+      status: 'QUEUE' as any,
       deadline: params.deadline || 'Today 6 PM',
       nextAction: `${assignedCreative} start creative production (${params.quantity || 8} variants)`,
       market: params.market,
@@ -1032,84 +1032,122 @@ class OperationsStore {
     // 4. Trigger removed. Handled by 48-Hour Idle Monitor.
   }
 
-  // --- AUTOMATIC 2-Day CREATIVE TRIGGER (Ã‚Â§16) ---
-  // When an ad set is launched, register or generate 2-Day creative task for Yzah
-  public registerNextDayCreativeTrigger(
-    campaignName: string,
-    adSetId: string,
-    product: string,
-    market: Market,
-    adAccount: string
-  ): WorkTask | null {
-    const automationKey = `${campaignName}_${adSetId}_NEXT_DAY_CREATIVE`;
+  // --- AUTOMATIC 48-HOUR IDLE CAMPAIGN MONITOR ---
+  public run48HourIdleCheck(): { triggeredCount: number; campaignNames: string[] } {
+    let triggeredCount = 0;
+    const triggeredCampaigns: string[] = [];
+    const now = new Date();
+    const FORTY_EIGHT_HOURS_MS = 48 * 60 * 60 * 1000;
+    const nowIso = now.toISOString();
+    
+    // Determine deadline (48 hours from now)
+    const deadlineDate = new Date(now.getTime() + FORTY_EIGHT_HOURS_MS);
+    const deadlineStr = `${deadlineDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${deadlineDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
 
-    // Deduplication check: Avoid creating duplicates
-    const alreadyExists = this.tasks.some((t) => t.automationKey === automationKey);
-    if (alreadyExists) return null;
-
-    const taskNumber = this.nextTaskNumber++;
-    const nowIso = new Date().toISOString();
-
-    const autoTask: WorkTask = {
-      id: `task-auto-${Date.now().toString(36)}`,
-      taskNumber,
-      product,
-      campaign: campaignName,
-      action: 'LAUNCH NEW CREATIVE BATCH',
-      owner: 'Yzah',
-      ownerUid: 'yzah-03',
-      status: 'QUEUE',
-      deadline: 'In 2 Days 6 PM',
-      nextAction: 'Yzah create next Swipe + Playbook batch',
-      market,
-      adAccount,
-      priority: 'P1',
-      stage: 'Creative',
-      creativeTypes: ['SWIPES + PLAYBOOK'],
-      quantity: 8,
-      quantityDone: 0,
-      reasonTrigger: '1 Day After Swipe Batch Launch (Automatic Trigger)',
-      winningReference: 'Launched Batch',
-      winningHook: 'Next iteration / concept angles',
-      format: '9:16 Video',
-      adSetName: getSuggestedAdSetName(new Date(Date.now() + 86400000), 'SWIPES + PLAYBOOK'),
-      dailyBudget: 150,
-      assignedSetupUser: 'Karl',
-      automationKey,
-      createdBy: 'SYSTEM_AUTOMATION',
-      createdAt: nowIso,
-      updatedAt: nowIso,
-      history: [
-        {
-          at: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }),
-          uid: 'system',
-          userDisplayName: 'Automation Engine',
-          action: 'Automatic 2-Day Trigger Created',
-          detail: `Triggered 1 day after ad set launch for ${campaignName}. Assigned to Yzah.`,
-        },
-      ],
-    };
-
-    this.tasks = [autoTask, ...this.tasks];
-    this.saveTasks();
-    this.syncTaskToFirestore(autoTask);
-
-    // Log to campaign history
-    const camp = this.campaigns.find((c) => c.name === campaignName);
-    if (camp) {
-      camp.history.push({
-        at: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }),
-        uid: 'system',
-        userDisplayName: 'Automation Engine',
-        action: 'Automatic Creative Trigger',
-        detail: `2-Day creative task generated for Yzah.`,
+    this.campaigns.forEach((camp) => {
+      if (camp.status !== 'LIVE') return; // Only monitor active campaigns
+      
+      const campAdSets = this.adSets.filter(a => a.campaignName === camp.name);
+      
+      // 4 BATCH LIMIT CHECK
+      if (campAdSets.length >= 4) {
+        return; // Max 4 batches reached. Stop triggering.
+      }
+      
+      let mostRecentAdSetDate = new Date(0);
+      let hasAdSets = false;
+      
+      campAdSets.forEach(a => {
+        hasAdSets = true;
+        // Parse launchDate which is typically MM/DD/YY
+        // If it's something else, try to parse it safely
+        let d = new Date(a.launchDate);
+        if (isNaN(d.getTime())) d = new Date(a.createdAt);
+        
+        if (!isNaN(d.getTime()) && d > mostRecentAdSetDate) {
+          mostRecentAdSetDate = d;
+        }
       });
-      this.saveCampaigns();
-      this.syncCampaignToFirestore(camp);
-    }
+      
+      if (!hasAdSets && camp.createdAt) {
+         mostRecentAdSetDate = new Date(camp.createdAt);
+      }
+      
+      const timeSinceLastLaunch = now.getTime() - mostRecentAdSetDate.getTime();
+      const isIdle = timeSinceLastLaunch >= FORTY_EIGHT_HOURS_MS;
+      
+      if (isIdle) {
+        const automationKey = `${camp.name}_IDLE_TRIGGER_${mostRecentAdSetDate.getTime()}`;
+        const alreadyExists = this.tasks.some((t) => t.automationKey === automationKey);
+        
+        if (!alreadyExists) {
+          const autoTask = {
+            id: `task-${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 5)}`,
+taskNumber: this.nextTaskNumber++,
+action: 'LAUNCH NEW CREATIVE BATCH' as any,
+            campaignId: camp.id || 'camp-default',
+            campaign: camp.name,
+            product: camp.product,
+            market: camp.market,
+            adAccount: camp.adAccount,
+            owner: 'Yzah',
+            ownerUid: 'yzah-03',
+            stage: 'Creative',
+            status: 'QUEUE' as any,
+            priority: 'Normal',
+            deadline: deadlineStr,
+            creativeTypes: ['Swipes', 'Playbook'],
+            nextAction: 'Create new swipes after 48h idle period',
+            quantity: 8,
+            quantityDone: 0,
+            reasonTrigger: 'Campaign idle for 48 hours',
+            winningReference: '',
+            winningHook: 'New concepts',
+            format: '9:16 Video',
+            adSetName: '',
+            dailyBudget: 150,
+            assignedSetupUser: 'Karl',
+            automationKey,
+            createdBy: 'SYSTEM_AUTOMATION',
+            createdAt: nowIso,
+            updatedAt: nowIso,
+            history: [
+              {
+                                /* timestamp removed */
+                uid: 'system',
+                userDisplayName: 'Automation Engine',
+                action: 'Automatic 48-Hour Idle Trigger',
+                detail: `Campaign was idle for over 48 hours. Assigned to Yzah.`,
+              },
+            ],
+          };
 
-    this.notifyAll();
-    return autoTask;
+          this.tasks = [autoTask, ...this.tasks];
+          this.syncTaskToFirestore(autoTask as any);
+
+          if (!camp.history) camp.history = [];
+          camp.history.push({
+                        /* timestamp removed */
+            uid: 'system',
+            userDisplayName: 'Automation Engine',
+            action: 'Automatic 48-Hour Idle Trigger',
+            detail: `Generated new swipe task for Yzah due to 48h inactivity.`,
+          });
+          this.syncCampaignToFirestore(camp);
+          
+          triggeredCount++;
+          triggeredCampaigns.push(camp.name);
+        }
+      }
+    });
+
+    if (triggeredCount > 0) {
+      this.saveTasks();
+      this.saveCampaigns();
+      this.notifyAll();
+    }
+    
+    return { triggeredCount, campaignNames: triggeredCampaigns };
   }
 
   public createCampaign(params: {

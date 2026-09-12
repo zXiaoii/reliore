@@ -172,13 +172,7 @@ export default function SmartSpreadsheetDashboard() {
       return;
     }
 
-    const newTask = store.registerNextDayCreativeTrigger(
-      targetCamp.name,
-      liveAdSet.id,
-      targetCamp.product,
-      targetCamp.market,
-      targetCamp.adAccount
-    );
+    const newTask = store.run48HourIdleCheck();
 
     if (newTask) {
       toast.success(
@@ -231,7 +225,7 @@ export default function SmartSpreadsheetDashboard() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-3 ml-4">
             <button
               onClick={handleRunNextDayTrigger}
               className="vercel-btn-secondary flex items-center gap-1.5 cursor-pointer"
@@ -338,7 +332,7 @@ export default function SmartSpreadsheetDashboard() {
 
         {/* Smart Spreadsheet Toolbar: Filters, Grouping, Search, View Mode (Vercel Style) */}
         <div className="mt-3.5 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 border-t border-zinc-200 dark:border-zinc-800 pt-3 text-xs">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-3 ml-4">
             <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider flex items-center gap-1 font-mono">
               <Filter className="h-3 w-3 text-zinc-400" />
               <span>Filters:</span>
@@ -585,41 +579,15 @@ export default function SmartSpreadsheetDashboard() {
               <div className="flex items-center gap-2">
                 <span className="flex items-center gap-1 text-emerald-400 font-semibold font-mono text-[10px] bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  {tableDensity === 'fit' ? 'FIT TO SCREEN' : 'RELAXED'}
+                  {'RELAXED'}
                 </span>
                 <span className="hidden sm:inline text-zinc-500">·</span>
                 <span className="hidden sm:inline text-zinc-400">
-                  {tableDensity === 'fit' ? 'All 12 columns visible without scrolling' : 'Wide columns with horizontal scroll enabled'}
+                  {'Wide columns with horizontal scroll enabled'}
                 </span>
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="flex items-center rounded-md bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-0.5 text-[10px]">
-                  <button
-                    type="button"
-                    onClick={() => setTableDensity('fit')}
-                    className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
-                      tableDensity === 'fit'
-                        ? 'bg-[#1e1e1e] text-zinc-900 dark:text-zinc-100 border border-[#383838] font-semibold shadow-2xs'
-                        : 'text-zinc-500 hover:text-zinc-300'
-                    }`}
-                    title="Fit all columns to screen without horizontal scrolling"
-                  >
-                    Fit Screen
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setTableDensity('relaxed')}
-                    className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
-                      tableDensity === 'relaxed'
-                        ? 'bg-[#1e1e1e] text-zinc-900 dark:text-zinc-100 border border-[#383838] font-semibold shadow-2xs'
-                        : 'text-zinc-500 hover:text-zinc-300'
-                    }`}
-                    title="Relaxed wider columns with horizontal scroll"
-                  >
-                    Relaxed
-                  </button>
-                </div>
                 <span className="font-mono text-[10px] bg-[#121212] px-2 py-0.5 rounded text-zinc-400 border border-zinc-200 dark:border-zinc-800">
                   {filteredTasks.length} {filteredTasks.length === 1 ? 'task' : 'tasks'}
                 </span>
