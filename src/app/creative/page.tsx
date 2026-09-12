@@ -18,6 +18,7 @@ import {
   Palette,
   Search,
   FolderOpen,
+  Folder,
   CheckCircle,
   Clock,
   AlertTriangle,
@@ -35,6 +36,8 @@ import {
   LayoutList,
   Table as TableIcon,
   ArrowRightLeft,
+  Plus,
+  Rocket,
 } from 'lucide-react';
 import { sendSlackCreativeNotification } from '@/lib/slack';
 
@@ -629,64 +632,31 @@ export default function CreativeQueuePage() {
               <div className="flex items-center gap-2">
                 <span className="flex items-center gap-1 text-emerald-400 font-semibold font-mono text-[10px] bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  {tableDensity === 'fit' ? 'FIT TO SCREEN' : 'RELAXED'}
+                  SMART PIPELINE
                 </span>
                 <span className="hidden sm:inline text-zinc-500">·</span>
                 <span className="hidden sm:inline text-zinc-400">
-                  {tableDensity === 'fit' ? 'All 13 columns visible without scrolling' : 'Wide columns with horizontal scroll enabled'}
+                  Full campaign, concept, and hook fully readable without cutoff
                 </span>
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="flex items-center rounded-md bg-black border border-[#262626] p-0.5 text-[10px]">
-                  <button
-                    type="button"
-                    onClick={() => setTableDensity('fit')}
-                    className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
-                      tableDensity === 'fit'
-                        ? 'bg-[#1e1e1e] text-white border border-[#383838] font-semibold shadow-2xs'
-                        : 'text-zinc-500 hover:text-zinc-300'
-                    }`}
-                    title="Fit all columns to screen without horizontal scrolling"
-                  >
-                    Fit Screen
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setTableDensity('relaxed')}
-                    className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
-                      tableDensity === 'relaxed'
-                        ? 'bg-[#1e1e1e] text-white border border-[#383838] font-semibold shadow-2xs'
-                        : 'text-zinc-500 hover:text-zinc-300'
-                    }`}
-                    title="Relaxed wider columns with horizontal scroll"
-                  >
-                    Relaxed
-                  </button>
-                </div>
                 <span className="font-mono text-[10px] bg-[#121212] px-2 py-0.5 rounded text-zinc-400 border border-[#262626]">
                   {filtered.length} {filtered.length === 1 ? 'task' : 'tasks'}
                 </span>
               </div>
             </div>
 
-            <div className={`w-full max-w-full min-w-0 rounded-xl border border-[#222222] bg-[#0a0a0a] shadow-xs custom-scrollbar ${tableDensity === 'fit' ? 'overflow-x-auto lg:overflow-x-visible' : 'overflow-x-auto overscroll-x-contain'}`}>
-              <table className={`w-full text-left text-xs border-collapse ${tableDensity === 'fit' ? 'w-full' : 'min-w-[1150px]'}`}>
+            <div className="w-full max-w-full min-w-0 rounded-xl border border-[#222222] bg-[#0a0a0a] shadow-xs">
+              <table className="w-full text-left text-xs border-collapse">
                 <thead className="border-b border-[#222222] bg-black font-semibold text-zinc-400 uppercase tracking-wider text-[10px] sticky top-0">
                   <tr>
-                    <th className={`${tableDensity === 'fit' ? 'w-[28px] py-2 px-1' : 'py-2.5 px-2'} text-center border-r border-[#1f1f1f]`}>View</th>
-                    <th className={`${tableDensity === 'fit' ? 'w-[48px] py-2 px-1' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Priority</th>
-                    <th className={`${tableDensity === 'fit' ? 'w-[75px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Product</th>
-                    <th className={`${tableDensity === 'fit' ? 'w-[50px] py-2 px-1' : 'py-2.5 px-2'} border-r border-[#1f1f1f]`}>Mkt</th>
-                    <th className={`${tableDensity === 'fit' ? 'w-[115px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Campaign</th>
-                    <th className={`${tableDensity === 'fit' ? 'w-[95px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Trigger</th>
-                    <th className={`${tableDensity === 'fit' ? 'w-[110px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Task</th>
-                    <th className={`${tableDensity === 'fit' ? 'w-[110px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Winning Hook</th>
-                    <th className={`${tableDensity === 'fit' ? 'w-[32px] py-2 px-1' : 'py-2.5 px-2'} text-center border-r border-[#1f1f1f]`}>Qty</th>
-                    <th className={`${tableDensity === 'fit' ? 'w-[105px] py-2 px-1' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Drive Link</th>
-                    <th className={`${tableDensity === 'fit' ? 'w-[58px] py-2 px-1' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Deadline</th>
-                    <th className={`${tableDensity === 'fit' ? 'w-[75px] py-2 px-1 text-center' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Status</th>
-                    <th className={`${tableDensity === 'fit' ? 'w-[78px] py-2 px-1 text-right' : 'py-2.5 px-3 text-right'}`}>Action</th>
+                    <th className="w-[60px] py-2.5 px-2 text-center border-r border-[#1f1f1f]">Priority</th>
+                    <th className="py-2.5 px-3 border-r border-[#1f1f1f] w-[26%]">Campaign & Product</th>
+                    <th className="py-2.5 px-3 border-r border-[#1f1f1f] w-[36%]">Deliverable & Hook</th>
+                    <th className="w-[110px] py-2.5 px-3 border-r border-[#1f1f1f]">Assets & Due</th>
+                    <th className="w-[125px] py-2.5 px-3 border-r border-[#1f1f1f]">Drive Link</th>
+                    <th className="w-[160px] py-2.5 px-3 text-right">Status / Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#1a1a1a]">
@@ -709,163 +679,148 @@ export default function CreativeQueuePage() {
                               : 'bg-[#0a0a0a]'
                           }`}
                         >
-                          {/* Expand / Collapse Toggle Chevron */}
-                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-3 px-2'} text-center border-r border-[#1a1a1a]`}>
-                            <button
-                              onClick={() => toggleExpand(task.id)}
-                              className="p-1 rounded hover:bg-[#222] text-zinc-400 hover:text-white transition-colors cursor-pointer"
-                              title={isExpanded ? 'Collapse brief' : 'Expand full brief'}
-                            >
-                              {isExpanded ? (
-                                <ChevronUp className="h-3.5 w-3.5 text-purple-400 font-bold" />
-                              ) : (
-                                <ChevronDown className="h-3.5 w-3.5" />
-                              )}
-                            </button>
+                          {/* Priority & Expand Chevron */}
+                          <td className="py-3 px-2 text-center border-r border-[#1a1a1a] whitespace-nowrap">
+                            <div className="flex items-center justify-center gap-1.5">
+                              <button
+                                onClick={() => toggleExpand(task.id)}
+                                className="p-1 rounded hover:bg-[#222] text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                                title={isExpanded ? 'Collapse brief' : 'Expand full brief'}
+                              >
+                                {isExpanded ? (
+                                  <ChevronUp className="h-4 w-4 text-purple-400 font-bold" />
+                                ) : (
+                                  <ChevronDown className="h-4 w-4" />
+                                )}
+                              </button>
+                              <PriorityPill priority={task.priority} size="sm" compact />
+                            </div>
                           </td>
 
-                          {/* Priority */}
-                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-3 px-3'} border-r border-[#1a1a1a] whitespace-nowrap`}>
-                            <PriorityPill priority={task.priority} size="sm" compact={tableDensity === 'fit'} />
+                          {/* Campaign & Product (Full text, uncropped) */}
+                          <td className="py-3 px-3 border-r border-[#1a1a1a]">
+                            <div className="flex flex-col gap-0.5">
+                              <button
+                                onClick={() => toggleExpand(task.id)}
+                                className="font-bold text-white text-xs hover:text-purple-300 text-left transition-colors cursor-pointer"
+                              >
+                                {task.campaign}
+                              </button>
+                              <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                <MarketBadge market={task.market} size="xs" />
+                                <span className="text-[11px] text-zinc-300 font-medium">
+                                  {task.product}
+                                </span>
+                                <span className="text-[10px] text-zinc-500 font-mono">
+                                  · {task.adAccount}
+                                </span>
+                              </div>
+                            </div>
                           </td>
 
-                          {/* Product */}
-                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1.5' : 'py-3 px-3'} border-r border-[#1a1a1a] font-semibold text-white whitespace-nowrap`}>
-                            <span className="truncate block max-w-[75px]" title={task.product}>
-                              {task.product}
-                            </span>
+                          {/* Deliverable & Winning Hook (Full text, uncropped) */}
+                          <td className="py-3 px-3 border-r border-[#1a1a1a]">
+                            <div className="flex flex-col gap-1">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className="font-mono font-bold text-xs text-zinc-100">
+                                  {task.creativeTypes.join(' + ')}
+                                </span>
+                                {task.reasonTrigger && (
+                                  <span className="rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[10px] px-1.5 py-0.2 font-medium">
+                                    {task.reasonTrigger}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-[11px] text-zinc-400 font-normal leading-relaxed">
+                                <span className="text-zinc-500 font-medium">Hook:</span> "{task.winningHook || 'Concept angles'}"
+                              </div>
+                            </div>
                           </td>
 
-                          {/* Market */}
-                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-3 px-2'} border-r border-[#1a1a1a] whitespace-nowrap`}>
-                            <MarketBadge market={task.market} size="xs" shortCode={tableDensity === 'fit'} />
+                          {/* Assets & Deadline */}
+                          <td className="py-3 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
+                            <div className="flex flex-col">
+                              <span className="font-mono font-bold text-xs text-white">
+                                {task.quantity} creatives
+                              </span>
+                              <span className="text-[10px] font-mono text-zinc-400 mt-0.5">
+                                Due: {task.deadline}
+                              </span>
+                            </div>
                           </td>
 
-                          {/* Campaign */}
-                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1.5' : 'py-3 px-3'} border-r border-[#1a1a1a] font-mono font-bold text-white whitespace-nowrap`}>
-                            <span className="truncate block max-w-[115px]" title={task.campaign}>
-                              {task.campaign}
-                            </span>
-                          </td>
-
-                          {/* Why / Trigger */}
-                          <td
-                            className={`${tableDensity === 'fit' ? 'py-1.5 px-1.5' : 'py-3 px-3'} border-r border-[#1a1a1a] text-purple-400 font-medium whitespace-nowrap`}
-                          >
-                            <span className="truncate block max-w-[95px]" title={task.reasonTrigger || '+1 Day Trigger'}>
-                              {task.reasonTrigger || '+1 Day Trigger'}
-                            </span>
-                          </td>
-
-                          {/* Task / Concept */}
-                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1.5' : 'py-3 px-3'} border-r border-[#1a1a1a] font-mono font-bold text-zinc-300 whitespace-nowrap`}>
-                            <span className="truncate block max-w-[110px]" title={task.creativeTypes.join(' + ')}>
-                              {task.creativeTypes.join(' + ')}
-                            </span>
-                          </td>
-
-                          {/* Winning Hook */}
-                          <td
-                            className={`${tableDensity === 'fit' ? 'py-1.5 px-1.5' : 'py-3 px-3'} border-r border-[#1a1a1a] font-medium text-zinc-300 whitespace-nowrap`}
-                          >
-                            <span className="truncate block max-w-[110px]" title={task.winningHook || 'Concept angles'}>
-                              {task.winningHook || 'Concept angles'}
-                            </span>
-                          </td>
-
-                          {/* Qty */}
-                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-3 px-2'} border-r border-[#1a1a1a] font-mono font-bold text-center text-white`}>
-                            {task.quantity}
-                          </td>
-
-                          {/* Drive Link Input */}
-                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-3 px-3'} border-r border-[#1a1a1a]`}>
-                            <div className="flex items-center gap-1">
-                              <input
-                                type="url"
-                                placeholder="Drive URL..."
-                                value={draft.folderUrl}
-                                onChange={(e) => updateDraft(task.id, 'folderUrl', e.target.value)}
-                                onBlur={() => handleAutoSaveDriveUrl(task)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    e.currentTarget.blur();
-                                  }
-                                }}
-                                className="w-full rounded border border-[#262626] bg-black px-1.5 py-0.5 text-[10px] font-mono text-white placeholder-zinc-500 focus:border-zinc-400 focus:outline-hidden"
-                              />
-                              {draft.folderUrl.trim() && (
+                          {/* Drive Folder */}
+                          <td className="py-3 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
+                            {draft.folderUrl && draft.folderUrl.trim() ? (
+                              <div className="flex items-center gap-1.5">
                                 <a
                                   href={draft.folderUrl.trim()}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="p-1 text-blue-400 hover:text-blue-300 shrink-0"
-                                  title="Open Drive folder"
+                                  className="vercel-btn-secondary inline-flex items-center gap-1.5 text-[11px] text-blue-400 hover:text-blue-300 py-1 px-2.5 rounded-md cursor-pointer transition-colors"
+                                  title="Open Google Drive folder"
                                 >
-                                  <ExternalLink className="h-3 w-3" />
+                                  <Folder className="h-3 w-3 text-blue-400 shrink-0" />
+                                  <span>Drive ↗</span>
                                 </a>
-                              )}
-                            </div>
+                                <button
+                                  type="button"
+                                  onClick={() => toggleExpand(task.id)}
+                                  className="text-[10px] text-zinc-500 hover:text-zinc-300 underline cursor-pointer"
+                                  title="Edit Drive link in brief"
+                                >
+                                  Edit
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => toggleExpand(task.id)}
+                                className="inline-flex items-center gap-1 text-[10px] text-zinc-400 hover:text-white border border-dashed border-[#333] hover:border-[#666] px-2 py-1 rounded transition-colors cursor-pointer"
+                                title="Click to expand brief and attach Drive folder"
+                              >
+                                <Plus className="h-3 w-3" />
+                                <span>Attach Drive</span>
+                              </button>
+                            )}
                           </td>
 
-                          {/* Deadline */}
-                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-3 px-3'} border-r border-[#1a1a1a] font-mono text-[10px] font-bold text-zinc-400 whitespace-nowrap`}>
-                            <span className="truncate block max-w-[58px]" title={task.deadline}>
-                              {task.deadline}
-                            </span>
-                          </td>
-
-                          {/* Status */}
-                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1 text-center' : 'py-3 px-3'} border-r border-[#1a1a1a] whitespace-nowrap`}>
-                            <span
-                              className={`inline-block rounded px-1.5 py-0.5 text-[9px] font-extrabold ${
-                                task.status === 'CHANGES REQUIRED'
-                                  ? 'bg-rose-600/90 text-white'
-                                  : task.status === 'FOR REVIEW'
-                                  ? 'bg-amber-500/90 text-white'
-                                  : task.status === 'APPROVED'
-                                  ? 'bg-emerald-600/90 text-white'
-                                  : task.status === 'MAKING'
-                                  ? 'bg-purple-600/90 text-white'
-                                  : 'bg-[#181818] border border-[#2e2e2e] text-zinc-300'
-                              }`}
-                            >
-                              {task.status === 'FOR REVIEW' ? 'REVIEW' : task.status === 'CHANGES REQUIRED' ? 'CHANGES' : task.status}
-                            </span>
-                          </td>
-
-                          {/* Single Clear Action Button */}
-                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1 text-right' : 'py-3 px-3 text-right'} whitespace-nowrap`}>
+                          {/* Status & Action Control */}
+                          <td className="py-3 px-3 text-right whitespace-nowrap">
                             {isChangesRequired ? (
                               <button
                                 onClick={() => {
                                   if (!isExpanded) toggleExpand(task.id);
                                   else handleReDeliver(task);
                                 }}
-                                className="rounded bg-rose-600 hover:bg-rose-500 px-2 py-0.5 text-[10px] font-bold text-white shadow-2xs cursor-pointer"
+                                className="inline-flex items-center gap-1.5 rounded-md bg-rose-600 hover:bg-rose-500 px-3 py-1.5 text-xs font-bold text-white shadow-xs cursor-pointer transition-colors"
                               >
-                                {isExpanded ? 'Re-Submit' : 'Feedback'}
+                                <AlertTriangle className="h-3.5 w-3.5 text-white shrink-0" />
+                                <span>{isExpanded ? 'Re-Submit 🚀' : 'Fix Feedback ▾'}</span>
                               </button>
                             ) : isForReview ? (
                               <button
                                 onClick={() => toggleExpand(task.id)}
-                                className="rounded bg-[#161616] border border-[#2a2a2a] hover:bg-[#202020] px-2 py-0.5 text-[10px] font-bold text-zinc-200 cursor-pointer"
+                                className="inline-flex items-center gap-1.5 rounded-md bg-amber-500/10 border border-amber-500/25 hover:bg-amber-500/20 text-amber-400 px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors"
                               >
-                                {isExpanded ? 'Collapse' : 'Review ▾'}
+                                <Clock className="h-3.5 w-3.5 shrink-0" />
+                                <span>Under Review ▾</span>
                               </button>
                             ) : isApproved ? (
                               <button
                                 onClick={() => toggleExpand(task.id)}
-                                className="rounded bg-emerald-950/40 text-emerald-300 border border-emerald-800/80 px-2 py-0.5 text-[10px] font-bold cursor-pointer"
+                                className="inline-flex items-center gap-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/25 hover:bg-emerald-500/20 text-emerald-400 px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors"
                               >
-                                {isExpanded ? 'Collapse' : 'Approved'}
+                                <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
+                                <span>Approved (Karl) ▾</span>
                               </button>
                             ) : (
                               <button
                                 onClick={() => handleDeliver(task)}
-                                className="vercel-btn-primary px-2 py-0.5 text-[10px] cursor-pointer"
+                                className="vercel-btn-primary inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors"
                               >
-                                Deliver ({task.quantity})
+                                <Rocket className="h-3.5 w-3.5 text-black shrink-0" />
+                                <span>Deliver ({task.quantity}) 🚀</span>
                               </button>
                             )}
                           </td>
@@ -874,7 +829,7 @@ export default function CreativeQueuePage() {
                       {/* IN-PLACE EXPANDED WORKSPACE ACCORDION */}
                       {isExpanded && (
                         <tr className="bg-zinc-100/70 dark:bg-zinc-900/90 border-y-2 border-purple-300 dark:border-purple-800">
-                          <td colSpan={13} className="p-4 sm:p-6">
+                          <td colSpan={6} className="p-4 sm:p-6">
                             <div className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
                               {/* Header of expanded card */}
                               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-zinc-200 dark:border-zinc-800 gap-2">
