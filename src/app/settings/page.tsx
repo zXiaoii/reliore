@@ -6,6 +6,7 @@ import { usePipeline } from '@/hooks/usePipeline';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
 import { WaitingForAccess } from '@/components/auth/WaitingForAccess';
+import { UserRole } from '@/types';
 import {
   Settings,
   Plus,
@@ -18,6 +19,11 @@ import {
   ExternalLink,
   Save,
   RefreshCw,
+  Copy,
+  KeyRound,
+  Lock,
+  Edit2,
+  UserPlus,
 } from 'lucide-react';
 import {
   isFirebaseConfigured,
@@ -32,8 +38,17 @@ import {
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { settings, users, store, tasks } = usePipeline();
-  const { currentUser, isPendingAccess, isAdmin } = useAuth();
+  const { settings, users: storeUsers, store, tasks } = usePipeline();
+  const {
+    currentUser,
+    isPendingAccess,
+    isAdmin,
+    availableUsers,
+    grantUserAccount,
+    updateUserRole,
+    updateUserPassword,
+    revokeUserAccess,
+  } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -44,6 +59,15 @@ export default function SettingsPage() {
 
   const [newAction, setNewAction] = useState('');
   const [newCreativeType, setNewCreativeType] = useState('');
+
+  // Account creation with password state
+  const [newAccEmail, setNewAccEmail] = useState('');
+  const [newAccName, setNewAccName] = useState('');
+  const [newAccRole, setNewAccRole] = useState<UserRole>('setup');
+  const [newAccPassword, setNewAccPassword] = useState('');
+  const [editingPasswordUid, setEditingPasswordUid] = useState<string | null>(null);
+  const [editingPasswordVal, setEditingPasswordVal] = useState('');
+  const [copiedUid, setCopiedUid] = useState<string | null>(null);
 
   if (currentUser?.role === 'setup') {
     return null;
@@ -164,6 +188,47 @@ export default function SettingsPage() {
       toast.error(`Error: ${e?.message || 'Could not reach Slack API'}`);
     } finally {
       setIsTestingSlack(false);
+    }
+  };
+
+  const handleCreateAccount = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAccEmail.trim() || !newAccName.trim()) {
+      toast.error('Please enter team member name and email/username');
+      return;
+    }
+    const cleanEmail = newAccEmail.includes('@')
+      ? newAccEmail.trim().toLowerCase()
+      : `${newAccEmail.trim().toLowerCase()}@operations.internal`;
+    const pass = newAccPassword.trim() || `${newAccName.toLowerCase().replace(/\s+/g, '')}2026`;
+    grantUserAccount(cleanEmail, newAccName.trim(), newAccRole, pass);
+    toast.success(`Account created for ${newAccName}! Password: ${pass}`);
+    setNewAccEmail('');
+    setNewAccName('');
+    setNewAccPassword('');
+    setNewAccRole('setup');
+  };
+
+  const handleCopyCredentials = (u: any) => {
+    const text = `Relio Ops Access:\nLogin: ${u.email} (or ${u.displayName.toLowerCase()})\nPassword: ${u.password || 'ops2026'}\nRole: ${u.role?.toUpperCase().replace('_', ' ')}`;
+    navigator.clipboard.writeText(text);
+    setCopiedUid(u.uid);
+    toast.success(`Copied login credentials for ${u.displayName}!`);
+    setTimeout(() => setCopiedUid(null), 2000);
+  };
+
+  const handleSavePassword = (uid: string) => {
+    if (!editingPasswordVal.trim()) return;
+    updateUserPassword(uid, editingPasswordVal.trim());
+    toast.success('Password updated successfully.');
+    setEditingPasswordUid(null);
+    setEditingPasswordVal('');
+  };
+
+  const handleRevokeAccount = (uid: string, name: string) => {
+    if (confirm(`Are you sure you want to revoke access for ${name}?`)) {
+      revokeUserAccess(uid);
+      toast.success(`Revoked access for ${name}.`);
     }
   };
 
@@ -470,62 +535,243 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* Section 3: Team Directory & Roles (§3) */}
+        {/* Section 3: Team Accounts, Passwords & Role Access */}
         <div className="vercel-card p-6">
-          <div className="flex items-center justify-between border-b border-[#1f1f1f] pb-3.5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-[#1f1f1f] pb-3.5 gap-2">
             <div>
-              <h2 className="text-sm font-bold text-white">
-                Team Roles &amp; Responsibilities (§3)
-              </h2>
-              <p className="text-xs text-zinc-400">
-                User directory defining responsibilities for media buyers, creative leads, and setup executors.
+              <div className="flex items-center gap-2">
+                <KeyRound className="h-4 w-4 text-amber-400" />
+                <h2 className="text-sm font-bold text-white">
+                  Team Accounts &amp; Passwords Management
+                </h2>
+              </div>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                Create accounts with passwords and assign roles. Copy credentials to give directly to each team member.
               </p>
             </div>
             <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-semibold font-mono">
               <Shield className="h-3.5 w-3.5 text-emerald-400" />
-              <span>RBAC Active</span>
+              <span>Password &amp; RBAC Active</span>
             </div>
           </div>
 
-          <div className="mt-4 divide-y divide-[#1a1a1a]">
-            {users.map((user) => (
-              <div key={user.uid} className="flex items-center justify-between py-3 text-xs">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#181818] border border-[#262626] font-bold text-zinc-200">
-                    {user.displayName.substring(0, 2).toUpperCase()}
-                  </div>
-                  <div>
-                    <span className="font-bold text-white block">
-                      {user.displayName}
-                    </span>
-                    <span className="text-[11px] text-zinc-500 font-mono">
-                      {user.email}
-                    </span>
-                  </div>
-                </div>
+          {/* Form: Create New Account with Password */}
+          <form onSubmit={handleCreateAccount} className="mt-5 rounded-xl border border-[#222] bg-black/60 p-4 space-y-3">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-200">
+              <UserPlus className="h-3.5 w-3.5 text-teal-400" />
+              <span>Create New Member Account with Password</span>
+            </div>
 
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`rounded px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase border ${
-                      user.role === 'media_buyer'
-                        ? 'bg-blue-500/10 text-blue-400 border-blue-500/25'
-                        : user.role === 'creative'
-                        ? 'bg-purple-500/10 text-purple-400 border-purple-500/25'
-                        : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25'
-                    }`}
-                  >
-                    {(user.role || 'pending').replace('_', ' ')}
-                  </span>
-                  <span className="text-[11px] text-zinc-500 font-medium hidden sm:inline">
-                    {user.role === 'media_buyer'
-                      ? 'Full Admin Access'
-                      : user.role === 'creative'
-                      ? 'Creative Production'
-                      : 'Campaign & Pixel Setup'}
-                  </span>
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 font-mono mb-1">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Karl"
+                  value={newAccName}
+                  onChange={(e) => setNewAccName(e.target.value)}
+                  className="w-full rounded-md border border-[#262626] bg-black p-2 text-xs text-white placeholder-zinc-500 focus:border-teal-500 focus:outline-hidden"
+                />
               </div>
-            ))}
+
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 font-mono mb-1">
+                  Email or Username *
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. karl or karl@operations.internal"
+                  value={newAccEmail}
+                  onChange={(e) => setNewAccEmail(e.target.value)}
+                  className="w-full rounded-md border border-[#262626] bg-black p-2 font-mono text-xs text-white placeholder-zinc-500 focus:border-teal-500 focus:outline-hidden"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 font-mono mb-1">
+                  Assigned Role *
+                </label>
+                <select
+                  value={newAccRole || 'setup'}
+                  onChange={(e) => setNewAccRole(e.target.value as UserRole)}
+                  className="w-full rounded-md border border-[#262626] bg-black p-2 text-xs font-semibold text-white focus:border-teal-500 focus:outline-hidden cursor-pointer"
+                >
+                  <option value="setup">Setup Queue Only (Karl / Mark)</option>
+                  <option value="creative">Creative Queue Only (Yzah)</option>
+                  <option value="media_buyer">Media Buyer (Charles)</option>
+                  <option value="admin">Admin (Danny)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 font-mono mb-1">
+                  Password (optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="defaults to <name>2026"
+                  value={newAccPassword}
+                  onChange={(e) => setNewAccPassword(e.target.value)}
+                  className="w-full rounded-md border border-[#262626] bg-black p-2 font-mono text-xs text-white placeholder-zinc-500 focus:border-teal-500 focus:outline-hidden"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="vercel-btn-primary flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold cursor-pointer"
+              >
+                <Plus className="h-3.5 w-3.5 text-black" />
+                <span>Create Account &amp; Assign Password</span>
+              </button>
+            </div>
+          </form>
+
+          {/* Accounts & Passwords Table */}
+          <div className="mt-5 space-y-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 font-mono block">
+              Active Team Credentials List ({availableUsers.length} Members)
+            </span>
+
+            <div className="divide-y divide-[#1a1a1a] rounded-xl border border-[#222] bg-black/40 overflow-hidden">
+              {availableUsers.map((user) => (
+                <div
+                  key={user.uid}
+                  className="flex flex-col md:flex-row md:items-center justify-between p-3.5 gap-3 hover:bg-white/[0.02] transition-colors"
+                >
+                  {/* User info */}
+                  <div className="flex items-center gap-3 min-w-[200px]">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#181818] border border-[#262626] font-bold text-zinc-200 shrink-0">
+                      {user.displayName.substring(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-white text-xs">
+                          {user.displayName}
+                        </span>
+                        {user.email.toLowerCase() === currentUser?.email.toLowerCase() && (
+                          <span className="text-[9px] font-mono text-teal-400 bg-teal-500/10 px-1 py-0.5 rounded border border-teal-500/20">
+                            You
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-[11px] text-zinc-500 font-mono block">
+                        Login: <strong className="text-zinc-300">{user.email.split('@')[0]}</strong> ({user.email})
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Role Selector Dropdown */}
+                  <div className="flex items-center gap-2">
+                    <label className="text-[10px] uppercase font-mono text-zinc-500 hidden sm:inline">
+                      Role:
+                    </label>
+                    <select
+                      value={user.role || 'setup'}
+                      onChange={(e) => {
+                        updateUserRole(user.uid, e.target.value as UserRole);
+                        toast.success(`Updated ${user.displayName}'s role to ${e.target.value.toUpperCase()}`);
+                      }}
+                      className={`rounded-md px-2.5 py-1 text-xs font-mono font-bold border cursor-pointer ${
+                        user.role === 'setup'
+                          ? 'bg-teal-500/10 text-teal-400 border-teal-500/30'
+                          : user.role === 'creative'
+                          ? 'bg-purple-500/10 text-purple-400 border-purple-500/30'
+                          : user.role === 'admin'
+                          ? 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                          : 'bg-blue-500/10 text-blue-400 border-blue-500/30'
+                      }`}
+                    >
+                      <option value="setup" className="bg-[#111] text-teal-300">Setup Queue Only</option>
+                      <option value="creative" className="bg-[#111] text-purple-300">Creative Queue Only</option>
+                      <option value="media_buyer" className="bg-[#111] text-blue-300">Media Buyer</option>
+                      <option value="admin" className="bg-[#111] text-rose-300">Admin</option>
+                    </select>
+                  </div>
+
+                  {/* Password & Credentials Actions */}
+                  <div className="flex items-center gap-2">
+                    {editingPasswordUid === user.uid ? (
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="text"
+                          value={editingPasswordVal}
+                          onChange={(e) => setEditingPasswordVal(e.target.value)}
+                          placeholder="New password"
+                          className="rounded border border-[#333] bg-black px-2 py-1 text-xs font-mono text-amber-300 w-28 focus:outline-hidden focus:border-amber-400"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleSavePassword(user.uid)}
+                          className="px-2 py-1 rounded bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs cursor-pointer"
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setEditingPasswordUid(null)}
+                          className="px-1.5 py-1 rounded bg-[#202020] text-zinc-400 text-xs cursor-pointer"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1.5">
+                        <span className="rounded bg-[#141414] border border-[#262626] px-2 py-1 text-xs font-mono text-amber-300">
+                          {user.password || 'karl2026'}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingPasswordUid(user.uid);
+                            setEditingPasswordVal(user.password || '');
+                          }}
+                          className="p-1 rounded bg-[#181818] hover:bg-[#252525] text-zinc-400 hover:text-white cursor-pointer"
+                          title="Change password"
+                        >
+                          <Edit2 className="h-3 w-3" />
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Copy Credentials Button */}
+                    <button
+                      type="button"
+                      onClick={() => handleCopyCredentials(user)}
+                      className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#1f1f1f] hover:bg-[#2f2f2f] text-xs font-medium text-zinc-200 cursor-pointer border border-[#333]"
+                      title="Copy login details to give to team member"
+                    >
+                      {copiedUid === user.uid ? (
+                        <>
+                          <Check className="h-3 w-3 text-emerald-400" />
+                          <span className="text-emerald-400 text-[11px]">Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-3 w-3 text-zinc-400" />
+                          <span className="text-[11px]">Copy Creds</span>
+                        </>
+                      )}
+                    </button>
+
+                    {/* Revoke account button */}
+                    {user.email !== 'charles@operations.internal' && user.email !== 'danny@operations.internal' && (
+                      <button
+                        type="button"
+                        onClick={() => handleRevokeAccount(user.uid, user.displayName)}
+                        className="p-1 rounded text-zinc-600 hover:text-rose-400 cursor-pointer"
+                        title="Revoke account"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

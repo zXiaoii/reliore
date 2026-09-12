@@ -9,6 +9,7 @@ import {
   Priority,
   WorkStatus,
   CampaignStatus,
+  UserRole,
 } from '@/types';
 import { deriveStage, getNextAction, getSuggestedAdSetName } from './pipeline';
 import { initFirestoreInstance, isFirebaseConfigured } from './firebase';
@@ -20,6 +21,7 @@ export const INITIAL_USERS: TeamUser[] = [
     displayName: 'Charles',
     role: 'media_buyer',
     active: true,
+    password: 'charles2026',
   },
   {
     uid: 'yzah-03',
@@ -27,6 +29,7 @@ export const INITIAL_USERS: TeamUser[] = [
     displayName: 'Yzah',
     role: 'creative',
     active: true,
+    password: 'yzah2026',
   },
   {
     uid: 'karl-04',
@@ -34,6 +37,7 @@ export const INITIAL_USERS: TeamUser[] = [
     displayName: 'Karl',
     role: 'setup',
     active: true,
+    password: 'karl2026',
   },
   {
     uid: 'mark-05',
@@ -41,6 +45,7 @@ export const INITIAL_USERS: TeamUser[] = [
     displayName: 'Mark',
     role: 'setup',
     active: true,
+    password: 'mark2026',
   },
   {
     uid: 'christian-06',
@@ -48,6 +53,7 @@ export const INITIAL_USERS: TeamUser[] = [
     displayName: 'Christian',
     role: 'setup',
     active: true,
+    password: 'christian2026',
   },
   {
     uid: 'danny-01',
@@ -55,6 +61,7 @@ export const INITIAL_USERS: TeamUser[] = [
     displayName: 'Danny',
     role: 'admin',
     active: true,
+    password: 'danny2026',
   },
 ];
 
@@ -508,7 +515,17 @@ class OperationsStore {
 
       const storedUsers = localStorage.getItem('media_ops_users_v1');
       if (storedUsers) {
-        this.users = JSON.parse(storedUsers);
+        const parsed: TeamUser[] = JSON.parse(storedUsers);
+        this.users = parsed.map((u) => {
+          const initMatch = INITIAL_USERS.find(
+            (iu) => iu.email.toLowerCase() === u.email.toLowerCase() || iu.uid === u.uid
+          );
+          return {
+            ...u,
+            password: u.password || initMatch?.password || 'ops2026',
+          };
+        });
+        this.saveUsers();
       } else {
         this.users = INITIAL_USERS;
         this.saveUsers();
@@ -782,6 +799,48 @@ class OperationsStore {
     }
     this.saveUsers();
     this.notifyAll();
+  }
+
+  public updateUserRole(uidOrEmail: string, role: UserRole) {
+    const user = this.users.find(
+      (u) => u.uid === uidOrEmail || u.email.toLowerCase() === uidOrEmail.toLowerCase()
+    );
+    if (user) {
+      user.role = role;
+      user.active = true;
+      this.saveUsers();
+      this.notifyAll();
+    }
+  }
+
+  public toggleUserActive(uidOrEmail: string) {
+    const user = this.users.find(
+      (u) => u.uid === uidOrEmail || u.email.toLowerCase() === uidOrEmail.toLowerCase()
+    );
+    if (user) {
+      user.active = !user.active;
+      this.saveUsers();
+      this.notifyAll();
+    }
+  }
+
+  public removeUser(uidOrEmail: string) {
+    this.users = this.users.filter(
+      (u) => u.uid !== uidOrEmail && u.email.toLowerCase() !== uidOrEmail.toLowerCase()
+    );
+    this.saveUsers();
+    this.notifyAll();
+  }
+
+  public updateUserPassword(uidOrEmail: string, newPassword: string) {
+    const user = this.users.find(
+      (u) => u.uid === uidOrEmail || u.email.toLowerCase() === uidOrEmail.toLowerCase()
+    );
+    if (user) {
+      user.password = newPassword;
+      this.saveUsers();
+      this.notifyAll();
+    }
   }
 
   public getUsers(): TeamUser[] {

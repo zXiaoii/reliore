@@ -56,6 +56,7 @@ export interface TeamUser {
   role: UserRole;
   active: boolean;
   avatar?: string;
+  password?: string;
 }
 
 export interface HistoryEntry {
