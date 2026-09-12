@@ -134,16 +134,16 @@ export function MarketBadge({
 
   if (norm === 'CA') {
     colorStyles =
-      'bg-zinc-100 text-zinc-900 border-zinc-200 dark:bg-zinc-900 dark:text-zinc-100 dark:border-zinc-800';
+      'bg-zinc-900/50 text-white border-zinc-700/50';
   } else if (norm === 'UK' || norm === 'GB') {
     colorStyles =
-      'bg-zinc-100 text-zinc-900 border-zinc-200 dark:bg-zinc-900 dark:text-zinc-100 dark:border-zinc-800';
+      'bg-zinc-900/50 text-white border-zinc-700/50';
   } else if (norm === 'US' || norm === 'USA') {
     colorStyles =
-      'bg-zinc-100 text-zinc-900 border-zinc-200 dark:bg-zinc-900 dark:text-zinc-100 dark:border-zinc-800';
+      'bg-zinc-900/50 text-white border-zinc-700/50';
   } else if (norm === 'AUS' || norm === 'AU') {
     colorStyles =
-      'bg-zinc-100 text-zinc-900 border-zinc-200 dark:bg-zinc-900 dark:text-zinc-100 dark:border-zinc-800';
+      'bg-zinc-900/50 text-white border-zinc-700/50';
   }
 
   const sizeStyles =

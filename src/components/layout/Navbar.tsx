@@ -140,7 +140,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-[#1f1f1f] bg-white dark:bg-zinc-950/90 backdrop-blur-md">
+      <header className="sticky top-0 z-40 w-full border-b border-[#1f1f1f] bg-black/90 backdrop-blur-md">
         <div className="flex h-13 items-center justify-between px-3 sm:px-6">
           {/* Brand & Desktop Nav */}
           <div className="flex items-center gap-3 xl:gap-6 min-w-0">
@@ -150,7 +150,7 @@ export const Navbar: React.FC = () => {
             >
               {/* App Icon Squircle */}
               <div className="relative flex h-7.5 w-7.5 items-center justify-center rounded-[8px] bg-gradient-to-b from-[#262626] to-[#121212] p-[1px] shadow-sm border border-[#333333] group-hover:border-[#555555] transition-all">
-                <div className="flex h-full w-full items-center justify-center rounded-[7px] bg-white dark:bg-zinc-950">
+                <div className="flex h-full w-full items-center justify-center rounded-[7px] bg-black">
                   <Sparkles className="h-3.5 w-3.5 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] transition-transform group-hover:scale-110" />
                 </div>
                 {/* Live Indicator Dot */}
@@ -165,7 +165,7 @@ export const Navbar: React.FC = () => {
                 <span className="text-xs font-bold tracking-tight text-white">
                   Media Ops
                 </span>
-                <span className="rounded px-1.5 py-0.5 text-[9px] font-mono font-bold text-zinc-300 border border-[#2a2a2a] bg-zinc-50 dark:bg-zinc-900">
+                <span className="rounded px-1.5 py-0.5 text-[9px] font-mono font-bold text-zinc-300 border border-[#2a2a2a] bg-[#121212]">
                   {isSetupUser ? 'SETUP' : isCreativeUser ? 'CREATIVE' : 'SSOT'}
                 </span>
               </div>
@@ -258,7 +258,7 @@ export const Navbar: React.FC = () => {
                 title="Quick switch user"
               >
                 {availableUsers.map((u) => (
-                  <option key={u.uid} value={u.uid} className="bg-white dark:bg-zinc-950 text-white py-1">
+                  <option key={u.uid} value={u.uid} className="bg-black text-white py-1">
                     {u.displayName} ({u.role?.toUpperCase()}) — {u.email}
                   </option>
                 ))}
@@ -304,7 +304,7 @@ export const Navbar: React.FC = () => {
                     className={`flex items-center justify-between px-3 py-2 rounded-md text-xs font-medium transition-colors ${
                       isActive
                         ? 'bg-white text-black font-semibold'
-                        : 'bg-zinc-50 dark:bg-zinc-900 border border-[#222222] text-zinc-300 hover:bg-[#181818] hover:text-white'
+                        : 'bg-[#121212] border border-[#222222] text-zinc-300 hover:bg-[#181818] hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-2 truncate">
@@ -314,7 +314,7 @@ export const Navbar: React.FC = () => {
                     {item.badge !== null && item.badge !== undefined && (
                       <span
                         className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold font-mono shrink-0 ${
-                          isActive ? 'bg-white dark:bg-zinc-950 text-white' : 'bg-[#222] text-zinc-300'
+                          isActive ? 'bg-black text-white' : 'bg-[#222] text-zinc-300'
                         }`}
                       >
                         {item.badge}
@@ -345,7 +345,7 @@ export const Navbar: React.FC = () => {
       </header>
 
       {/* Mobile Sticky Bottom Tab Bar (< 1024px) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 flex lg:hidden items-center justify-around border-t border-[#1f1f1f] bg-white dark:bg-zinc-950/90 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] px-2 backdrop-blur-2xl shadow-2xl">
+      <div className="fixed bottom-0 left-0 right-0 z-40 flex lg:hidden items-center justify-around border-t border-[#1f1f1f] bg-black/90 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] px-2 backdrop-blur-2xl shadow-2xl">
         {bottomNavItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
           const Icon = item.icon;
