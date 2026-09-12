@@ -1,4 +1,4 @@
-﻿import {
+import {
   Campaign,
   AdSet,
   WorkTask,
@@ -65,9 +65,164 @@ export const INITIAL_USERS: TeamUser[] = [
   },
 ];
 
-const INITIAL_CAMPAIGNS: Campaign[] = [];
+const INITIAL_CAMPAIGNS: Campaign[] = [
+  // --- #8167 - AUS | AD 3 - Danny - ADSC ---
+  {
+    id: 'camp-vitalith-3',
+    name: 'MAIN CBO Vitalith 3',
+    product: 'Vitalith',
+    market: 'AUS',
+    adAccount: '#8167 - AUS | AD 3 - Danny - ADSC',
+    status: 'LIVE',
+    stage: 'Winner Expansion',
+    launchDate: '09/07/26',
+    createdAt: '2026-09-07T10:00:00.000Z',
+    history: [
+      { at: '09/07/26 10:00 AM', uid: 'danny-01', userDisplayName: 'Danny (CEO)', action: 'Campaign Created', detail: 'Launched MAIN CBO Vitalith 3 on #8167 - AUS | AD 3.' },
+    ],
+  },
+  {
+    id: 'camp-drycontrol',
+    name: 'MAIN CBO DryControl',
+    product: 'DryControl',
+    market: 'AUS',
+    adAccount: '#8167 - AUS | AD 3 - Danny - ADSC',
+    status: 'LIVE',
+    stage: 'Winner Expansion',
+    launchDate: '09/12/26',
+    createdAt: '2026-09-12T10:00:00.000Z',
+    history: [
+      { at: '09/12/26 10:00 AM', uid: 'danny-01', userDisplayName: 'Danny (CEO)', action: 'Campaign Created', detail: 'Launched MAIN CBO DryControl on #8167 - AUS | AD 3.' },
+    ],
+  },
+  // --- #8178 - AUS | AD 4 - Danny - ADSC ---
+  {
+    id: 'camp-revida-4',
+    name: 'MAIN CBO Revida 4',
+    product: 'Revida',
+    market: 'AUS',
+    adAccount: '#8178 - AUS | AD 4 - Danny - ADSC',
+    status: 'LIVE',
+    stage: 'Winner Expansion',
+    launchDate: '09/07/26',
+    createdAt: '2026-09-07T09:00:00.000Z',
+    history: [
+      { at: '09/07/26 09:00 AM', uid: 'danny-01', userDisplayName: 'Danny (CEO)', action: 'Campaign Created', detail: 'Launched MAIN CBO Revida 4 on #8178 - AUS | AD 4.' },
+    ],
+  },
+  {
+    id: 'camp-heradem-4',
+    name: 'MAIN CBO Heradem 4',
+    product: 'Heradem',
+    market: 'AUS',
+    adAccount: '#8178 - AUS | AD 4 - Danny - ADSC',
+    status: 'LIVE',
+    stage: 'Winner Expansion',
+    launchDate: '09/08/26',
+    createdAt: '2026-09-08T09:00:00.000Z',
+    history: [
+      { at: '09/08/26 09:00 AM', uid: 'danny-01', userDisplayName: 'Danny (CEO)', action: 'Campaign Created', detail: 'Launched MAIN CBO Heradem 4 on #8178 - AUS | AD 4.' },
+    ],
+  },
+  {
+    id: 'camp-lidlift',
+    name: 'MAIN CBO Lidlift',
+    product: 'Lidlift',
+    market: 'AUS',
+    adAccount: '#8178 - AUS | AD 4 - Danny - ADSC',
+    status: 'LIVE',
+    stage: 'Winner Expansion',
+    launchDate: '09/07/26',
+    createdAt: '2026-09-07T08:00:00.000Z',
+    history: [
+      { at: '09/07/26 08:00 AM', uid: 'danny-01', userDisplayName: 'Danny (CEO)', action: 'Campaign Created', detail: 'Launched MAIN CBO Lidlift on #8178 - AUS | AD 4.' },
+    ],
+  },
+  // --- 50647 aurmacy [GO DGTL] ---
+  {
+    id: 'camp-gutflush-go',
+    name: 'MAIN CBO GUTFLUSH GO',
+    product: 'Gutflush',
+    market: 'AUS',
+    adAccount: '50647 aurmacy [GO DGTL]',
+    status: 'LIVE',
+    stage: 'Initial Testing',
+    launchDate: '09/13/26',
+    createdAt: '2026-09-13T08:00:00.000Z',
+    history: [
+      { at: '09/13/26 08:00 AM', uid: 'danny-01', userDisplayName: 'Danny (CEO)', action: 'Campaign Created', detail: 'Launched MAIN CBO GUTFLUSH GO on 50647 aurmacy [GO DGTL].' },
+    ],
+  },
+  {
+    id: 'camp-flexivita-go',
+    name: 'MAIN CBO Flexivita GO',
+    product: 'FlexiVita',
+    market: 'AUS',
+    adAccount: '50647 aurmacy [GO DGTL]',
+    status: 'LIVE',
+    stage: 'Winner Expansion',
+    launchDate: '09/10/26',
+    createdAt: '2026-09-10T09:00:00.000Z',
+    history: [
+      { at: '09/10/26 09:00 AM', uid: 'danny-01', userDisplayName: 'Danny (CEO)', action: 'Campaign Created', detail: 'Launched MAIN CBO Flexivita GO on 50647 aurmacy [GO DGTL].' },
+    ],
+  },
+  // --- #8179 - AUS | AD 5 - Danny - ADSC ---
+  {
+    id: 'camp-healvix',
+    name: 'MAIN CBO Healvix',
+    product: 'Healvix',
+    market: 'AUS',
+    adAccount: '#8179 - AUS | AD 5 - Danny - ADSC',
+    status: 'LIVE',
+    stage: 'Initial Testing',
+    launchDate: '09/13/26',
+    createdAt: '2026-09-13T09:00:00.000Z',
+    history: [
+      { at: '09/13/26 09:00 AM', uid: 'danny-01', userDisplayName: 'Danny (CEO)', action: 'Campaign Created', detail: 'Launched MAIN CBO Healvix on #8179 - AUS | AD 5.' },
+    ],
+  },
+  // --- #8180 - AUS | AD 6 - Danny - ADSC ---
+  {
+    id: 'camp-omegamax-6',
+    name: 'MAIN CBO OMEGAMAX 6',
+    product: 'OmegaMax',
+    market: 'AUS',
+    adAccount: '#8180 - AUS | AD 6 - Danny - ADSC',
+    status: 'LIVE',
+    stage: 'Winner Expansion',
+    launchDate: '09/10/26',
+    createdAt: '2026-09-10T10:00:00.000Z',
+    history: [
+      { at: '09/10/26 10:00 AM', uid: 'danny-01', userDisplayName: 'Danny (CEO)', action: 'Campaign Created', detail: 'Launched MAIN CBO OMEGAMAX 6 on #8180 - AUS | AD 6.' },
+    ],
+  },
+];
 
-const INITIAL_ADSETS: AdSet[] = [];
+const INITIAL_ADSETS: AdSet[] = [
+  // Vitalith 3 (ad account #8167)
+  { id: 'adset-120250536582690696', campaignId: 'camp-vitalith-3', campaignName: 'MAIN CBO Vitalith 3', name: '09/07/26', launchDate: '09/07/26', status: 'LIVE', creativeType: 'SWIPES', assignedSetupUser: 'Karl', notes: '', createdAt: '2026-09-07T16:00:00.000Z', launchedAt: '2026-09-07T16:00:00.000Z' },
+  { id: 'adset-120250600010230696', campaignId: 'camp-vitalith-3', campaignName: 'MAIN CBO Vitalith 3', name: '09/11/26 swipes 2', launchDate: '09/11/26', status: 'LIVE', creativeType: 'SWIPES', assignedSetupUser: 'Karl', notes: '', createdAt: '2026-09-11T17:00:00.000Z', launchedAt: '2026-09-11T17:00:00.000Z' },
+  // DryControl (ad account #8167)
+  { id: 'adset-120250617426590696', campaignId: 'camp-drycontrol', campaignName: 'MAIN CBO DryControl', name: '09/12/26 swipes', launchDate: '09/12/26', status: 'LIVE', creativeType: 'SWIPES', assignedSetupUser: 'Christian', notes: '', createdAt: '2026-09-12T18:00:00.000Z', launchedAt: '2026-09-12T18:00:00.000Z' },
+  // Revida 4 (ad account #8178)
+  { id: 'adset-120249553142180232', campaignId: 'camp-revida-4', campaignName: 'MAIN CBO Revida 4', name: '09/07/26 SWIPES', launchDate: '09/07/26', status: 'LIVE', creativeType: 'SWIPES', assignedSetupUser: 'Karl', notes: '', createdAt: '2026-09-07T17:00:00.000Z', launchedAt: '2026-09-07T17:00:00.000Z' },
+  { id: 'adset-120249617010530232', campaignId: 'camp-revida-4', campaignName: 'MAIN CBO Revida 4', name: '09/11/26 SWIPES 2', launchDate: '09/11/26', status: 'LIVE', creativeType: 'SWIPES', assignedSetupUser: 'Karl', notes: '', createdAt: '2026-09-11T16:00:00.000Z', launchedAt: '2026-09-11T16:00:00.000Z' },
+  // Heradem 4 (ad account #8178)
+  { id: 'adset-120249580624150232', campaignId: 'camp-heradem-4', campaignName: 'MAIN CBO Heradem 4', name: '09/08/26 SWIPES', launchDate: '09/08/26', status: 'LIVE', creativeType: 'SWIPES', assignedSetupUser: 'Mark', notes: '', createdAt: '2026-09-08T16:30:00.000Z', launchedAt: '2026-09-08T16:30:00.000Z' },
+  { id: 'adset-120249636262790232', campaignId: 'camp-heradem-4', campaignName: 'MAIN CBO Heradem 4', name: '09/12/26 SWIPES 2', launchDate: '09/12/26', status: 'LIVE', creativeType: 'SWIPES', assignedSetupUser: 'Mark', notes: '', createdAt: '2026-09-12T15:30:00.000Z', launchedAt: '2026-09-12T15:30:00.000Z' },
+  // Lidlift (ad account #8178)
+  { id: 'adset-120249550857590232', campaignId: 'camp-lidlift', campaignName: 'MAIN CBO Lidlift', name: '09/07/26 SWIPES', launchDate: '09/07/26', status: 'LIVE', creativeType: 'SWIPES', assignedSetupUser: 'Karl', notes: '', createdAt: '2026-09-07T16:00:00.000Z', launchedAt: '2026-09-07T16:00:00.000Z' },
+  { id: 'adset-120249636114800232', campaignId: 'camp-lidlift', campaignName: 'MAIN CBO Lidlift', name: '09/12/26 SWIPES 2', launchDate: '09/12/26', status: 'LIVE', creativeType: 'SWIPES', assignedSetupUser: 'Karl', notes: '', createdAt: '2026-09-12T14:00:00.000Z', launchedAt: '2026-09-12T14:00:00.000Z' },
+  // GUTFLUSH GO (50647 aurmacy [GO DGTL])
+  { id: 'adset-120254662478960045', campaignId: 'camp-gutflush-go', campaignName: 'MAIN CBO GUTFLUSH GO', name: '09/13/26 swipes', launchDate: '09/13/26', status: 'LIVE', creativeType: 'SWIPES', assignedSetupUser: 'Karl', notes: '', createdAt: '2026-09-13T13:00:00.000Z', launchedAt: '2026-09-13T13:00:00.000Z' },
+  // Flexivita GO (50647 aurmacy [GO DGTL])
+  { id: 'adset-120254607736930045', campaignId: 'camp-flexivita-go', campaignName: 'MAIN CBO Flexivita GO', name: '09/10/26 swipes', launchDate: '09/10/26', status: 'LIVE', creativeType: 'SWIPES', assignedSetupUser: 'Christian', notes: '', createdAt: '2026-09-10T15:00:00.000Z', launchedAt: '2026-09-10T15:00:00.000Z' },
+  // Healvix (#8179)
+  { id: 'adset-120251156014290564', campaignId: 'camp-healvix', campaignName: 'MAIN CBO Healvix', name: '09/13/26 swipes', launchDate: '09/13/26', status: 'LIVE', creativeType: 'SWIPES', assignedSetupUser: 'Mark', notes: '', createdAt: '2026-09-13T14:00:00.000Z', launchedAt: '2026-09-13T14:00:00.000Z' },
+  // OMEGAMAX 6 (#8180)
+  { id: 'adset-120248176536440618', campaignId: 'camp-omegamax-6', campaignName: 'MAIN CBO OMEGAMAX 6', name: '09/10/26 SWIPES', launchDate: '09/10/26', status: 'LIVE', creativeType: 'SWIPES', assignedSetupUser: 'Christian', notes: '', createdAt: '2026-09-10T16:30:00.000Z', launchedAt: '2026-09-10T16:30:00.000Z' },
+];
 
 const INITIAL_TASKS: WorkTask[] = [];
 
@@ -247,8 +402,8 @@ class OperationsStore {
           const metaSnap = await getDoc(metaRef);
           const currentVersion = metaSnap.exists() ? metaSnap.data()?.version : null;
 
-          if (currentVersion !== 'aus_v2') {
-            console.log('Detected stale or missing data version. Resetting Firestore data...');
+          if (currentVersion !== 'aus_v3') {
+            console.log('[Store] Firestore version mismatch. Migrating to aus_v3...');
             for (const colName of ['tasks', 'campaigns', 'adSets']) {
               const colRef = collection(firestoreDb, colName);
               const snapshot = await getDocs(colRef);
@@ -262,7 +417,8 @@ class OperationsStore {
               ...this.adSets.map((a) => setDoc(doc(firestoreDb, 'adSets', a.id), a)),
             ]);
 
-            await setDoc(metaRef, { version: 'aus_v2' });
+            await setDoc(metaRef, { version: 'aus_v3' });
+            console.log('[Store] Migration to aus_v3 complete.');
           }
         } catch (err) {
           console.warn('Firestore version check/migration error:', err);
