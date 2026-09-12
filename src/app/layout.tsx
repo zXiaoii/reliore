@@ -3,6 +3,7 @@ import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 import { ToastProvider } from '@/context/ToastContext';
 import { Navbar } from '@/components/layout/Navbar';
+import { EmailAccessModal } from '@/components/auth/EmailAccessModal';
 
 export const metadata: Metadata = {
   title: 'Creative Ops Pipeline — Meta Paid Social',
@@ -21,6 +22,7 @@ export default function RootLayout({
           <ToastProvider>
             <div className="flex min-h-screen flex-col w-full max-w-full min-w-0 overflow-x-hidden">
               <Navbar />
+              <EmailAccessModal />
               <main className="flex-1 w-full max-w-full min-w-0 pb-16 lg:pb-0">{children}</main>
             </div>
           </ToastProvider>

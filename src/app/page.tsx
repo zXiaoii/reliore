@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { usePipeline } from '@/hooks/usePipeline';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
@@ -39,9 +40,19 @@ import {
 } from 'lucide-react';
 
 export default function SmartSpreadsheetDashboard() {
+  const router = useRouter();
   const { tasks, campaigns, adSets, settings, store } = usePipeline();
   const { currentUser, isMediaBuyer, isPendingAccess } = useAuth();
   const { toast } = useToast();
+
+  // Setup users only see Setup Queue, Creative users only see Creative Queue
+  useEffect(() => {
+    if (currentUser?.role === 'setup') {
+      router.replace('/setup');
+    } else if (currentUser?.role === 'creative') {
+      router.replace('/creative');
+    }
+  }, [currentUser, router]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [marketFilter, setMarketFilter] = useState('ALL');
@@ -59,6 +70,11 @@ export default function SmartSpreadsheetDashboard() {
 
   if (isPendingAccess) {
     return <WaitingForAccess />;
+  }
+
+  // Prevent flashing Media Buying dashboard for Setup / Creative roles while redirecting
+  if (currentUser?.role === 'setup' || currentUser?.role === 'creative') {
+    return null;
   }
 
   // Top Counters (§11)

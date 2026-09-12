@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { usePipeline } from '@/hooks/usePipeline';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
@@ -30,12 +31,23 @@ import {
 } from '@/lib/slack';
 
 export default function SettingsPage() {
+  const router = useRouter();
   const { settings, users, store, tasks } = usePipeline();
-  const { isPendingAccess, isAdmin } = useAuth();
+  const { currentUser, isPendingAccess, isAdmin } = useAuth();
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (currentUser?.role === 'setup') {
+      router.replace('/setup');
+    }
+  }, [currentUser, router]);
 
   const [newAction, setNewAction] = useState('');
   const [newCreativeType, setNewCreativeType] = useState('');
+
+  if (currentUser?.role === 'setup') {
+    return null;
+  }
 
   // Firebase Config State
   const [fbConfig, setFbConfig] = useState<FirebaseConfigParams>(getActiveFirebaseConfig());

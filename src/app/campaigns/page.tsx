@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { usePipeline } from '@/hooks/usePipeline';
 import { useAuth } from '@/context/AuthContext';
 import { Campaign, CampaignStatus, Market } from '@/types';
@@ -30,8 +31,16 @@ import {
 } from 'lucide-react';
 
 export default function CampaignsPage() {
+  const router = useRouter();
   const { campaigns, adSets, settings } = usePipeline();
-  const { isPendingAccess, isMediaBuyer } = useAuth();
+  const { currentUser, isPendingAccess, isMediaBuyer } = useAuth();
+
+  // Setup users only need Setup Queue
+  useEffect(() => {
+    if (currentUser?.role === 'setup') {
+      router.replace('/setup');
+    }
+  }, [currentUser, router]);
 
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [isNewActionOpen, setIsNewActionOpen] = useState(false);
@@ -48,6 +57,10 @@ export default function CampaignsPage() {
 
   if (isPendingAccess) {
     return <WaitingForAccess />;
+  }
+
+  if (currentUser?.role === 'setup') {
+    return null;
   }
 
   // Safe arrays

@@ -23,7 +23,7 @@ import {
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
-  const { currentUser, switchUserByUid, availableUsers } = useAuth();
+  const { currentUser, switchUserByUid, availableUsers, setIsEmailModalOpen } = useAuth();
   const { tasks, store } = usePipeline();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -31,6 +31,12 @@ export const Navbar: React.FC = () => {
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
+
+  const isSetupUser = currentUser?.role === 'setup';
+  const isCreativeUser = currentUser?.role === 'creative';
+
+  // Dynamic brand home link based on role
+  const homeHref = isSetupUser ? '/setup' : isCreativeUser ? '/creative' : '/';
 
   // Metrics for badges
   const creativeCount = tasks.filter(
@@ -99,13 +105,38 @@ export const Navbar: React.FC = () => {
     },
   ];
 
-  // Primary bottom mobile tabs
-  const bottomNavItems = [
-    { href: '/', label: 'Dashboard', icon: LayoutGrid },
-    { href: '/creative', label: 'Creative', icon: Palette, badge: creativeCount },
-    { href: '/setup', label: 'Setup', icon: Flame, badge: setupCount },
-    { href: '/campaigns', label: 'Campaigns', icon: Layers },
-  ];
+  // Setup users ONLY need to see their queue (plus Products & Blockers) — NOT media buying queues!
+  // Creative users ONLY need to see Creative Queue (plus Products & Blockers).
+  // Media Buyers & Admins see all queues.
+  const visibleNavItems = navItems.filter((item) => {
+    if (isSetupUser) {
+      return item.href === '/setup' || item.href === '/products' || item.href === '/blockers';
+    }
+    if (isCreativeUser) {
+      return item.href === '/creative' || item.href === '/products' || item.href === '/blockers';
+    }
+    return true;
+  });
+
+  // Primary bottom mobile tabs filtered by role
+  const bottomNavItems = isSetupUser
+    ? [
+        { href: '/setup', label: 'Setup Queue', icon: Flame, badge: setupCount },
+        { href: '/products', label: 'Products', icon: Package },
+        { href: '/blockers', label: 'Blockers', icon: AlertOctagon, badge: blockersCount },
+      ]
+    : isCreativeUser
+    ? [
+        { href: '/creative', label: 'Creative', icon: Palette, badge: creativeCount },
+        { href: '/products', label: 'Products', icon: Package },
+        { href: '/blockers', label: 'Blockers', icon: AlertOctagon, badge: blockersCount },
+      ]
+    : [
+        { href: '/', label: 'Dashboard', icon: LayoutGrid },
+        { href: '/creative', label: 'Creative', icon: Palette, badge: creativeCount },
+        { href: '/setup', label: 'Setup', icon: Flame, badge: setupCount },
+        { href: '/campaigns', label: 'Campaigns', icon: Layers },
+      ];
 
   return (
     <>
@@ -114,7 +145,7 @@ export const Navbar: React.FC = () => {
           {/* Brand & Desktop Nav */}
           <div className="flex items-center gap-3 xl:gap-6 min-w-0">
             <Link
-              href="/"
+              href={homeHref}
               className="group flex items-center gap-2.5 font-semibold text-white shrink-0 transition-opacity hover:opacity-90"
             >
               {/* App Icon Squircle */}
@@ -135,14 +166,14 @@ export const Navbar: React.FC = () => {
                   Media Ops
                 </span>
                 <span className="rounded px-1.5 py-0.5 text-[9px] font-mono font-bold text-zinc-300 border border-[#2a2a2a] bg-[#121212]">
-                  SSOT
+                  {isSetupUser ? 'SETUP' : isCreativeUser ? 'CREATIVE' : 'SSOT'}
                 </span>
               </div>
             </Link>
 
-            {/* Desktop Navigation Links */}
+            {/* Desktop Navigation Links (Role-Aware) */}
             <nav className="hidden lg:flex items-center gap-0.5 overflow-x-auto py-1">
-              {navItems.map((item) => {
+              {visibleNavItems.map((item) => {
                 const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
                 const Icon = item.icon;
                 return (
@@ -172,22 +203,59 @@ export const Navbar: React.FC = () => {
             </nav>
           </div>
 
-          {/* Right Area: Persona Switcher, Reset & Mobile Menu Toggle */}
+          {/* Right Area: Email Profile Badge, Switcher & Mobile Menu Toggle */}
           <div className="flex items-center gap-2 shrink-0">
-            {/* Persona Switcher */}
-            <div className="flex items-center gap-1.5 bg-[#0a0a0a] p-1 rounded-md border border-[#222222]">
-              <span className="text-[10px] uppercase font-mono font-bold text-zinc-500 px-1 hidden md:inline">
-                Role:
-              </span>
+            {/* Email Profile Pill with Access Modal Trigger */}
+            <div className="flex items-center bg-[#0a0a0a] rounded-lg border border-[#222222] p-0.5">
+              <button
+                type="button"
+                onClick={() => setIsEmailModalOpen(true)}
+                className="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-white/[0.06] transition-colors cursor-pointer group"
+                title="Click to sign in with your email or switch workspace"
+              >
+                <div
+                  className={`h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                    isSetupUser
+                      ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30'
+                      : isCreativeUser
+                      ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                      : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                  }`}
+                >
+                  {currentUser?.displayName ? currentUser.displayName[0].toUpperCase() : 'U'}
+                </div>
+                <div className="flex flex-col text-left">
+                  <span className="text-xs font-bold text-white group-hover:text-teal-300 transition-colors truncate max-w-[90px] sm:max-w-[130px]">
+                    {currentUser?.displayName || 'Sign in'}
+                  </span>
+                  <span className="text-[9px] font-mono text-zinc-400 truncate max-w-[90px] sm:max-w-[130px] hidden sm:block">
+                    {currentUser?.email || 'Click to set email'}
+                  </span>
+                </div>
+                <span
+                  className={`ml-1 rounded px-1.5 py-0.2 text-[9px] font-mono font-bold uppercase tracking-wider ${
+                    isSetupUser
+                      ? 'bg-teal-500/10 text-teal-400 border border-teal-500/25'
+                      : isCreativeUser
+                      ? 'bg-purple-500/10 text-purple-400 border border-purple-500/25'
+                      : 'bg-blue-500/10 text-blue-400 border border-blue-500/25'
+                  }`}
+                >
+                  {isSetupUser ? 'SETUP' : isCreativeUser ? 'CREATIVE' : 'BUYER'}
+                </span>
+              </button>
+
+              {/* Quick inline switcher select */}
               <select
                 value={currentUser?.uid || 'charles-01'}
                 onChange={(e) => switchUserByUid(e.target.value)}
                 style={{ colorScheme: 'dark' }}
-                className="bg-transparent text-xs font-semibold text-white focus:outline-hidden cursor-pointer max-w-[110px] sm:max-w-none [color-scheme:dark]"
+                className="bg-transparent text-[11px] font-mono text-zinc-500 hover:text-white focus:outline-hidden cursor-pointer w-4 pr-1 [color-scheme:dark]"
+                title="Quick switch user"
               >
                 {availableUsers.map((u) => (
                   <option key={u.uid} value={u.uid} className="bg-black text-white py-1">
-                    {u.displayName} ({u.role?.toUpperCase()})
+                    {u.displayName} ({u.role?.toUpperCase()}) — {u.email}
                   </option>
                 ))}
               </select>
@@ -221,7 +289,7 @@ export const Navbar: React.FC = () => {
         {isMobileMenuOpen && (
           <div className="lg:hidden border-t border-[#222222] bg-[#0a0a0a] px-4 py-3 shadow-2xl">
             <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
-              {navItems.map((item) => {
+              {visibleNavItems.map((item) => {
                 const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
                 const Icon = item.icon;
                 return (

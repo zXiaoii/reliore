@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { usePipeline } from '@/hooks/usePipeline';
 import { useAuth } from '@/context/AuthContext';
 import { WorkTask, WorkStatus } from '@/types';
@@ -12,13 +13,25 @@ import { WaitingForAccess } from '@/components/auth/WaitingForAccess';
 import { Plus, Search, Filter, Zap, CheckCircle2 } from 'lucide-react';
 
 export default function TasksPage() {
+  const router = useRouter();
   const { tasks } = usePipeline();
-  const { isPendingAccess, isMediaBuyer } = useAuth();
+  const { currentUser, isPendingAccess, isMediaBuyer } = useAuth();
+
+  // Setup users only access the Setup Queue
+  useEffect(() => {
+    if (currentUser?.role === 'setup') {
+      router.replace('/setup');
+    }
+  }, [currentUser, router]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [selectedTask, setSelectedTask] = useState<WorkTask | null>(null);
   const [isNewActionOpen, setIsNewActionOpen] = useState(false);
+
+  if (currentUser?.role === 'setup') {
+    return null;
+  }
 
   if (isPendingAccess) {
     return <WaitingForAccess />;

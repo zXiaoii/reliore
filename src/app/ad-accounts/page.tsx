@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { usePipeline } from '@/hooks/usePipeline';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
@@ -9,11 +10,22 @@ import { CreditCard, Plus, Layers, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AdAccountsPage() {
+  const router = useRouter();
   const { settings, campaigns, tasks, store } = usePipeline();
-  const { isPendingAccess, isMediaBuyer } = useAuth();
+  const { currentUser, isPendingAccess, isMediaBuyer } = useAuth();
   const { toast } = useToast();
 
+  useEffect(() => {
+    if (currentUser?.role === 'setup') {
+      router.replace('/setup');
+    }
+  }, [currentUser, router]);
+
   const [newAccount, setNewAccount] = useState('');
+
+  if (currentUser?.role === 'setup') {
+    return null;
+  }
 
   if (isPendingAccess) {
     return <WaitingForAccess />;

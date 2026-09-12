@@ -773,6 +773,21 @@ class OperationsStore {
     return () => this.userListeners.delete(listener);
   }
 
+  public addUser(user: TeamUser) {
+    const existingIndex = this.users.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase());
+    if (existingIndex >= 0) {
+      this.users[existingIndex] = { ...this.users[existingIndex], ...user };
+    } else {
+      this.users.push(user);
+    }
+    this.saveUsers();
+    this.notifyAll();
+  }
+
+  public getUsers(): TeamUser[] {
+    return [...this.users];
+  }
+
   // --- ACTIONS BUILDER (§5, §6, §7) ---
   public createActionTask(params: {
     product: string;

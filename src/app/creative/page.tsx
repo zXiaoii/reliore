@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { usePipeline } from '@/hooks/usePipeline';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
@@ -42,9 +43,17 @@ import {
 import { sendSlackCreativeNotification } from '@/lib/slack';
 
 export default function CreativeQueuePage() {
+  const router = useRouter();
   const { tasks, store } = usePipeline();
-  const { isPendingAccess } = useAuth();
+  const { currentUser, isPendingAccess } = useAuth();
   const { toast } = useToast();
+
+  // Setup users only access Setup Queue
+  useEffect(() => {
+    if (currentUser?.role === 'setup') {
+      router.replace('/setup');
+    }
+  }, [currentUser, router]);
 
   const [selectedTask, setSelectedTask] = useState<WorkTask | null>(null);
   const [activeTab, setActiveTab] = useState<'all' | 'owed' | 'delivered'>('all');
@@ -66,6 +75,10 @@ export default function CreativeQueuePage() {
       }
     >
   >({});
+
+  if (currentUser?.role === 'setup') {
+    return null;
+  }
 
   if (isPendingAccess) {
     return <WaitingForAccess />;
