@@ -47,6 +47,7 @@ export default function CreativeQueuePage() {
   const [activeTab, setActiveTab] = useState<'all' | 'owed' | 'delivered'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
+  const [tableDensity, setTableDensity] = useState<'fit' | 'relaxed'>('fit');
   
   // Track expanded rows in table: Set of task IDs
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set(['task-001']));
@@ -624,195 +625,251 @@ export default function CreativeQueuePage() {
           </div>
         ) : (
           <div className="w-full max-w-full min-w-0 space-y-2">
-            <div className="flex items-center justify-between text-[11px] text-zinc-500 dark:text-zinc-400 px-1">
-              <div className="flex items-center gap-1.5 font-medium">
-                <ArrowRightLeft className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
-                <span>Scroll table horizontally for full brief & actions</span>
+            <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-zinc-400 px-1">
+              <div className="flex items-center gap-2">
+                <span className="flex items-center gap-1 text-emerald-400 font-semibold font-mono text-[10px] bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  {tableDensity === 'fit' ? 'FIT TO SCREEN' : 'RELAXED'}
+                </span>
+                <span className="hidden sm:inline text-zinc-500">·</span>
+                <span className="hidden sm:inline text-zinc-400">
+                  {tableDensity === 'fit' ? 'All 13 columns visible without scrolling' : 'Wide columns with horizontal scroll enabled'}
+                </span>
               </div>
-              <span className="font-mono text-[10px] bg-zinc-200/70 dark:bg-zinc-800/80 px-2 py-0.5 rounded text-zinc-600 dark:text-zinc-400 border border-zinc-300 dark:border-zinc-700/60">
-                {filtered.length} tasks
-              </span>
+
+              <div className="flex items-center gap-2">
+                <div className="flex items-center rounded-md bg-black border border-[#262626] p-0.5 text-[10px]">
+                  <button
+                    type="button"
+                    onClick={() => setTableDensity('fit')}
+                    className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                      tableDensity === 'fit'
+                        ? 'bg-[#1e1e1e] text-white border border-[#383838] font-semibold shadow-2xs'
+                        : 'text-zinc-500 hover:text-zinc-300'
+                    }`}
+                    title="Fit all columns to screen without horizontal scrolling"
+                  >
+                    Fit Screen
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTableDensity('relaxed')}
+                    className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                      tableDensity === 'relaxed'
+                        ? 'bg-[#1e1e1e] text-white border border-[#383838] font-semibold shadow-2xs'
+                        : 'text-zinc-500 hover:text-zinc-300'
+                    }`}
+                    title="Relaxed wider columns with horizontal scroll"
+                  >
+                    Relaxed
+                  </button>
+                </div>
+                <span className="font-mono text-[10px] bg-[#121212] px-2 py-0.5 rounded text-zinc-400 border border-[#262626]">
+                  {filtered.length} {filtered.length === 1 ? 'task' : 'tasks'}
+                </span>
+              </div>
             </div>
-            <div className="w-full max-w-full min-w-0 overflow-x-auto overscroll-x-contain touch-pan-x rounded-xl border border-[#222222] bg-[#0a0a0a] shadow-xs custom-scrollbar">
-              <table className="w-full text-left text-xs border-collapse min-w-[1150px]">
-              <thead className="border-b border-[#222222] bg-black font-semibold text-zinc-400 uppercase tracking-wider text-[10px]">
-                <tr>
-                  <th className="py-2.5 px-2 text-center w-8">View</th>
-                  <th className="py-2.5 px-3">Priority</th>
-                  <th className="py-2.5 px-3">Product</th>
-                  <th className="py-2.5 px-2">Mkt</th>
-                  <th className="py-2.5 px-3">Campaign</th>
-                  <th className="py-2.5 px-3">Why (Trigger)</th>
-                  <th className="py-2.5 px-3">Task</th>
-                  <th className="py-2.5 px-3">Winning Hook</th>
-                  <th className="py-2.5 px-2 text-center">Qty</th>
-                  <th className="py-2.5 px-3">Drive Link</th>
-                  <th className="py-2.5 px-3">Deadline</th>
-                  <th className="py-2.5 px-3">Status</th>
-                  <th className="py-2.5 px-3 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#1a1a1a]">
-                {filtered.map((task) => {
-                  const draft = getDraft(task);
-                  const isExpanded = expandedIds.has(task.id);
-                  const isChangesRequired = task.status === 'CHANGES REQUIRED';
-                  const isForReview = task.status === 'FOR REVIEW';
-                  const isApproved = task.status === 'APPROVED' || task.status === 'READY' || task.status === 'LIVE';
 
-                  return (
-                    <React.Fragment key={task.id}>
-                      {/* Summary Row */}
-                      <tr
-                        className={`transition-colors hover:bg-[#141414] ${
-                          isChangesRequired
-                            ? 'bg-rose-950/20'
-                            : isExpanded
-                            ? 'bg-purple-950/15'
-                            : 'bg-[#0a0a0a]'
-                        }`}
-                      >
-                        {/* Expand / Collapse Toggle Chevron */}
-                        <td className="py-3 px-2 text-center">
-                          <button
-                            onClick={() => toggleExpand(task.id)}
-                            className="p-1 rounded hover:bg-[#222] text-zinc-400 hover:text-white transition-colors cursor-pointer"
-                            title={isExpanded ? 'Collapse brief' : 'Expand full brief'}
+            <div className={`w-full max-w-full min-w-0 rounded-xl border border-[#222222] bg-[#0a0a0a] shadow-xs custom-scrollbar ${tableDensity === 'fit' ? 'overflow-x-auto lg:overflow-x-visible' : 'overflow-x-auto overscroll-x-contain'}`}>
+              <table className={`w-full text-left text-xs border-collapse ${tableDensity === 'fit' ? 'w-full' : 'min-w-[1150px]'}`}>
+                <thead className="border-b border-[#222222] bg-black font-semibold text-zinc-400 uppercase tracking-wider text-[10px] sticky top-0">
+                  <tr>
+                    <th className={`${tableDensity === 'fit' ? 'w-[28px] py-2 px-1' : 'py-2.5 px-2'} text-center border-r border-[#1f1f1f]`}>View</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[48px] py-2 px-1' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Priority</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[75px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Product</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[50px] py-2 px-1' : 'py-2.5 px-2'} border-r border-[#1f1f1f]`}>Mkt</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[115px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Campaign</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[95px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Trigger</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[110px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Task</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[110px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Winning Hook</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[32px] py-2 px-1' : 'py-2.5 px-2'} text-center border-r border-[#1f1f1f]`}>Qty</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[105px] py-2 px-1' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Drive Link</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[58px] py-2 px-1' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Deadline</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[75px] py-2 px-1 text-center' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Status</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[78px] py-2 px-1 text-right' : 'py-2.5 px-3 text-right'}`}>Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#1a1a1a]">
+                  {filtered.map((task) => {
+                    const draft = getDraft(task);
+                    const isExpanded = expandedIds.has(task.id);
+                    const isChangesRequired = task.status === 'CHANGES REQUIRED';
+                    const isForReview = task.status === 'FOR REVIEW';
+                    const isApproved = task.status === 'APPROVED' || task.status === 'READY' || task.status === 'LIVE';
+
+                    return (
+                      <React.Fragment key={task.id}>
+                        {/* Summary Row */}
+                        <tr
+                          className={`transition-colors hover:bg-[#141414] ${
+                            isChangesRequired
+                              ? 'bg-rose-950/20'
+                              : isExpanded
+                              ? 'bg-purple-950/15'
+                              : 'bg-[#0a0a0a]'
+                          }`}
+                        >
+                          {/* Expand / Collapse Toggle Chevron */}
+                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-3 px-2'} text-center border-r border-[#1a1a1a]`}>
+                            <button
+                              onClick={() => toggleExpand(task.id)}
+                              className="p-1 rounded hover:bg-[#222] text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                              title={isExpanded ? 'Collapse brief' : 'Expand full brief'}
+                            >
+                              {isExpanded ? (
+                                <ChevronUp className="h-3.5 w-3.5 text-purple-400 font-bold" />
+                              ) : (
+                                <ChevronDown className="h-3.5 w-3.5" />
+                              )}
+                            </button>
+                          </td>
+
+                          {/* Priority */}
+                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-3 px-3'} border-r border-[#1a1a1a] whitespace-nowrap`}>
+                            <PriorityPill priority={task.priority} size="sm" compact={tableDensity === 'fit'} />
+                          </td>
+
+                          {/* Product */}
+                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1.5' : 'py-3 px-3'} border-r border-[#1a1a1a] font-semibold text-white whitespace-nowrap`}>
+                            <span className="truncate block max-w-[75px]" title={task.product}>
+                              {task.product}
+                            </span>
+                          </td>
+
+                          {/* Market */}
+                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-3 px-2'} border-r border-[#1a1a1a] whitespace-nowrap`}>
+                            <MarketBadge market={task.market} size="xs" shortCode={tableDensity === 'fit'} />
+                          </td>
+
+                          {/* Campaign */}
+                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1.5' : 'py-3 px-3'} border-r border-[#1a1a1a] font-mono font-bold text-white whitespace-nowrap`}>
+                            <span className="truncate block max-w-[115px]" title={task.campaign}>
+                              {task.campaign}
+                            </span>
+                          </td>
+
+                          {/* Why / Trigger */}
+                          <td
+                            className={`${tableDensity === 'fit' ? 'py-1.5 px-1.5' : 'py-3 px-3'} border-r border-[#1a1a1a] text-purple-400 font-medium whitespace-nowrap`}
                           >
-                            {isExpanded ? (
-                              <ChevronUp className="h-4 w-4 text-purple-400 font-bold" />
-                            ) : (
-                              <ChevronDown className="h-4 w-4" />
-                            )}
-                          </button>
-                        </td>
+                            <span className="truncate block max-w-[95px]" title={task.reasonTrigger || '+1 Day Trigger'}>
+                              {task.reasonTrigger || '+1 Day Trigger'}
+                            </span>
+                          </td>
 
-                        <td className="py-3 px-3 whitespace-nowrap">
-                          <PriorityPill priority={task.priority} size="sm" />
-                        </td>
+                          {/* Task / Concept */}
+                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1.5' : 'py-3 px-3'} border-r border-[#1a1a1a] font-mono font-bold text-zinc-300 whitespace-nowrap`}>
+                            <span className="truncate block max-w-[110px]" title={task.creativeTypes.join(' + ')}>
+                              {task.creativeTypes.join(' + ')}
+                            </span>
+                          </td>
 
-                        <td className="py-3 px-3 font-semibold text-white whitespace-nowrap">
-                          {task.product}
-                        </td>
+                          {/* Winning Hook */}
+                          <td
+                            className={`${tableDensity === 'fit' ? 'py-1.5 px-1.5' : 'py-3 px-3'} border-r border-[#1a1a1a] font-medium text-zinc-300 whitespace-nowrap`}
+                          >
+                            <span className="truncate block max-w-[110px]" title={task.winningHook || 'Concept angles'}>
+                              {task.winningHook || 'Concept angles'}
+                            </span>
+                          </td>
 
-                        <td className="py-3 px-2 whitespace-nowrap">
-                          <MarketBadge market={task.market} size="xs" />
-                        </td>
+                          {/* Qty */}
+                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-3 px-2'} border-r border-[#1a1a1a] font-mono font-bold text-center text-white`}>
+                            {task.quantity}
+                          </td>
 
-                        <td className="py-3 px-3 font-mono font-bold text-white whitespace-nowrap truncate max-w-[140px]">
-                          {task.campaign}
-                        </td>
+                          {/* Drive Link Input */}
+                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-3 px-3'} border-r border-[#1a1a1a]`}>
+                            <div className="flex items-center gap-1">
+                              <input
+                                type="url"
+                                placeholder="Drive URL..."
+                                value={draft.folderUrl}
+                                onChange={(e) => updateDraft(task.id, 'folderUrl', e.target.value)}
+                                onBlur={() => handleAutoSaveDriveUrl(task)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    e.currentTarget.blur();
+                                  }
+                                }}
+                                className="w-full rounded border border-[#262626] bg-black px-1.5 py-0.5 text-[10px] font-mono text-white placeholder-zinc-500 focus:border-zinc-400 focus:outline-hidden"
+                              />
+                              {draft.folderUrl.trim() && (
+                                <a
+                                  href={draft.folderUrl.trim()}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="p-1 text-blue-400 hover:text-blue-300 shrink-0"
+                                  title="Open Drive folder"
+                                >
+                                  <ExternalLink className="h-3 w-3" />
+                                </a>
+                              )}
+                            </div>
+                          </td>
 
-                        <td
-                          className="py-3 px-3 text-purple-700 dark:text-purple-300 font-medium truncate max-w-[160px]"
-                          title={task.reasonTrigger}
-                        >
-                          {task.reasonTrigger || '+1 Day Trigger'}
-                        </td>
+                          {/* Deadline */}
+                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-3 px-3'} border-r border-[#1a1a1a] font-mono text-[10px] font-bold text-zinc-400 whitespace-nowrap`}>
+                            <span className="truncate block max-w-[58px]" title={task.deadline}>
+                              {task.deadline}
+                            </span>
+                          </td>
 
-                        <td className="py-3 px-3 font-mono font-bold text-zinc-800 dark:text-zinc-200 whitespace-nowrap">
-                          {task.creativeTypes.join(' + ')}
-                        </td>
+                          {/* Status */}
+                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1 text-center' : 'py-3 px-3'} border-r border-[#1a1a1a] whitespace-nowrap`}>
+                            <span
+                              className={`inline-block rounded px-1.5 py-0.5 text-[9px] font-extrabold ${
+                                task.status === 'CHANGES REQUIRED'
+                                  ? 'bg-rose-600/90 text-white'
+                                  : task.status === 'FOR REVIEW'
+                                  ? 'bg-amber-500/90 text-white'
+                                  : task.status === 'APPROVED'
+                                  ? 'bg-emerald-600/90 text-white'
+                                  : task.status === 'MAKING'
+                                  ? 'bg-purple-600/90 text-white'
+                                  : 'bg-[#181818] border border-[#2e2e2e] text-zinc-300'
+                              }`}
+                            >
+                              {task.status === 'FOR REVIEW' ? 'REVIEW' : task.status === 'CHANGES REQUIRED' ? 'CHANGES' : task.status}
+                            </span>
+                          </td>
 
-                        <td
-                          className="py-3 px-3 font-medium text-zinc-700 dark:text-zinc-300 truncate max-w-[180px]"
-                          title={task.winningHook}
-                        >
-                          {task.winningHook || 'Concept angles'}
-                        </td>
-
-                        <td className="py-3 px-2 font-mono font-bold text-center">
-                          {task.quantity}
-                        </td>
-
-                        {/* Drive Link Input: clean, auto-saves on blur or enter */}
-                        <td className="py-3 px-3 min-w-[170px]">
-                          <div className="flex items-center gap-1.5">
-                            <input
-                              type="url"
-                              placeholder="Paste Drive URL..."
-                              value={draft.folderUrl}
-                              onChange={(e) => updateDraft(task.id, 'folderUrl', e.target.value)}
-                              onBlur={() => handleAutoSaveDriveUrl(task)}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                  e.currentTarget.blur();
-                                }
-                              }}
-                              className="w-full rounded border border-zinc-300 bg-white p-1 text-[11px] font-mono text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
-                            />
-                            {draft.folderUrl.trim() && (
-                              <a
-                                href={draft.folderUrl.trim()}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="p-1 text-blue-600 hover:text-blue-800 dark:text-blue-400"
-                                title="Open Drive folder"
+                          {/* Single Clear Action Button */}
+                          <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1 text-right' : 'py-3 px-3 text-right'} whitespace-nowrap`}>
+                            {isChangesRequired ? (
+                              <button
+                                onClick={() => {
+                                  if (!isExpanded) toggleExpand(task.id);
+                                  else handleReDeliver(task);
+                                }}
+                                className="rounded bg-rose-600 hover:bg-rose-500 px-2 py-0.5 text-[10px] font-bold text-white shadow-2xs cursor-pointer"
                               >
-                                <ExternalLink className="h-3 w-3" />
-                              </a>
+                                {isExpanded ? 'Re-Submit' : 'Feedback'}
+                              </button>
+                            ) : isForReview ? (
+                              <button
+                                onClick={() => toggleExpand(task.id)}
+                                className="rounded bg-[#161616] border border-[#2a2a2a] hover:bg-[#202020] px-2 py-0.5 text-[10px] font-bold text-zinc-200 cursor-pointer"
+                              >
+                                {isExpanded ? 'Collapse' : 'Review ▾'}
+                              </button>
+                            ) : isApproved ? (
+                              <button
+                                onClick={() => toggleExpand(task.id)}
+                                className="rounded bg-emerald-950/40 text-emerald-300 border border-emerald-800/80 px-2 py-0.5 text-[10px] font-bold cursor-pointer"
+                              >
+                                {isExpanded ? 'Collapse' : 'Approved'}
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleDeliver(task)}
+                                className="vercel-btn-primary px-2 py-0.5 text-[10px] cursor-pointer"
+                              >
+                                Deliver ({task.quantity})
+                              </button>
                             )}
-                          </div>
-                        </td>
-
-                        <td className="py-3 px-3 font-mono text-[11px] font-bold whitespace-nowrap">
-                          {task.deadline}
-                        </td>
-
-                        <td className="py-3 px-3 whitespace-nowrap">
-                          <span
-                            className={`rounded px-2 py-0.5 text-[10px] font-extrabold ${
-                              task.status === 'CHANGES REQUIRED'
-                                ? 'bg-rose-600 text-white'
-                                : task.status === 'FOR REVIEW'
-                                ? 'bg-amber-500 text-white'
-                                : task.status === 'APPROVED'
-                                ? 'bg-emerald-600 text-white'
-                                : task.status === 'MAKING'
-                                ? 'bg-purple-600 text-white'
-                                : 'bg-zinc-200 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-200'
-                            }`}
-                          >
-                            {task.status === 'FOR REVIEW' ? 'UNDER REVIEW' : task.status}
-                          </span>
-                        </td>
-
-                        {/* SINGLE CLEAR ACTION BUTTON PER ROW */}
-                        <td className="py-3 px-3 text-right whitespace-nowrap">
-                          {isChangesRequired ? (
-                            <button
-                              onClick={() => {
-                                if (!isExpanded) toggleExpand(task.id);
-                                else handleReDeliver(task);
-                              }}
-                              className="rounded bg-rose-600 hover:bg-rose-700 px-3 py-1 text-[11px] font-bold text-white shadow-2xs"
-                            >
-                              {isExpanded ? 'Re-Submit 🚀' : 'View Feedback ▾'}
-                            </button>
-                          ) : isForReview ? (
-                            <button
-                              onClick={() => toggleExpand(task.id)}
-                              className="rounded bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 px-2.5 py-1 text-[11px] font-bold text-zinc-800 dark:text-zinc-200"
-                            >
-                              {isExpanded ? 'Collapse ▴' : 'View / Edit Brief ▾'}
-                            </button>
-                          ) : isApproved ? (
-                            <button
-                              onClick={() => toggleExpand(task.id)}
-                              className="rounded bg-emerald-50 text-emerald-700 border border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800 px-2.5 py-1 text-[11px] font-bold"
-                            >
-                              {isExpanded ? 'Collapse ▴' : 'Approved (Karl) ▾'}
-                            </button>
-                          ) : (
-                            <button
-                              onClick={() => handleDeliver(task)}
-                              className="rounded bg-purple-600 hover:bg-purple-700 px-3 py-1 text-[11px] font-bold text-white shadow-2xs"
-                            >
-                              Deliver ({task.quantity}) 🚀
-                            </button>
-                          )}
-                        </td>
-                      </tr>
+                          </td>
+                        </tr>
 
                       {/* IN-PLACE EXPANDED WORKSPACE ACCORDION */}
                       {isExpanded && (

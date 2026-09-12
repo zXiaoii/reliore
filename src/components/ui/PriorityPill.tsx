@@ -6,9 +6,10 @@ import { Flame, Clock, Box } from 'lucide-react';
 interface PriorityPillProps {
   priority: Priority;
   size?: 'sm' | 'md' | 'lg';
+  compact?: boolean;
 }
 
-export const PriorityPill: React.FC<PriorityPillProps> = ({ priority, size = 'md' }) => {
+export const PriorityPill: React.FC<PriorityPillProps> = ({ priority, size = 'md', compact = false }) => {
   const meta = getPriorityMeta(priority);
 
   const sizeClasses =
@@ -20,12 +21,13 @@ export const PriorityPill: React.FC<PriorityPillProps> = ({ priority, size = 'md
 
   return (
     <span
-      className={`inline-flex items-center justify-center gap-1 rounded font-mono uppercase tracking-wide ${meta.badgeClass} ${sizeClasses}`}
+      title={meta.label}
+      className={`inline-flex items-center justify-center gap-1 rounded font-mono uppercase tracking-wide shrink-0 ${meta.badgeClass} ${sizeClasses}`}
     >
       {meta.iconType === 'flame' && <Flame className="h-3 w-3 fill-white" />}
       {meta.iconType === 'clock' && <Clock className="h-3 w-3" />}
       {meta.iconType === 'box' && <Box className="h-3 w-3" />}
-      <span>{meta.label}</span>
+      <span>{compact ? priority : meta.label}</span>
     </span>
   );
 };
