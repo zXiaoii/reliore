@@ -38,7 +38,15 @@ body {
 }
 
 .vercel-btn-primary {
-  @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 bg-zinc-900 text-zinc-50 shadow hover:bg-zinc-900/90 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-50/90;
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #ffffff;
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  cursor: pointer;
 }
 
 .vercel-btn-primary:hover {
@@ -46,12 +54,20 @@ body {
 }
 
 .vercel-btn-secondary {
-  @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 border border-zinc-200 bg-white shadow-sm hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-800 dark:hover:text-zinc-50;
+  background-color: #0a0a0a;
+  color: #a1a1aa;
+  border: 1px solid #262626;
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  cursor: pointer;
 }
 
 .vercel-btn-secondary:hover {
-  background-color: #1a1a1a;
-  border-color: #333333;
+  background-color: #141414;
+  border-color: #383838;
   color: #ffffff;
 }
 
