@@ -127,26 +127,26 @@ export const NewActionModal: React.FC<NewActionModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-3 sm:p-4 backdrop-blur-xs">
-      <div className="relative w-full max-w-2xl rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-900 max-h-[92vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-3 sm:p-4 backdrop-blur-xs">
+      <div className="relative w-full max-w-2xl rounded-xl border border-[#222222] bg-[#0a0a0a] p-4 sm:p-6 shadow-2xl max-h-[92vh] overflow-y-auto text-[#ededed] custom-scrollbar">
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-zinc-200 pb-4 dark:border-zinc-800">
+        <div className="flex items-center justify-between border-b border-[#1f1f1f] pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-xs">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-black shadow-xs">
               <Zap className="h-4 w-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-zinc-900 dark:text-white">
+              <h2 className="text-base font-bold text-white">
                 + New Action Task
               </h2>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-zinc-400">
                 Media Buyer (Charles): Rapid task creator for campaigns, ad sets, and creative batches.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+            className="rounded-lg p-1 text-zinc-400 hover:bg-[#1f1f1f] hover:text-white cursor-pointer transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
@@ -155,17 +155,17 @@ export const NewActionModal: React.FC<NewActionModalProps> = ({
         <form onSubmit={handleSubmit} className="mt-4 space-y-4 text-xs">
           {/* Action Selector (§7) */}
           <div>
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300 mb-1.5">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5 font-mono">
               1. Choose Action Type
             </label>
             <select
               value={action}
               onChange={(e) => setAction(e.target.value as CampaignAction)}
               style={{ colorScheme: 'dark' }}
-              className="w-full rounded-lg border border-zinc-300 bg-white p-2 text-xs font-bold text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white [color-scheme:dark]"
+              className="w-full rounded-md border border-[#262626] bg-black p-2 text-xs font-semibold text-white focus:border-zinc-500 focus:outline-hidden [color-scheme:dark]"
             >
               {settings.campaignActions.map((act) => (
-                <option key={act} value={act} className="bg-zinc-900 text-zinc-100 py-1">
+                <option key={act} value={act} className="bg-black text-white py-1">
                   {act}
                 </option>
               ))}
@@ -456,20 +456,20 @@ export const NewActionModal: React.FC<NewActionModalProps> = ({
           </div>
 
           {/* Modal Actions */}
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-zinc-200 dark:border-zinc-800">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#1f1f1f]">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg px-4 py-2 text-xs font-semibold text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              className="vercel-btn-secondary cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex items-center gap-1.5 rounded-lg bg-zinc-900 px-4 py-2 text-xs font-bold text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 shadow-sm"
+              className="vercel-btn-primary flex items-center gap-1.5 cursor-pointer"
             >
-              <Send className="h-3.5 w-3.5" />
-              <span>Create Action & Assign Task</span>
+              <Send className="h-3.5 w-3.5 text-black" />
+              <span>Create Action &amp; Assign Task</span>
             </button>
           </div>
         </form>

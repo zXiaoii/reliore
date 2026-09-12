@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #ededed;
+  --card-bg: #0a0a0a;
+  --card-border: #222222;
+  --card-hover: #333333;
 }
 
 @theme inline {
@@ -12,21 +15,85 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro", "Inter", -system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  letter-spacing: -0.011em;
+  letter-spacing: -0.012em;
   overflow-x: hidden;
+}
+
+/* Vercel Design System Tokens & Utilities */
+.vercel-card {
+  background-color: #0a0a0a;
+  border: 1px solid #222222;
+  border-radius: 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.vercel-card:hover {
+  border-color: #383838;
+}
+
+.vercel-btn-primary {
+  background-color: #ffffff;
+  color: #000000;
+  font-weight: 600;
+  font-size: 12px;
+  border-radius: 6px;
+  padding: 6px 14px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.vercel-btn-primary:hover {
+  background-color: #e6e6e6;
+}
+
+.vercel-btn-secondary {
+  background-color: #111111;
+  color: #ededed;
+  border: 1px solid #262626;
+  font-weight: 600;
+  font-size: 12px;
+  border-radius: 6px;
+  padding: 6px 12px;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.vercel-btn-secondary:hover {
+  background-color: #1a1a1a;
+  border-color: #333333;
+  color: #ffffff;
+}
+
+.vercel-input {
+  background-color: #000000;
+  border: 1px solid #262626;
+  color: #ffffff;
+  font-size: 12px;
+  border-radius: 6px;
+  transition: border-color 0.15s ease, ring 0.15s ease;
+}
+
+.vercel-input:focus {
+  outline: none;
+  border-color: #666666;
+  box-shadow: 0 0 0 1px #666666;
+}
+
+.vercel-kbd {
+  border: 1px solid #2a2a2a;
+  background-color: #141414;
+  color: #888888;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 4px;
+  line-height: 1.2;
 }
 
 /* Fix Windows / Chrome dark mode select dropdown background & text */
@@ -35,30 +102,16 @@ select {
 }
 
 select option {
-  background-color: #18181b !important;
-  color: #f4f4f5 !important;
+  background-color: #121212 !important;
+  color: #ededed !important;
   padding: 8px 12px;
   font-weight: 500;
 }
 
-/* iOS Frosted Glass & Surface Styling */
-.ios-glass {
-  background: rgba(18, 18, 20, 0.78);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-.ios-card {
-  background: rgba(24, 24, 27, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* Custom sleek modern horizontal scrollbar for data tables */
+/* Custom sleek modern horizontal scrollbar */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(161, 161, 170, 0.4) transparent;
+  scrollbar-color: #333333 transparent;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -68,17 +121,16 @@ select option {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(24, 24, 27, 0.3);
+  background: rgba(10, 10, 10, 0.4);
   border-radius: 9999px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(161, 161, 170, 0.4);
+  background: #333333;
   border-radius: 9999px;
   transition: background-color 0.2s;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(161, 161, 170, 0.7);
+  background: #555555;
 }
-

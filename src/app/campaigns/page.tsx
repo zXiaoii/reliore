@@ -26,6 +26,7 @@ import {
   X,
   RotateCcw,
   Globe2,
+  SlidersHorizontal,
 } from 'lucide-react';
 
 export default function CampaignsPage() {
@@ -189,20 +190,20 @@ export default function CampaignsPage() {
   ).length;
 
   return (
-    <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans pb-16">
-      {/* Top Header */}
-      <div className="border-b border-zinc-200 bg-white px-4 py-4 dark:border-zinc-800 dark:bg-zinc-900 sm:px-6 shadow-2xs">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div className="flex flex-col min-h-screen bg-black text-[#ededed] font-sans pb-16">
+      {/* Top Header - Vercel Clean Aesthetic */}
+      <div className="border-b border-[#1f1f1f] bg-black px-4 py-5 sm:px-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 max-w-7xl mx-auto w-full">
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-xl font-bold tracking-tight text-white">
                 Campaigns Directory
               </h1>
-              <span className="rounded-md bg-blue-100 dark:bg-blue-950 px-2 py-0.5 text-xs font-semibold text-blue-700 dark:text-blue-300 font-mono">
-                {filteredCampaigns.length} {filteredCampaigns.length === 1 ? 'Campaign' : 'Campaigns'} ({liveCount} Live)
+              <span className="rounded-md bg-[#121212] border border-[#262626] px-2 py-0.5 text-xs font-semibold text-zinc-300 font-mono">
+                {filteredCampaigns.length} {filteredCampaigns.length === 1 ? 'Project' : 'Projects'} ({liveCount} Live)
               </span>
             </div>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            <p className="text-xs text-zinc-400 mt-1">
               Manage campaign lifecycles, ad sets, chronological activity history, and scaling actions.
             </p>
           </div>
@@ -213,32 +214,32 @@ export default function CampaignsPage() {
                 setNewActionDefault({ action: 'LAUNCH NEW CBO', campaign: '' });
                 setIsNewActionOpen(true);
               }}
-              className="flex items-center gap-1.5 rounded-lg bg-zinc-900 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 transition-colors self-start sm:self-auto"
+              className="vercel-btn-primary flex items-center gap-1.5 shrink-0 self-start sm:self-auto cursor-pointer"
             >
-              <Plus className="h-4 w-4" />
-              <span>+ LAUNCH NEW CBO</span>
+              <Plus className="h-3.5 w-3.5 text-black" />
+              <span>+ Launch New CBO</span>
             </button>
           )}
         </div>
 
-        {/* 1. Market Tabs Selector (§ Optimized UI) */}
-        <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800">
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1">
-              <Globe2 className="w-3 h-3" />
-              <span>Filter by Market:</span>
+        {/* 1. Market Tabs Selector (Vercel Segmented Control) */}
+        <div className="mt-5 pt-4 border-t border-[#1a1a1a] max-w-7xl mx-auto w-full">
+          <div className="flex items-center justify-between gap-2 mb-2.5">
+            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5 font-mono">
+              <Globe2 className="w-3 h-3 text-zinc-400" />
+              <span>Filter by Market</span>
             </span>
             {marketFilter !== 'ALL' && (
               <button
                 onClick={() => handleMarketChange('ALL')}
-                className="text-[11px] text-blue-600 dark:text-blue-400 hover:underline font-semibold"
+                className="text-[11px] text-zinc-400 hover:text-white hover:underline font-medium"
               >
-                Show All Markets
+                Reset to All Markets
               </button>
             )}
           </div>
 
-          <div className="flex items-center gap-2 overflow-x-auto pb-1.5 no-scrollbar flex-nowrap sm:flex-wrap">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar flex-nowrap sm:flex-wrap">
             {marketsList.map((m) => {
               const isSelected = marketFilter === m.code;
               const count = marketCounts[m.code] || 0;
@@ -247,10 +248,10 @@ export default function CampaignsPage() {
                 <button
                   key={m.code}
                   onClick={() => handleMarketChange(m.code)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 border ${
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all shrink-0 border cursor-pointer ${
                     isSelected
-                      ? 'bg-zinc-900 text-white border-zinc-900 shadow-xs dark:bg-white dark:text-zinc-900 dark:border-white ring-2 ring-zinc-900/10 dark:ring-white/20'
-                      : 'bg-zinc-100/80 text-zinc-700 border-zinc-200 hover:bg-zinc-200/80 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700 dark:hover:bg-zinc-750'
+                      ? 'bg-[#181818] text-white border-[#383838] shadow-xs'
+                      : 'bg-black text-zinc-400 border-[#222222] hover:text-white hover:border-[#333333] hover:bg-white/[0.03]'
                   }`}
                 >
                   {m.code !== 'ALL' ? (
@@ -260,10 +261,10 @@ export default function CampaignsPage() {
                   )}
                   <span>{m.label}</span>
                   <span
-                    className={`ml-0.5 rounded-full px-1.5 py-0.2 text-[10px] font-mono font-bold ${
+                    className={`ml-0.5 rounded-full px-1.5 py-0.2 text-[10px] font-mono font-semibold ${
                       isSelected
-                        ? 'bg-zinc-750 text-white dark:bg-zinc-200 dark:text-zinc-900'
-                        : 'bg-zinc-200/90 text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300'
+                        ? 'bg-[#2a2a2a] text-zinc-200'
+                        : 'bg-[#141414] text-zinc-500'
                     }`}
                   >
                     {count}
@@ -274,22 +275,34 @@ export default function CampaignsPage() {
           </div>
         </div>
 
-        {/* 2. Secondary Filter Bar: Ad Account, Status & Search */}
-        <div className="mt-2.5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 pt-2.5 border-t border-zinc-100 dark:border-zinc-800 text-xs">
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        {/* 2. Secondary Filter Bar: Search [/], Account Dropdown & Status Pills */}
+        <div className="mt-3 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 pt-3 border-t border-[#1a1a1a] text-xs max-w-7xl mx-auto w-full">
+          {/* Vercel Search Box with / Keyboard Badge */}
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-zinc-500" />
+            <input
+              type="text"
+              placeholder="Search campaigns, products, accounts..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full rounded-md border border-[#262626] bg-black py-1.5 pl-8 pr-8 text-xs text-white placeholder-zinc-500 focus:border-zinc-500 focus:outline-hidden transition-colors shadow-inner"
+            />
+            <span className="absolute right-2.5 top-2 vercel-kbd">/</span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
             {/* Ad Account Dropdown Filter */}
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider shrink-0 flex items-center gap-1">
-                <CreditCard className="w-3 h-3 text-zinc-400" />
-                <span>Account:</span>
+              <span className="text-[10px] font-mono uppercase text-zinc-500 font-bold shrink-0">
+                Account:
               </span>
               <select
                 value={adAccountFilter}
                 onChange={(e) => setAdAccountFilter(e.target.value)}
                 style={{ colorScheme: 'dark' }}
-                className="rounded-md border border-zinc-300 bg-white py-1 px-2 text-xs font-mono font-bold text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white [color-scheme:dark] shadow-2xs focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                className="rounded-md border border-[#262626] bg-[#0a0a0a] py-1.5 px-2.5 text-xs font-mono font-semibold text-white focus:border-zinc-500 focus:outline-hidden cursor-pointer shadow-xs"
               >
-                <option value="ALL" className="bg-zinc-900 text-zinc-100">
+                <option value="ALL" className="bg-[#121212] text-white">
                   All Accounts ({relevantAccounts.length})
                 </option>
                 {relevantAccounts.map((acc) => {
@@ -297,7 +310,7 @@ export default function CampaignsPage() {
                   const accM = accountMarketMap[acc];
                   const mLabel = accM ? ` · ${getMarketLabel(accM)}` : '';
                   return (
-                    <option key={acc} value={acc} className="bg-zinc-900 text-zinc-100">
+                    <option key={acc} value={acc} className="bg-[#121212] text-white">
                       {acc} ({count} camp{count === 1 ? '' : 's'}){mLabel}
                     </option>
                   );
@@ -306,18 +319,15 @@ export default function CampaignsPage() {
             </div>
 
             {/* Status Pills */}
-            <div className="flex items-center gap-1 overflow-x-auto pb-0.5">
-              <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider shrink-0 mr-1">
-                Status:
-              </span>
+            <div className="flex items-center gap-0.5 bg-[#0a0a0a] p-0.5 rounded-md border border-[#222222]">
               {['ALL', 'LIVE', 'SCALE', 'WATCH', 'PAUSE', 'KILL'].map((st) => (
                 <button
                   key={st}
                   onClick={() => setStatusFilter(st)}
-                  className={`px-2 py-0.5 rounded text-[11px] font-bold transition-colors ${
+                  className={`px-2 py-1 rounded text-[10px] font-bold font-mono transition-colors cursor-pointer ${
                     statusFilter === st
-                      ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
-                      : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'
+                      ? 'bg-white text-black shadow-xs'
+                      : 'text-zinc-400 hover:text-white'
                   }`}
                 >
                   {st}
@@ -325,32 +335,20 @@ export default function CampaignsPage() {
               ))}
             </div>
           </div>
-
-          {/* Search Box */}
-          <div className="relative flex-1 max-w-xs">
-            <Search className="absolute left-2.5 top-2 h-3.5 w-3.5 text-zinc-400" />
-            <input
-              type="text"
-              placeholder="Search campaign, product, account..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 bg-white py-1 pl-8 pr-3 text-xs text-zinc-900 placeholder:text-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white shadow-2xs"
-            />
-          </div>
         </div>
 
         {/* 3. Quick Ad Account Pills (when a market is selected) */}
         {marketFilter !== 'ALL' && relevantAccounts.length > 0 && (
-          <div className="mt-2 flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
-            <span className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider shrink-0">
-              Quick Accounts ({getMarketLabel(marketFilter)}):
+          <div className="mt-3 flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs max-w-7xl mx-auto w-full">
+            <span className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider shrink-0">
+              Accounts ({getMarketLabel(marketFilter)}):
             </span>
             <button
               onClick={() => setAdAccountFilter('ALL')}
-              className={`px-2 py-0.5 rounded text-[11px] font-mono font-semibold transition-colors shrink-0 ${
+              className={`px-2 py-0.5 rounded text-[11px] font-mono font-medium transition-colors shrink-0 ${
                 adAccountFilter === 'ALL'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400'
+                  ? 'bg-white text-black font-semibold'
+                  : 'bg-[#121212] border border-[#222] text-zinc-400 hover:text-white'
               }`}
             >
               All
@@ -361,13 +359,13 @@ export default function CampaignsPage() {
                 <button
                   key={acc}
                   onClick={() => setAdAccountFilter(acc)}
-                  className={`px-2 py-0.5 rounded text-[11px] font-mono font-bold transition-colors shrink-0 border ${
+                  className={`px-2 py-0.5 rounded text-[11px] font-mono font-medium transition-colors shrink-0 border cursor-pointer ${
                     adAccountFilter === acc
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
-                      : 'bg-white text-zinc-700 border-zinc-200 hover:border-zinc-300 dark:bg-zinc-900 dark:text-zinc-300 dark:border-zinc-700'
+                      ? 'bg-white text-black border-white font-semibold'
+                      : 'bg-[#0e0e0e] text-zinc-400 border-[#222222] hover:border-[#333] hover:text-white'
                   }`}
                 >
-                  {acc} <span className="opacity-75 font-normal">({count})</span>
+                  {acc} <span className="opacity-60 text-[10px]">({count})</span>
                 </button>
               );
             })}
@@ -376,44 +374,44 @@ export default function CampaignsPage() {
 
         {/* 4. Active Filters Bar with Reset */}
         {isAnyFilterActive && (
-          <div className="mt-2.5 pt-2 border-t border-zinc-100 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="mt-3 pt-2.5 border-t border-[#1a1a1a] flex flex-wrap items-center justify-between gap-2 text-xs max-w-7xl mx-auto w-full">
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
-                Active Filters:
+              <span className="text-[10px] font-mono uppercase text-zinc-500 font-bold">
+                Active:
               </span>
 
               {marketFilter !== 'ALL' && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 text-[11px] font-semibold border border-blue-200 dark:border-blue-900">
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#121212] text-zinc-300 text-[11px] font-medium border border-[#2a2a2a]">
                   <MarketFlagIcon market={marketFilter} className="w-3.5 h-2 rounded-2xs" />
                   <span>Market: {getMarketLabel(marketFilter)}</span>
-                  <button onClick={() => handleMarketChange('ALL')} className="hover:opacity-75">
+                  <button onClick={() => handleMarketChange('ALL')} className="text-zinc-500 hover:text-white cursor-pointer">
                     <X className="w-3 h-3 ml-0.5" />
                   </button>
                 </span>
               )}
 
               {adAccountFilter !== 'ALL' && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 dark:bg-teal-950/60 dark:text-teal-300 text-[11px] font-semibold border border-teal-200 dark:border-teal-900 font-mono">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#121212] text-zinc-300 text-[11px] font-mono border border-[#2a2a2a]">
                   <span>Account: {adAccountFilter}</span>
-                  <button onClick={() => setAdAccountFilter('ALL')} className="hover:opacity-75">
+                  <button onClick={() => setAdAccountFilter('ALL')} className="text-zinc-500 hover:text-white cursor-pointer">
                     <X className="w-3 h-3 ml-0.5" />
                   </button>
                 </span>
               )}
 
               {statusFilter !== 'ALL' && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 text-[11px] font-semibold border border-purple-200 dark:border-purple-900">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#121212] text-zinc-300 text-[11px] font-mono border border-[#2a2a2a]">
                   <span>Status: {statusFilter}</span>
-                  <button onClick={() => setStatusFilter('ALL')} className="hover:opacity-75">
+                  <button onClick={() => setStatusFilter('ALL')} className="text-zinc-500 hover:text-white cursor-pointer">
                     <X className="w-3 h-3 ml-0.5" />
                   </button>
                 </span>
               )}
 
               {searchQuery.trim() && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 text-[11px] font-semibold border border-zinc-200 dark:border-zinc-700">
-                  <span>Search: &quot;{searchQuery}&quot;</span>
-                  <button onClick={() => setSearchQuery('')} className="hover:opacity-75">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#121212] text-zinc-300 text-[11px] border border-[#2a2a2a]">
+                  <span>&quot;{searchQuery}&quot;</span>
+                  <button onClick={() => setSearchQuery('')} className="text-zinc-500 hover:text-white cursor-pointer">
                     <X className="w-3 h-3 ml-0.5" />
                   </button>
                 </span>
@@ -422,36 +420,36 @@ export default function CampaignsPage() {
 
             <button
               onClick={handleResetFilters}
-              className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-600 hover:text-rose-700 dark:text-rose-400 hover:underline cursor-pointer"
+              className="inline-flex items-center gap-1 text-[11px] font-medium text-zinc-400 hover:text-white transition-colors cursor-pointer"
             >
               <RotateCcw className="w-3 h-3" />
-              <span>Reset All Filters</span>
+              <span>Clear filters</span>
             </button>
           </div>
         )}
       </div>
 
-      {/* Campaigns Grid */}
-      <div className="flex-1 p-4 sm:p-6 max-w-7xl w-full">
+      {/* Campaigns Grid - Vercel Project Cards */}
+      <div className="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full">
         {filteredCampaigns.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 mt-4">
-            <Layers className="w-10 h-10 text-zinc-400 mb-2" />
-            <h3 className="text-base font-bold text-zinc-800 dark:text-zinc-200">
-              No campaigns match your active filters
+          <div className="flex flex-col items-center justify-center p-16 text-center rounded-xl border border-dashed border-[#262626] bg-[#0a0a0a]">
+            <Layers className="w-8 h-8 text-zinc-600 mb-2" />
+            <h3 className="text-sm font-semibold text-white">
+              No matching campaigns found
             </h3>
-            <p className="text-xs text-zinc-500 mt-1 max-w-md">
-              Try changing your market, ad account, status, or search keywords to see more results.
+            <p className="text-xs text-zinc-500 mt-1 max-w-sm">
+              Try adjusting your market, account, or status filters.
             </p>
             <button
               onClick={handleResetFilters}
-              className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 text-xs font-bold shadow-xs hover:opacity-90 transition-opacity"
+              className="mt-4 vercel-btn-secondary inline-flex items-center gap-1.5 cursor-pointer"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Reset All Filters</span>
+              <RotateCcw className="w-3 h-3 text-zinc-400" />
+              <span>Reset Filters</span>
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4.5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredCampaigns.map((camp) => {
               if (!camp) return null;
               const campAdSets = safeAdSets.filter((a) => a && a.campaignName === camp.name);
@@ -460,67 +458,68 @@ export default function CampaignsPage() {
               return (
                 <div
                   key={camp.id}
-                  className="flex flex-col justify-between rounded-xl border border-zinc-200 bg-white p-4.5 shadow-2xs transition-all hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-900"
+                  className="vercel-card p-5 flex flex-col justify-between group"
                 >
                   <div>
-                    {/* Header: Market Badge + Product & Status Pill */}
-                    <div className="flex items-center justify-between gap-2 border-b border-zinc-100 pb-2.5 dark:border-zinc-800 mb-2.5">
+                    {/* Header: Market Badge + Product & Minimal Status */}
+                    <div className="flex items-center justify-between gap-2 border-b border-[#1f1f1f] pb-3 mb-3">
                       <div className="flex items-center gap-2 min-w-0">
                         <MarketBadge market={camp.market} size="sm" />
-                        <span className="font-bold text-xs text-zinc-800 dark:text-zinc-200 truncate">
+                        <span className="font-semibold text-xs text-zinc-300 truncate">
                           {camp.product || 'Product'}
                         </span>
                       </div>
 
                       <span
-                        className={`rounded px-2 py-0.5 text-[10px] font-extrabold shrink-0 shadow-2xs ${
+                        className={`rounded px-2 py-0.5 text-[10px] font-mono font-bold shrink-0 border ${
                           camp.status === 'SCALE'
-                            ? 'bg-emerald-600 text-white'
+                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25'
                             : camp.status === 'LIVE'
-                            ? 'bg-blue-600 text-white'
+                            ? 'bg-blue-500/10 text-blue-400 border-blue-500/25'
                             : camp.status === 'WATCH'
-                            ? 'bg-amber-500 text-white'
-                            : 'bg-rose-600 text-white'
+                            ? 'bg-amber-500/10 text-amber-400 border-amber-500/25'
+                            : 'bg-rose-500/10 text-rose-400 border-rose-500/25'
                         }`}
                       >
                         {camp.status || 'LIVE'}
                       </span>
                     </div>
 
-                    <h3 className="font-mono text-base font-extrabold text-zinc-900 dark:text-white truncate">
+                    {/* Campaign Title */}
+                    <h3 className="font-mono text-base font-bold text-white tracking-tight truncate group-hover:text-blue-400 transition-colors">
                       {camp.name || 'Untitled Campaign'}
                     </h3>
 
-                    {/* Metadata Grid */}
-                    <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] font-mono rounded-lg bg-zinc-50 dark:bg-zinc-800/60 p-2.5 border border-zinc-100 dark:border-zinc-800">
+                    {/* Vercel-Style Metadata Grid */}
+                    <div className="mt-3.5 grid grid-cols-2 gap-2 text-[11px] font-mono rounded-lg bg-black/60 p-3 border border-[#1f1f1f]">
                       <div>
-                        <span className="text-zinc-400 text-[10px] block uppercase">Account</span>
+                        <span className="text-zinc-500 text-[10px] block uppercase font-bold">Account</span>
                         <button
                           type="button"
                           onClick={() => camp.adAccount && setAdAccountFilter(camp.adAccount)}
                           title={`Filter by account ${camp.adAccount}`}
-                          className="font-bold text-zinc-800 dark:text-zinc-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors inline-flex items-center gap-1 group text-left"
+                          className="font-semibold text-zinc-200 hover:text-white transition-colors inline-flex items-center gap-1 group/acc text-left cursor-pointer"
                         >
                           <span>{camp.adAccount || '—'}</span>
-                          <Filter className="w-2.5 h-2.5 opacity-0 group-hover:opacity-100 text-blue-500 transition-opacity" />
+                          <Filter className="w-2.5 h-2.5 opacity-0 group-hover/acc:opacity-100 text-zinc-400 transition-opacity" />
                         </button>
                       </div>
 
                       <div>
-                        <span className="text-zinc-400 text-[10px] block uppercase">Ad Sets</span>
-                        <span className="font-bold text-teal-700 dark:text-teal-300">
+                        <span className="text-zinc-500 text-[10px] block uppercase font-bold">Ad Sets</span>
+                        <span className="font-semibold text-teal-400">
                           {campAdSets.length} live sets
                         </span>
                       </div>
 
                       <div>
-                        <span className="text-zinc-400 text-[10px] block uppercase">Launch Date</span>
-                        <span className="font-bold text-zinc-800 dark:text-zinc-200">{camp.launchDate || '—'}</span>
+                        <span className="text-zinc-500 text-[10px] block uppercase font-bold">Launch Date</span>
+                        <span className="font-semibold text-zinc-300">{camp.launchDate || '—'}</span>
                       </div>
 
                       <div>
-                        <span className="text-zinc-400 text-[10px] block uppercase">Stage</span>
-                        <span className="font-bold text-blue-600 dark:text-blue-400 truncate block">
+                        <span className="text-zinc-500 text-[10px] block uppercase font-bold">Stage</span>
+                        <span className="font-semibold text-blue-400 truncate block">
                           {camp.stage || 'Scale Phase'}
                         </span>
                       </div>
@@ -528,17 +527,17 @@ export default function CampaignsPage() {
                   </div>
 
                   {/* Card Footer */}
-                  <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between gap-2">
+                  <div className="mt-5 pt-3.5 border-t border-[#1f1f1f] flex items-center justify-between gap-2">
                     <span className="text-[11px] text-zinc-500 font-mono">
-                      {historyCount} event history
+                      {historyCount} event{historyCount === 1 ? '' : 's'}
                     </span>
 
                     <button
                       onClick={() => setSelectedCampaign(camp)}
-                      className="flex items-center gap-1 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-bold text-white shadow-2xs hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 transition-colors"
+                      className="vercel-btn-secondary flex items-center gap-1.5 cursor-pointer hover:border-zinc-500"
                     >
                       <span>Open Campaign</span>
-                      <ExternalLink className="h-3 w-3" />
+                      <ExternalLink className="h-3 w-3 text-zinc-400" />
                     </button>
                   </div>
                 </div>

@@ -42,19 +42,19 @@ export default function TasksPage() {
   const sorted = sortTasks(filtered);
 
   return (
-    <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans">
-      <div className="border-b border-zinc-200 bg-white px-4 py-4 dark:border-zinc-800 dark:bg-zinc-900 sm:px-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div className="flex flex-col min-h-screen bg-black text-[#ededed] font-sans">
+      <div className="border-b border-[#1f1f1f] bg-black px-4 py-5 sm:px-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 max-w-7xl mx-auto w-full">
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
+              <h1 className="text-xl font-bold tracking-tight text-white">
                 All Operations Tasks
               </h1>
-              <span className="rounded-md bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 text-xs font-mono font-bold text-zinc-700 dark:text-zinc-300">
+              <span className="rounded-md bg-[#121212] border border-[#262626] px-2 py-0.5 text-xs font-mono font-semibold text-zinc-300">
                 {tasks.length} total tasks
               </span>
             </div>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            <p className="text-xs text-zinc-400 mt-1">
               Comprehensive list of all active, pending, and live media buying operational tasks.
             </p>
           </div>
@@ -62,26 +62,26 @@ export default function TasksPage() {
           {isMediaBuyer && (
             <button
               onClick={() => setIsNewActionOpen(true)}
-              className="flex items-center gap-1.5 rounded-lg bg-zinc-900 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 transition-colors self-start sm:self-auto"
+              className="vercel-btn-primary flex items-center gap-1.5 cursor-pointer self-start sm:self-auto"
             >
-              <Plus className="h-4 w-4" />
-              <span>+ NEW ACTION</span>
+              <Plus className="h-3.5 w-3.5 text-black" />
+              <span>+ New Action</span>
             </button>
           )}
         </div>
 
         {/* Filter bar */}
-        <div className="mt-3.5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 border-t border-zinc-200 pt-3 dark:border-zinc-800 text-xs">
+        <div className="mt-4 pt-3 border-t border-[#1a1a1a] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs max-w-7xl mx-auto w-full">
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Status:</span>
+            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider font-mono">Status:</span>
             {['ALL', 'QUEUE', 'MAKING', 'FOR REVIEW', 'READY', 'LIVE', 'CHANGES REQUIRED', 'BLOCKED'].map((st) => (
               <button
                 key={st}
                 onClick={() => setStatusFilter(st)}
-                className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
+                className={`px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer border ${
                   statusFilter === st
-                    ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
-                    : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400'
+                    ? 'bg-[#181818] text-white border-[#383838] font-bold shadow-xs'
+                    : 'bg-black text-zinc-400 border-[#222222] hover:text-white hover:border-[#333]'
                 }`}
               >
                 {st}
@@ -89,63 +89,68 @@ export default function TasksPage() {
             ))}
           </div>
 
-          <div className="relative">
-            <Search className="absolute left-2.5 top-2 h-3.5 w-3.5 text-zinc-400" />
+          <div className="relative flex-1 sm:w-64">
+            <Search className="absolute left-3 top-2 h-3.5 w-3.5 text-zinc-500" />
             <input
               type="text"
               placeholder="Search tasks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full sm:w-64 rounded-md border border-zinc-300 bg-white py-1 pl-8 pr-3 text-xs text-zinc-900 placeholder:text-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+              className="w-full rounded-md border border-[#262626] bg-black py-1.5 pl-8 pr-8 text-xs text-white placeholder-zinc-500 focus:border-zinc-500 focus:outline-hidden transition-colors"
             />
+            <span className="absolute right-2 top-2 vercel-kbd">/</span>
           </div>
         </div>
       </div>
 
       {/* Table */}
-      <div className="flex-1 p-3 sm:p-6 overflow-x-auto max-w-full">
-        <div className="rounded-xl border border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900 overflow-hidden">
+      <div className="flex-1 p-4 sm:p-8 overflow-x-auto max-w-7xl mx-auto w-full">
+        <div className="rounded-xl border border-[#222222] bg-[#0a0a0a] shadow-xs overflow-hidden custom-scrollbar">
           <table className="w-full text-left text-xs border-collapse min-w-[950px]">
-            <thead className="border-b border-zinc-200 bg-zinc-100/80 dark:border-zinc-800 dark:bg-zinc-800/80 font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-wider text-[10px]">
+            <thead className="border-b border-[#222222] bg-black font-semibold text-zinc-400 uppercase tracking-wider text-[10px]">
               <tr>
-                <th className="py-2.5 px-3">Task #</th>
-                <th className="py-2.5 px-3">Priority</th>
-                <th className="py-2.5 px-3">Product</th>
-                <th className="py-2.5 px-3">Campaign</th>
-                <th className="py-2.5 px-3">Action</th>
-                <th className="py-2.5 px-3">Owner</th>
-                <th className="py-2.5 px-3">Deadline</th>
-                <th className="py-2.5 px-3">Status</th>
-                <th className="py-2.5 px-3">Next Action</th>
+                <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Task #</th>
+                <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Priority</th>
+                <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Product</th>
+                <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Campaign</th>
+                <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Action</th>
+                <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Owner</th>
+                <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Deadline</th>
+                <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Status</th>
+                <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Next Action</th>
                 <th className="py-2.5 px-3 text-right">Details</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+            <tbody className="divide-y divide-[#1a1a1a]">
               {sorted.map((t) => (
-                <tr key={t.id} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/50">
-                  <td className="py-3 px-3 font-mono font-bold text-zinc-900 dark:text-white">
+                <tr key={t.id} className="hover:bg-[#141414] bg-[#0a0a0a] transition-colors">
+                  <td className="py-3 px-3 border-r border-[#1a1a1a] font-mono font-bold text-white whitespace-nowrap">
                     {formatTaskNumber(t.taskNumber)}
                   </td>
-                  <td className="py-3 px-3">
+                  <td className="py-3 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
                     <PriorityPill priority={t.priority} size="sm" />
                   </td>
-                  <td className="py-3 px-3 font-bold">{t.product}</td>
-                  <td className="py-3 px-3 font-mono font-bold text-teal-800 dark:text-teal-300">
+                  <td className="py-3 px-3 border-r border-[#1a1a1a] font-semibold text-white whitespace-nowrap">{t.product}</td>
+                  <td className="py-3 px-3 border-r border-[#1a1a1a] font-mono font-bold text-white whitespace-nowrap">
                     {t.campaign}
                   </td>
-                  <td className="py-3 px-3 font-semibold">{t.action}</td>
-                  <td className="py-3 px-3 font-bold">{t.owner}</td>
-                  <td className="py-3 px-3 font-mono">{t.deadline}</td>
-                  <td className="py-3 px-3">
-                    <span className="rounded bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 font-bold text-[10px]">
+                  <td className="py-3 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
+                    <span className="rounded bg-[#141414] border border-[#262626] px-1.5 py-0.5 font-semibold text-zinc-300 text-[11px]">
+                      {t.action}
+                    </span>
+                  </td>
+                  <td className="py-3 px-3 border-r border-[#1a1a1a] font-semibold text-zinc-200 whitespace-nowrap">{t.owner}</td>
+                  <td className="py-3 px-3 border-r border-[#1a1a1a] font-mono text-zinc-400 whitespace-nowrap">{t.deadline}</td>
+                  <td className="py-3 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
+                    <span className="rounded bg-[#141414] border border-[#262626] px-2 py-0.5 font-mono font-semibold text-zinc-300 text-[10px]">
                       {t.status}
                     </span>
                   </td>
-                  <td className="py-3 px-3 text-zinc-500 truncate max-w-xs">{t.nextAction}</td>
-                  <td className="py-3 px-3 text-right">
+                  <td className="py-3 px-3 border-r border-[#1a1a1a] text-zinc-400 truncate max-w-xs">{t.nextAction}</td>
+                  <td className="py-3 px-3 text-right whitespace-nowrap">
                     <button
                       onClick={() => setSelectedTask(t)}
-                      className="rounded bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 px-2 py-1 font-bold text-[11px]"
+                      className="vercel-btn-secondary py-1 px-2.5 text-[11px] cursor-pointer"
                     >
                       Open
                     </button>

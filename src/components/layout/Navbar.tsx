@@ -109,44 +109,39 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-zinc-200 bg-white/95 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-950/95">
+      <header className="sticky top-0 z-40 w-full border-b border-[#1f1f1f] bg-black/90 backdrop-blur-md">
         <div className="flex h-13 items-center justify-between px-3 sm:px-6">
           {/* Brand & Desktop Nav */}
-          <div className="flex items-center gap-3 xl:gap-5 min-w-0">
+          <div className="flex items-center gap-3 xl:gap-6 min-w-0">
             <Link
               href="/"
-              className="group flex items-center gap-2.5 font-semibold text-zinc-900 dark:text-white shrink-0 transition-opacity hover:opacity-95"
+              className="group flex items-center gap-2.5 font-semibold text-white shrink-0 transition-opacity hover:opacity-90"
             >
               {/* App Icon Squircle */}
-              <div className="relative flex h-8 w-8 items-center justify-center rounded-[9px] bg-gradient-to-b from-zinc-700 to-zinc-900 dark:from-zinc-700 dark:to-zinc-900 p-[1px] shadow-sm shadow-black/30 ring-1 ring-white/15 group-hover:ring-white/30 transition-all">
-                <div className="flex h-full w-full items-center justify-center rounded-[8px] bg-gradient-to-b from-zinc-800 to-zinc-950 dark:from-zinc-850 dark:to-black">
-                  <Sparkles className="h-4 w-4 text-blue-400 dark:text-blue-300 drop-shadow-[0_0_6px_rgba(96,165,250,0.5)] transition-transform group-hover:scale-110" />
+              <div className="relative flex h-7.5 w-7.5 items-center justify-center rounded-[8px] bg-gradient-to-b from-[#262626] to-[#121212] p-[1px] shadow-sm border border-[#333333] group-hover:border-[#555555] transition-all">
+                <div className="flex h-full w-full items-center justify-center rounded-[7px] bg-black">
+                  <Sparkles className="h-3.5 w-3.5 text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] transition-transform group-hover:scale-110" />
                 </div>
                 {/* Live Indicator Dot */}
                 <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 ring-2 ring-white dark:ring-zinc-950"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 ring-2 ring-black"></span>
                 </span>
               </div>
 
               {/* Brand Typography */}
-              <div className="flex flex-col leading-none">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-sm font-extrabold tracking-tight text-zinc-900 dark:text-white">
-                    Media Ops
-                  </span>
-                  <span className="rounded-[4px] bg-blue-500/10 dark:bg-blue-400/10 px-1.5 py-0.5 text-[9px] font-mono font-bold text-blue-600 dark:text-blue-400 border border-blue-500/20">
-                    SSOT
-                  </span>
-                </div>
-                <span className="text-[10px] text-zinc-400 dark:text-zinc-400 font-medium tracking-wide mt-0.5 hidden sm:inline">
-                  Single Source of Truth
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold tracking-tight text-white">
+                  Media Ops
+                </span>
+                <span className="rounded px-1.5 py-0.5 text-[9px] font-mono font-bold text-zinc-300 border border-[#2a2a2a] bg-[#121212]">
+                  SSOT
                 </span>
               </div>
             </Link>
 
             {/* Desktop Navigation Links */}
-            <nav className="hidden lg:flex items-center gap-1 overflow-x-auto py-1">
+            <nav className="hidden lg:flex items-center gap-0.5 overflow-x-auto py-1">
               {navItems.map((item) => {
                 const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
                 const Icon = item.icon;
@@ -154,18 +149,18 @@ export const Navbar: React.FC = () => {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-all ${
                       isActive
-                        ? 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-white'
-                        : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-800/60'
+                        ? 'bg-white/[0.08] text-white font-semibold'
+                        : 'text-zinc-400 hover:text-white hover:bg-white/[0.04]'
                     }`}
                   >
-                    <Icon className="h-3.5 w-3.5 shrink-0" />
+                    <Icon className="h-3.5 w-3.5 shrink-0 opacity-75" />
                     <span>{item.label}</span>
                     {item.badge !== null && item.badge !== undefined && (
                       <span
                         className={`ml-0.5 rounded-full px-1.5 py-0.2 text-[10px] font-bold font-mono ${
-                          item.badgeColor || 'bg-zinc-200 text-zinc-700'
+                          item.badgeColor || 'bg-zinc-800 text-zinc-300'
                         }`}
                       >
                         {item.badge}
@@ -180,18 +175,18 @@ export const Navbar: React.FC = () => {
           {/* Right Area: Persona Switcher, Reset & Mobile Menu Toggle */}
           <div className="flex items-center gap-2 shrink-0">
             {/* Persona Switcher */}
-            <div className="flex items-center gap-1.5 bg-zinc-100 dark:bg-zinc-800/90 p-1 rounded-lg border border-zinc-200 dark:border-zinc-700/60">
-              <span className="text-[10px] uppercase font-bold text-zinc-400 px-1 hidden md:inline">
+            <div className="flex items-center gap-1.5 bg-[#0a0a0a] p-1 rounded-md border border-[#222222]">
+              <span className="text-[10px] uppercase font-mono font-bold text-zinc-500 px-1 hidden md:inline">
                 Role:
               </span>
               <select
                 value={currentUser?.uid || 'charles-01'}
                 onChange={(e) => switchUserByUid(e.target.value)}
                 style={{ colorScheme: 'dark' }}
-                className="bg-transparent text-xs font-bold text-zinc-900 dark:text-white focus:outline-hidden cursor-pointer max-w-[110px] sm:max-w-none [color-scheme:dark]"
+                className="bg-transparent text-xs font-semibold text-white focus:outline-hidden cursor-pointer max-w-[110px] sm:max-w-none [color-scheme:dark]"
               >
                 {availableUsers.map((u) => (
-                  <option key={u.uid} value={u.uid} className="bg-zinc-900 text-zinc-100 dark:bg-zinc-900 dark:text-white py-1">
+                  <option key={u.uid} value={u.uid} className="bg-black text-white py-1">
                     {u.displayName} ({u.role?.toUpperCase()})
                   </option>
                 ))}
@@ -205,7 +200,7 @@ export const Navbar: React.FC = () => {
                   store.resetDemoData();
                 }
               }}
-              className="hidden sm:flex p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              className="hidden sm:flex p-1.5 rounded-md text-zinc-500 hover:text-white hover:bg-white/[0.06] transition-colors border border-transparent hover:border-[#262626]"
               title="Reset demo data"
             >
               <RotateCcw className="h-3.5 w-3.5" />
@@ -224,7 +219,7 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile Dropdown Drawer */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900 shadow-xl">
+          <div className="lg:hidden border-t border-[#222222] bg-[#0a0a0a] px-4 py-3 shadow-2xl">
             <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
               {navItems.map((item) => {
                 const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
@@ -234,10 +229,10 @@ export const Navbar: React.FC = () => {
                     key={item.href}
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-colors ${
+                    className={`flex items-center justify-between px-3 py-2 rounded-md text-xs font-medium transition-colors ${
                       isActive
-                        ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 font-bold'
-                        : 'bg-zinc-50 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                        ? 'bg-white text-black font-semibold'
+                        : 'bg-[#121212] border border-[#222222] text-zinc-300 hover:bg-[#181818] hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-2 truncate">
@@ -247,9 +242,7 @@ export const Navbar: React.FC = () => {
                     {item.badge !== null && item.badge !== undefined && (
                       <span
                         className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold font-mono shrink-0 ${
-                          isActive
-                            ? 'bg-white/20 text-white dark:bg-zinc-900/20 dark:text-zinc-900'
-                            : item.badgeColor || 'bg-zinc-200 text-zinc-700'
+                          isActive ? 'bg-black text-white' : 'bg-[#222] text-zinc-300'
                         }`}
                       >
                         {item.badge}
@@ -260,7 +253,7 @@ export const Navbar: React.FC = () => {
               })}
             </div>
 
-            <div className="mt-3 pt-3 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between text-xs">
+            <div className="mt-3 pt-3 border-t border-[#222222] flex items-center justify-between text-xs">
               <span className="text-zinc-500 font-mono text-[11px]">User: {currentUser?.displayName}</span>
               <button
                 onClick={() => {
@@ -269,7 +262,7 @@ export const Navbar: React.FC = () => {
                     store.resetDemoData();
                   }
                 }}
-                className="flex items-center gap-1.5 text-zinc-500 hover:text-zinc-900 dark:hover:text-white text-xs font-semibold py-1 px-2 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                className="flex items-center gap-1.5 text-zinc-400 hover:text-white text-xs font-medium py-1 px-2 rounded-md hover:bg-[#181818] transition-colors"
               >
                 <RotateCcw className="h-3 w-3" />
                 <span>Reset Demo Data</span>
@@ -279,8 +272,8 @@ export const Navbar: React.FC = () => {
         )}
       </header>
 
-      {/* iOS Mobile Sticky Bottom Tab Bar (< 1024px) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 flex lg:hidden items-center justify-around border-t border-zinc-200/80 dark:border-white/10 bg-white/80 dark:bg-zinc-950/80 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] px-2 backdrop-blur-2xl shadow-xl">
+      {/* Mobile Sticky Bottom Tab Bar (< 1024px) */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 flex lg:hidden items-center justify-around border-t border-[#1f1f1f] bg-black/90 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] px-2 backdrop-blur-2xl shadow-2xl">
         {bottomNavItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
           const Icon = item.icon;
@@ -288,16 +281,16 @@ export const Navbar: React.FC = () => {
             <Link
               key={item.href}
               href={item.href}
-              className={`relative flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-[10px] font-semibold transition-all ${
+              className={`relative flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg text-[10px] font-medium transition-all ${
                 isActive
-                  ? 'text-purple-600 dark:text-purple-400 font-bold scale-[1.02]'
-                  : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200'
+                  ? 'text-white font-semibold'
+                  : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
               <div className="relative">
-                <Icon className={`h-5 w-5 ${isActive ? 'stroke-[2.3]' : 'stroke-[1.8]'}`} />
+                <Icon className={`h-5 w-5 ${isActive ? 'stroke-[2.2]' : 'stroke-[1.7]'}`} />
                 {item.badge && item.badge > 0 ? (
-                  <span className="absolute -top-1 -right-2 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-rose-500 px-1 text-[8px] font-bold text-white shadow-xs">
+                  <span className="absolute -top-1 -right-2 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-blue-600 px-1 text-[8px] font-bold text-white shadow-xs">
                     {item.badge}
                   </span>
                 ) : null}

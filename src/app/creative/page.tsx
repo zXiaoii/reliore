@@ -304,33 +304,33 @@ export default function CreativeQueuePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans w-full max-w-full min-w-0">
-      {/* Top Banner */}
-      <div className="border-b border-zinc-200 bg-white px-4 py-4 dark:border-zinc-800 dark:bg-zinc-900 sm:px-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+    <div className="flex flex-col min-h-screen bg-black text-[#ededed] font-sans w-full max-w-full min-w-0">
+      {/* Top Banner - Vercel Clean Aesthetic */}
+      <div className="border-b border-[#1f1f1f] bg-black px-4 py-5 sm:px-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 max-w-7xl mx-auto w-full">
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
+              <h1 className="text-xl font-bold tracking-tight text-white">
                 Creative Production Queue
               </h1>
-              <span className="rounded-md bg-purple-100 dark:bg-purple-950 px-2 py-0.5 text-xs font-semibold text-purple-700 dark:text-purple-300 font-mono">
+              <span className="rounded-md bg-[#121212] border border-[#262626] px-2 py-0.5 text-xs font-mono font-semibold text-purple-300">
                 Yzah&apos;s Dedicated Workspace
               </span>
             </div>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            <p className="text-xs text-zinc-400 mt-1">
               Strictly prioritized. Expand any brief below to view requirements or update your Google Drive link and notes anytime.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            {/* View Filter Tabs */}
-            <div className="flex items-center rounded-lg bg-zinc-100 p-1 dark:bg-zinc-800 text-xs font-semibold">
+            {/* View Filter Tabs (Vercel Segmented Control) */}
+            <div className="flex items-center rounded-md bg-black border border-[#262626] p-0.5 text-xs font-medium">
               <button
                 onClick={() => setActiveTab('all')}
-                className={`px-3 py-1 rounded-md transition-colors ${
+                className={`px-3 py-1 rounded transition-colors cursor-pointer ${
                   activeTab === 'all'
-                    ? 'bg-white text-zinc-900 shadow-2xs dark:bg-zinc-700 dark:text-white font-bold'
-                    : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400'
+                    ? 'bg-[#181818] text-white border border-[#383838] font-bold shadow-xs'
+                    : 'text-zinc-500 hover:text-zinc-300'
                 }`}
               >
                 All Tasks ({creativeTasks.length})
@@ -338,25 +338,25 @@ export default function CreativeQueuePage() {
 
               <button
                 onClick={() => setActiveTab('owed')}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-1 rounded transition-colors cursor-pointer ${
                   activeTab === 'owed'
-                    ? 'bg-white text-zinc-900 shadow-2xs dark:bg-zinc-700 dark:text-white font-bold'
-                    : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400'
+                    ? 'bg-[#181818] text-white border border-[#383838] font-bold shadow-xs'
+                    : 'text-zinc-500 hover:text-zinc-300'
                 }`}
               >
-                <Clock className="h-3.5 w-3.5 text-amber-500" />
+                <Clock className="h-3.5 w-3.5 text-amber-400" />
                 <span>To Make ({owedQueue.length})</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('delivered')}
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-1 rounded transition-colors cursor-pointer ${
                   activeTab === 'delivered'
-                    ? 'bg-white text-zinc-900 shadow-2xs dark:bg-zinc-700 dark:text-white font-bold'
-                    : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400'
+                    ? 'bg-[#181818] text-white border border-[#383838] font-bold shadow-xs'
+                    : 'text-zinc-500 hover:text-zinc-300'
                 }`}
               >
-                <CheckCircle className="h-3.5 w-3.5 text-emerald-500" />
+                <CheckCircle className="h-3.5 w-3.5 text-emerald-400" />
                 <span>Under Review / Live ({deliveredQueue.length})</span>
               </button>
             </div>
@@ -370,10 +370,10 @@ export default function CreativeQueuePage() {
                   expandAll();
                 }
               }}
-              className="flex items-center gap-1 rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
+              className="vercel-btn-secondary flex items-center gap-1 cursor-pointer"
               title="Expand or collapse all briefs"
             >
-              <ChevronsUpDown className="h-3.5 w-3.5 text-zinc-500" />
+              <ChevronsUpDown className="h-3.5 w-3.5 text-zinc-400" />
               <span>
                 {expandedIds.size === filtered.length && filtered.length > 0
                   ? 'Collapse All'
@@ -384,26 +384,28 @@ export default function CreativeQueuePage() {
         </div>
 
         {/* Search & View Mode */}
-        <div className="mt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div className="mt-4 pt-3 border-t border-[#1a1a1a] flex flex-col sm:flex-row sm:items-center justify-between gap-3 max-w-7xl mx-auto w-full">
+          {/* Vercel Search Box with / Keyboard Badge */}
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-2.5 top-2 h-3.5 w-3.5 text-zinc-400" />
+            <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-zinc-500" />
             <input
               type="text"
               placeholder="Search tasks, products, hooks, reasons..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 bg-white py-1.5 pl-8 pr-3 text-xs text-zinc-900 placeholder:text-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+              className="w-full rounded-md border border-[#262626] bg-black py-1.5 pl-8 pr-8 text-xs text-white placeholder-zinc-500 focus:border-zinc-500 focus:outline-hidden transition-colors"
             />
+            <span className="absolute right-2 top-2 vercel-kbd">/</span>
           </div>
 
-          <div className="flex items-center rounded-lg bg-zinc-100 dark:bg-zinc-800 p-0.5 text-xs self-start sm:self-auto">
+          <div className="flex items-center rounded-md bg-black border border-[#262626] p-0.5 text-xs self-start sm:self-auto">
             <button
               type="button"
               onClick={() => setViewMode('table')}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-colors ${
+              className={`flex items-center gap-1 px-2.5 py-1 rounded transition-colors cursor-pointer ${
                 viewMode === 'table'
-                  ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white font-bold shadow-2xs'
-                  : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
+                  ? 'bg-[#181818] text-white border border-[#383838] font-bold shadow-xs'
+                  : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
               <TableIcon className="h-3.5 w-3.5" />
@@ -412,10 +414,10 @@ export default function CreativeQueuePage() {
             <button
               type="button"
               onClick={() => setViewMode('cards')}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-colors ${
+              className={`flex items-center gap-1 px-2.5 py-1 rounded transition-colors cursor-pointer ${
                 viewMode === 'cards'
-                  ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white font-bold shadow-2xs'
-                  : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
+                  ? 'bg-[#181818] text-white border border-[#383838] font-bold shadow-xs'
+                  : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
               <LayoutList className="h-3.5 w-3.5" />
@@ -426,16 +428,16 @@ export default function CreativeQueuePage() {
       </div>
 
       {/* Main Table with In-Place Expansion */}
-      <div className="flex-1 p-4 sm:p-6 overflow-x-auto max-w-full">
+      <div className="flex-1 p-4 sm:p-8 overflow-x-auto max-w-7xl mx-auto w-full">
         {filtered.length === 0 ? (
-          <div className="rounded-xl border border-zinc-200 bg-white p-12 text-center shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
-            <CheckCircle className="mx-auto h-8 w-8 text-emerald-500" />
-            <h3 className="mt-2 text-sm font-bold text-zinc-900 dark:text-white">
+          <div className="rounded-xl border border-[#222222] bg-[#0a0a0a] p-12 text-center shadow-xs">
+            <CheckCircle className="mx-auto h-8 w-8 text-emerald-400" />
+            <h3 className="mt-2 text-sm font-bold text-white">
               {activeTab === 'owed'
                 ? 'No pending creative batches to make!'
                 : 'No tasks matching your filter.'}
             </h3>
-            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="mt-1 text-xs text-zinc-400">
               New tasks assigned by Charles will appear here immediately.
             </p>
           </div>
@@ -631,9 +633,9 @@ export default function CreativeQueuePage() {
                 {filtered.length} tasks
               </span>
             </div>
-            <div className="w-full max-w-full min-w-0 overflow-x-auto overscroll-x-contain touch-pan-x rounded-xl border border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900/95 custom-scrollbar">
+            <div className="w-full max-w-full min-w-0 overflow-x-auto overscroll-x-contain touch-pan-x rounded-xl border border-[#222222] bg-[#0a0a0a] shadow-xs custom-scrollbar">
               <table className="w-full text-left text-xs border-collapse min-w-[1150px]">
-              <thead className="border-b border-zinc-200 bg-zinc-100/80 dark:border-zinc-800 dark:bg-zinc-800/80 font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-wider text-[10px]">
+              <thead className="border-b border-[#222222] bg-black font-semibold text-zinc-400 uppercase tracking-wider text-[10px]">
                 <tr>
                   <th className="py-2.5 px-2 text-center w-8">View</th>
                   <th className="py-2.5 px-3">Priority</th>
@@ -650,7 +652,7 @@ export default function CreativeQueuePage() {
                   <th className="py-2.5 px-3 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+              <tbody className="divide-y divide-[#1a1a1a]">
                 {filtered.map((task) => {
                   const draft = getDraft(task);
                   const isExpanded = expandedIds.has(task.id);
@@ -662,23 +664,23 @@ export default function CreativeQueuePage() {
                     <React.Fragment key={task.id}>
                       {/* Summary Row */}
                       <tr
-                        className={`transition-colors hover:bg-zinc-50/80 dark:hover:bg-zinc-800/50 ${
+                        className={`transition-colors hover:bg-[#141414] ${
                           isChangesRequired
-                            ? 'bg-rose-50/50 dark:bg-rose-950/20'
+                            ? 'bg-rose-950/20'
                             : isExpanded
-                            ? 'bg-purple-50/30 dark:bg-purple-950/10'
-                            : ''
+                            ? 'bg-purple-950/15'
+                            : 'bg-[#0a0a0a]'
                         }`}
                       >
                         {/* Expand / Collapse Toggle Chevron */}
                         <td className="py-3 px-2 text-center">
                           <button
                             onClick={() => toggleExpand(task.id)}
-                            className="p-1 rounded hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+                            className="p-1 rounded hover:bg-[#222] text-zinc-400 hover:text-white transition-colors cursor-pointer"
                             title={isExpanded ? 'Collapse brief' : 'Expand full brief'}
                           >
                             {isExpanded ? (
-                              <ChevronUp className="h-4 w-4 text-purple-600 dark:text-purple-400 font-bold" />
+                              <ChevronUp className="h-4 w-4 text-purple-400 font-bold" />
                             ) : (
                               <ChevronDown className="h-4 w-4" />
                             )}
@@ -689,13 +691,15 @@ export default function CreativeQueuePage() {
                           <PriorityPill priority={task.priority} size="sm" />
                         </td>
 
-                        <td className="py-3 px-3 font-bold text-zinc-900 dark:text-white whitespace-nowrap">
+                        <td className="py-3 px-3 font-semibold text-white whitespace-nowrap">
                           {task.product}
                         </td>
 
-                        <td className="py-3 px-2 font-medium">{task.market}</td>
+                        <td className="py-3 px-2 whitespace-nowrap">
+                          <MarketBadge market={task.market} size="xs" />
+                        </td>
 
-                        <td className="py-3 px-3 font-mono font-bold text-teal-800 dark:text-teal-300 whitespace-nowrap truncate max-w-[140px]">
+                        <td className="py-3 px-3 font-mono font-bold text-white whitespace-nowrap truncate max-w-[140px]">
                           {task.campaign}
                         </td>
 

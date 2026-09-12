@@ -134,51 +134,53 @@ export default function SetupQueuePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans w-full max-w-full min-w-0">
-      {/* Top Banner */}
-      <div className="border-b border-zinc-200 bg-white px-3 sm:px-6 py-4 dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+    <div className="flex flex-col min-h-screen bg-black text-[#ededed] font-sans w-full max-w-full min-w-0">
+      {/* Top Banner - Vercel Clean Aesthetic */}
+      <div className="border-b border-[#1f1f1f] bg-black px-4 py-5 sm:px-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 max-w-7xl mx-auto w-full">
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
+              <h1 className="text-xl font-bold tracking-tight text-white">
                 Campaign &amp; Ad Set Setup Queue
               </h1>
-              <span className="rounded-md bg-teal-100 dark:bg-teal-950 px-2 py-0.5 text-xs font-semibold text-teal-700 dark:text-teal-300 font-mono">
+              <span className="rounded-md bg-[#121212] border border-[#262626] px-2 py-0.5 text-xs font-semibold text-teal-300 font-mono">
                 Karl / Mark / Christian&apos;s Workspace
               </span>
             </div>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            <p className="text-xs text-zinc-400 mt-1">
               Approved creative batches ready for Funnelish, pixel verification, tracking QA, and Meta launch.
             </p>
           </div>
 
-          <span className="rounded-lg border border-teal-200 bg-teal-50 px-3 py-1.5 text-xs font-bold text-teal-800 dark:border-teal-900 dark:bg-teal-950/40 dark:text-teal-300 self-start md:self-auto">
+          <span className="rounded-md border border-[#262626] bg-[#121212] px-3 py-1.5 text-xs font-mono font-semibold text-teal-300 self-start md:self-auto">
             {setupTasks.length} Batches in Setup
           </span>
         </div>
 
         {/* Search & View Mode Toolbar */}
-        <div className="mt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div className="mt-4 pt-3 border-t border-[#1a1a1a] flex flex-col sm:flex-row sm:items-center justify-between gap-3 max-w-7xl mx-auto w-full">
+          {/* Vercel Search Box with / Keyboard Badge */}
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-2.5 top-2 h-3.5 w-3.5 text-zinc-400" />
+            <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-zinc-500" />
             <input
               type="text"
               placeholder="Search campaign, ad account, product..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 bg-white py-1.5 pl-8 pr-3 text-xs text-zinc-900 placeholder:text-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+              className="w-full rounded-md border border-[#262626] bg-black py-1.5 pl-8 pr-8 text-xs text-white placeholder-zinc-500 focus:border-zinc-500 focus:outline-hidden transition-colors"
             />
+            <span className="absolute right-2 top-2 vercel-kbd">/</span>
           </div>
 
           {/* View Mode Toggle */}
-          <div className="flex items-center rounded-lg bg-zinc-100 dark:bg-zinc-800 p-0.5 text-xs self-start sm:self-auto">
+          <div className="flex items-center rounded-md bg-black border border-[#262626] p-0.5 text-xs self-start sm:self-auto">
             <button
               type="button"
               onClick={() => setViewMode('table')}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-colors ${
+              className={`flex items-center gap-1 px-2.5 py-1 rounded transition-colors cursor-pointer ${
                 viewMode === 'table'
-                  ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white font-bold shadow-2xs'
-                  : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
+                  ? 'bg-[#181818] text-white border border-[#383838] font-bold shadow-xs'
+                  : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
               <TableIcon className="h-3.5 w-3.5" />
@@ -187,10 +189,10 @@ export default function SetupQueuePage() {
             <button
               type="button"
               onClick={() => setViewMode('cards')}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-colors ${
+              className={`flex items-center gap-1 px-2.5 py-1 rounded transition-colors cursor-pointer ${
                 viewMode === 'cards'
-                  ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white font-bold shadow-2xs'
-                  : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
+                  ? 'bg-[#181818] text-white border border-[#383838] font-bold shadow-xs'
+                  : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
               <LayoutList className="h-3.5 w-3.5" />
@@ -201,61 +203,61 @@ export default function SetupQueuePage() {
       </div>
 
       {/* Primary Content matching §20 */}
-      <div className="flex-1 p-3 sm:p-6 max-w-full">
+      <div className="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full">
         {filtered.length === 0 ? (
-          <div className="rounded-xl border border-zinc-200 bg-white p-12 text-center shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
-            <CheckCircle2 className="mx-auto h-8 w-8 text-teal-600" />
-            <h3 className="mt-2 text-sm font-bold text-zinc-900 dark:text-white">
+          <div className="rounded-xl border border-[#222222] bg-[#0a0a0a] p-12 text-center shadow-xs">
+            <CheckCircle2 className="mx-auto h-8 w-8 text-teal-400" />
+            <h3 className="mt-2 text-sm font-bold text-white">
               Setup queue is clear!
             </h3>
-            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="mt-1 text-xs text-zinc-400">
               Batches approved by Charles will automatically appear here for Karl, Mark, or Christian.
             </p>
           </div>
         ) : viewMode === 'cards' ? (
-          /* Responsive Mobile Cards for Setup Queue */
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+          /* Responsive Mobile Cards for Setup Queue (Vercel Style) */
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {filtered.map((task) => {
               const vals = getFormVals(task);
               return (
                 <div
                   key={task.id}
-                  className="flex flex-col justify-between rounded-xl border border-zinc-200 bg-white p-4 shadow-2xs dark:border-zinc-800 dark:bg-zinc-900"
+                  className="vercel-card p-4 flex flex-col justify-between group"
                 >
                   <div className="space-y-3">
                     {/* Top Row */}
-                    <div className="flex items-center justify-between border-b border-zinc-100 pb-2 dark:border-zinc-800">
+                    <div className="flex items-center justify-between border-b border-[#1f1f1f] pb-2.5">
                       <div className="flex items-center gap-1.5">
                         <PriorityPill priority={task.priority} size="sm" />
-                        <span className="font-mono text-xs font-bold text-zinc-900 dark:text-white">
+                        <span className="font-mono text-xs font-bold text-white">
                           {formatTaskNumber(task.taskNumber)}
                         </span>
                         <MarketBadge market={task.market} size="xs" />
-                        <span className="font-bold text-xs text-zinc-700 dark:text-zinc-300">
+                        <span className="font-semibold text-xs text-zinc-300">
                           {task.product}
                         </span>
                       </div>
-                      <span className="rounded bg-teal-100 dark:bg-teal-950 px-2 py-0.5 text-[10px] font-bold text-teal-700 dark:text-teal-300">
+                      <span className="rounded bg-teal-500/10 border border-teal-500/25 px-2 py-0.5 text-[10px] font-mono font-bold text-teal-400">
                         {task.status}
                       </span>
                     </div>
 
                     {/* Campaign with Copy helper */}
                     <div>
-                      <span className="text-[10px] font-bold uppercase text-zinc-400 block">
+                      <span className="text-[10px] font-bold uppercase text-zinc-500 block font-mono">
                         Campaign
                       </span>
-                      <div className="flex items-center justify-between mt-0.5 rounded bg-zinc-50 dark:bg-zinc-800/60 p-2 border border-zinc-200 dark:border-zinc-700">
-                        <span className="font-mono font-bold text-xs text-teal-800 dark:text-teal-300 truncate">
+                      <div className="flex items-center justify-between mt-1 rounded-md bg-black p-2 border border-[#262626]">
+                        <span className="font-mono font-bold text-xs text-white truncate">
                           {task.campaign}
                         </span>
                         <button
                           type="button"
                           onClick={() => copyText(task.campaign, `camp-${task.id}`)}
-                          className="flex items-center gap-1 text-[11px] font-semibold text-zinc-500 hover:text-zinc-900 dark:hover:text-white shrink-0 ml-2"
+                          className="flex items-center gap-1 text-[11px] font-semibold text-zinc-400 hover:text-white shrink-0 ml-2 cursor-pointer"
                         >
                           {copiedKey === `camp-${task.id}` ? (
-                            <Check className="h-3.5 w-3.5 text-emerald-600" />
+                            <Check className="h-3.5 w-3.5 text-emerald-400" />
                           ) : (
                             <Copy className="h-3.5 w-3.5" />
                           )}
@@ -266,20 +268,20 @@ export default function SetupQueuePage() {
 
                     {/* Ad Account & Action */}
                     <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="rounded bg-zinc-50 dark:bg-zinc-800/60 p-2 border border-zinc-200 dark:border-zinc-700">
-                        <span className="text-[10px] text-zinc-400 font-bold uppercase block">Ad Account</span>
+                      <div className="rounded-md bg-black p-2 border border-[#262626]">
+                        <span className="text-[10px] text-zinc-500 font-bold uppercase block font-mono">Ad Account</span>
                         <div className="flex items-center justify-between mt-0.5">
-                          <span className="font-mono font-bold text-zinc-800 dark:text-zinc-200 truncate">
+                          <span className="font-mono font-bold text-zinc-300 truncate">
                             {task.adAccount}
                           </span>
                           <button
                             type="button"
                             onClick={() => copyText(task.adAccount, `acc-${task.id}`)}
-                            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
+                            className="text-zinc-500 hover:text-white cursor-pointer"
                             title="Copy Account"
                           >
                             {copiedKey === `acc-${task.id}` ? (
-                              <Check className="h-3 w-3 text-emerald-600" />
+                              <Check className="h-3 w-3 text-emerald-400" />
                             ) : (
                               <Copy className="h-3 w-3" />
                             )}
@@ -287,9 +289,9 @@ export default function SetupQueuePage() {
                         </div>
                       </div>
 
-                      <div className="rounded bg-zinc-50 dark:bg-zinc-800/60 p-2 border border-zinc-200 dark:border-zinc-700">
-                        <span className="text-[10px] text-zinc-400 font-bold uppercase block">Action</span>
-                        <span className="font-semibold text-zinc-800 dark:text-zinc-200 block truncate mt-0.5">
+                      <div className="rounded-md bg-black p-2 border border-[#262626]">
+                        <span className="text-[10px] text-zinc-500 font-bold uppercase block font-mono">Action</span>
+                        <span className="font-semibold text-zinc-300 block truncate mt-0.5">
                           {task.action}
                         </span>
                       </div>
@@ -298,16 +300,16 @@ export default function SetupQueuePage() {
                     {/* Ad Set Name Input */}
                     <div>
                       <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-bold uppercase text-zinc-400">
+                        <label className="text-[10px] font-bold uppercase text-zinc-500 font-mono">
                           Ad Set Name (Meta)
                         </label>
                         <button
                           type="button"
                           onClick={() => copyText(vals.adSetName, `adset-${task.id}`)}
-                          className="text-[10px] text-zinc-500 hover:text-zinc-900 dark:hover:text-white flex items-center gap-1 font-semibold"
+                          className="text-[10px] text-zinc-400 hover:text-white flex items-center gap-1 font-semibold cursor-pointer"
                         >
                           {copiedKey === `adset-${task.id}` ? (
-                            <Check className="h-3 w-3 text-emerald-600" />
+                            <Check className="h-3 w-3 text-emerald-400" />
                           ) : (
                             <Copy className="h-3 w-3" />
                           )}
@@ -318,7 +320,7 @@ export default function SetupQueuePage() {
                         type="text"
                         value={vals.adSetName}
                         onChange={(e) => updateFormVal(task.id, 'adSetName', e.target.value)}
-                        className="mt-1 w-full rounded-md border border-zinc-300 bg-white p-1.5 text-xs font-mono font-bold text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+                        className="mt-1 w-full rounded-md border border-[#262626] bg-black p-1.5 text-xs font-mono font-bold text-white focus:border-zinc-500 focus:outline-hidden"
                       />
                     </div>
 
@@ -329,25 +331,25 @@ export default function SetupQueuePage() {
                           href={task.folderUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 font-bold text-blue-600 hover:underline text-xs"
+                          className="inline-flex items-center gap-1 font-semibold text-blue-400 hover:underline text-xs"
                         >
                           <FolderOpen className="h-3.5 w-3.5" />
                           <span>Drive Files ({task.quantityDone}/{task.quantity})</span>
                         </a>
                       ) : (
-                        <span className="text-zinc-400 text-xs">Approved files</span>
+                        <span className="text-zinc-500 text-xs">Approved files</span>
                       )}
                       <span className="font-mono text-[11px] text-zinc-500">Due: {task.deadline}</span>
                     </div>
                   </div>
 
                   {/* Launch Button */}
-                  <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800">
+                  <div className="mt-4 pt-3 border-t border-[#1f1f1f]">
                     <button
                       onClick={() => handleLaunch(task)}
-                      className="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-2xs transition-colors"
+                      className="w-full vercel-btn-primary flex items-center justify-center gap-2 py-2 cursor-pointer"
                     >
-                      <Rocket className="h-4 w-4" />
+                      <Rocket className="h-4 w-4 text-black" />
                       <span>Launch Ad Set in Meta</span>
                     </button>
                   </div>
@@ -356,62 +358,62 @@ export default function SetupQueuePage() {
             })}
           </div>
         ) : (
-          /* Spreadsheet Table (with horizontal scroll wrapper) */
+          /* Spreadsheet Table (Vercel Style) */
           <div className="w-full max-w-full min-w-0 space-y-2">
-            <div className="flex items-center justify-between text-[11px] text-zinc-500 dark:text-zinc-400 px-1">
+            <div className="flex items-center justify-between text-[11px] text-zinc-400 px-1">
               <div className="flex items-center gap-1.5 font-medium">
-                <ArrowRightLeft className="h-3.5 w-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
+                <ArrowRightLeft className="h-3.5 w-3.5 text-zinc-400 shrink-0" />
                 <span>Scroll table horizontally for setup fields & launch</span>
               </div>
-              <span className="font-mono text-[10px] bg-zinc-200/70 dark:bg-zinc-800/80 px-2 py-0.5 rounded text-zinc-600 dark:text-zinc-400 border border-zinc-300 dark:border-zinc-700/60">
-                {filtered.length} tasks
+              <span className="font-mono text-[10px] bg-[#121212] px-2 py-0.5 rounded text-zinc-400 border border-[#262626]">
+                {filtered.length} {filtered.length === 1 ? 'task' : 'tasks'}
               </span>
             </div>
-            <div className="w-full max-w-full min-w-0 overflow-x-auto overscroll-x-contain touch-pan-x rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/95 shadow-xs custom-scrollbar">
+            <div className="w-full max-w-full min-w-0 overflow-x-auto overscroll-x-contain touch-pan-x rounded-xl border border-[#222222] bg-[#0a0a0a] shadow-xs custom-scrollbar">
               <table className="w-full text-left text-xs border-collapse min-w-[1000px]">
-              <thead className="border-b border-zinc-200 bg-zinc-100/80 dark:border-zinc-800 dark:bg-zinc-800/80 font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-wider text-[10px]">
+              <thead className="border-b border-[#222222] bg-black font-semibold text-zinc-400 uppercase tracking-wider text-[10px]">
                 <tr>
-                  <th className="py-2.5 px-3">Priority</th>
-                  <th className="py-2.5 px-3">Product</th>
-                  <th className="py-2.5 px-3">Campaign</th>
-                  <th className="py-2.5 px-3">Action</th>
-                  <th className="py-2.5 px-3">Ad Account</th>
-                  <th className="py-2.5 px-3">Ad Set Name</th>
-                  <th className="py-2.5 px-3">Creative</th>
-                  <th className="py-2.5 px-3">Deadline</th>
-                  <th className="py-2.5 px-3">Status</th>
+                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Priority</th>
+                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Product</th>
+                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Campaign</th>
+                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Action</th>
+                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Ad Account</th>
+                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Ad Set Name</th>
+                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Creative</th>
+                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Deadline</th>
+                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Status</th>
                   <th className="py-2.5 px-3 text-right">Launch Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+              <tbody className="divide-y divide-[#1a1a1a]">
                 {filtered.map((task) => {
                   const vals = getFormVals(task);
 
                   return (
                     <tr
                       key={task.id}
-                      className="transition-colors hover:bg-zinc-50/80 dark:hover:bg-zinc-800/50"
+                      className="transition-colors hover:bg-[#141414] bg-[#0a0a0a]"
                     >
-                      <td className="py-3 px-3 whitespace-nowrap">
+                      <td className="py-3 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
                         <PriorityPill priority={task.priority} size="sm" />
                       </td>
 
-                      <td className="py-3 px-3 font-bold text-zinc-900 dark:text-white whitespace-nowrap">
+                      <td className="py-3 px-3 border-r border-[#1a1a1a] font-semibold text-white whitespace-nowrap">
                         {task.product}
                       </td>
 
                       {/* Campaign with Copy helper */}
-                      <td className="py-3 px-3 font-mono font-bold text-teal-800 dark:text-teal-300 whitespace-nowrap">
+                      <td className="py-3 px-3 border-r border-[#1a1a1a] font-mono font-bold text-white whitespace-nowrap">
                         <div className="flex items-center gap-1.5">
                           <span className="truncate max-w-[150px]">{task.campaign}</span>
                           <button
                             type="button"
                             onClick={() => copyText(task.campaign, `camp-${task.id}`)}
-                            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
+                            className="text-zinc-500 hover:text-white cursor-pointer"
                             title="Copy Campaign Name"
                           >
                             {copiedKey === `camp-${task.id}` ? (
-                              <Check className="h-3 w-3 text-emerald-600" />
+                              <Check className="h-3 w-3 text-emerald-400" />
                             ) : (
                               <Copy className="h-3 w-3" />
                             )}
@@ -419,24 +421,24 @@ export default function SetupQueuePage() {
                         </div>
                       </td>
 
-                      <td className="py-3 px-3 whitespace-nowrap">
-                        <span className="rounded bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 font-semibold text-zinc-800 dark:text-zinc-200 text-[11px]">
+                      <td className="py-3 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
+                        <span className="rounded bg-[#141414] border border-[#262626] px-1.5 py-0.5 font-semibold text-zinc-300 text-[11px]">
                           {task.action}
                         </span>
                       </td>
 
                       {/* Ad Account with Copy helper */}
-                      <td className="py-3 px-3 font-mono font-bold text-zinc-800 dark:text-zinc-200 whitespace-nowrap">
+                      <td className="py-3 px-3 border-r border-[#1a1a1a] font-mono font-bold text-zinc-400 whitespace-nowrap">
                         <div className="flex items-center gap-1.5">
                           <span>{task.adAccount}</span>
                           <button
                             type="button"
                             onClick={() => copyText(task.adAccount, `acc-${task.id}`)}
-                            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
+                            className="text-zinc-500 hover:text-white cursor-pointer"
                             title="Copy Ad Account"
                           >
                             {copiedKey === `acc-${task.id}` ? (
-                              <Check className="h-3 w-3 text-emerald-600" />
+                              <Check className="h-3 w-3 text-emerald-400" />
                             ) : (
                               <Copy className="h-3 w-3" />
                             )}
@@ -445,22 +447,22 @@ export default function SetupQueuePage() {
                       </td>
 
                       {/* Ad Set Name with inline editing and copy helper */}
-                      <td className="py-3 px-3 min-w-[200px]">
+                      <td className="py-3 px-3 border-r border-[#1a1a1a] min-w-[200px]">
                         <div className="flex items-center gap-1">
                           <input
                             type="text"
                             value={vals.adSetName}
                             onChange={(e) => updateFormVal(task.id, 'adSetName', e.target.value)}
-                            className="w-full rounded border border-zinc-300 bg-white p-1 text-[11px] font-mono font-bold text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+                            className="w-full rounded-md border border-[#262626] bg-black p-1 text-[11px] font-mono font-bold text-white focus:border-zinc-500 focus:outline-hidden"
                           />
                           <button
                             type="button"
                             onClick={() => copyText(vals.adSetName, `adset-${task.id}`)}
-                            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 p-1"
+                            className="text-zinc-500 hover:text-white p-1 cursor-pointer"
                             title="Copy Ad Set Name"
                           >
                             {copiedKey === `adset-${task.id}` ? (
-                              <Check className="h-3 w-3 text-emerald-600" />
+                              <Check className="h-3 w-3 text-emerald-400" />
                             ) : (
                               <Copy className="h-3 w-3" />
                             )}
@@ -469,32 +471,32 @@ export default function SetupQueuePage() {
                       </td>
 
                       {/* Creative Folder */}
-                      <td className="py-3 px-3 whitespace-nowrap">
+                      <td className="py-3 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
                         {task.folderUrl ? (
                           <a
                             href={task.folderUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 font-bold text-blue-600 hover:underline"
+                            className="inline-flex items-center gap-1 font-semibold text-blue-400 hover:underline"
                           >
                             <FolderOpen className="h-3.5 w-3.5" />
                             <span>Drive ({task.quantityDone}/{task.quantity})</span>
                           </a>
                         ) : (
-                          <span className="text-zinc-400">Approved</span>
+                          <span className="text-zinc-500 text-xs">Approved</span>
                         )}
                       </td>
 
-                      <td className="py-3 px-3 font-mono text-[11px] whitespace-nowrap">
+                      <td className="py-3 px-3 border-r border-[#1a1a1a] font-mono text-[11px] text-zinc-400 whitespace-nowrap">
                         {task.deadline}
                       </td>
 
-                      <td className="py-3 px-3 whitespace-nowrap">
+                      <td className="py-3 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
                         <span
-                          className={`rounded px-2 py-0.5 text-[10px] font-extrabold ${
+                          className={`rounded px-2 py-0.5 text-[10px] font-mono font-bold border ${
                             task.status === 'READY'
-                              ? 'bg-teal-600 text-white'
-                              : 'bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200'
+                              ? 'bg-teal-500/10 text-teal-400 border-teal-500/25'
+                              : 'bg-[#141414] text-zinc-300 border border-[#262626]'
                           }`}
                         >
                           {task.status}
@@ -504,9 +506,9 @@ export default function SetupQueuePage() {
                       <td className="py-3 px-3 text-right whitespace-nowrap">
                         <button
                           onClick={() => handleLaunch(task)}
-                          className="flex items-center gap-1.5 rounded-md bg-emerald-600 hover:bg-emerald-700 px-3 py-1.5 text-xs font-bold text-white shadow-2xs transition-colors ml-auto"
+                          className="vercel-btn-primary flex items-center gap-1.5 py-1 px-3 ml-auto cursor-pointer"
                         >
-                          <Rocket className="h-3.5 w-3.5" />
+                          <Rocket className="h-3.5 w-3.5 text-black" />
                           <span>Launch</span>
                         </button>
                       </td>

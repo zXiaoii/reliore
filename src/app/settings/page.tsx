@@ -156,34 +156,36 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans">
-      <div className="border-b border-zinc-200 bg-white px-3 py-4 dark:border-zinc-800 dark:bg-zinc-900 sm:px-6">
-        <div className="flex items-center gap-2">
-          <Settings className="h-5 w-5 text-zinc-900 dark:text-white" />
-          <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
-            Operations &amp; Automation Settings
-          </h1>
-          <span className="rounded-md bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 text-xs font-mono font-bold text-zinc-700 dark:text-zinc-300">
-            Admin Config
-          </span>
+    <div className="flex flex-col min-h-screen bg-black text-[#ededed] font-sans">
+      <div className="border-b border-[#1f1f1f] bg-black px-4 py-5 sm:px-8">
+        <div className="max-w-5xl mx-auto w-full">
+          <div className="flex items-center gap-2">
+            <Settings className="h-5 w-5 text-white" />
+            <h1 className="text-xl font-bold tracking-tight text-white">
+              Operations &amp; Automation Settings
+            </h1>
+            <span className="rounded-md bg-[#121212] border border-[#262626] px-2 py-0.5 text-xs font-mono font-semibold text-zinc-300">
+              Admin Config
+            </span>
+          </div>
+          <p className="text-xs text-zinc-400 mt-1">
+            Configure real-time database, dynamic campaign actions (§7), creative request types (§8), and team roles without hardcoding.
+          </p>
         </div>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-          Configure real-time database, dynamic campaign actions (§7), creative request types (§8), and team roles without hardcoding.
-        </p>
       </div>
 
-      <div className="flex-1 p-3 sm:p-6 max-w-5xl w-full space-y-6">
+      <div className="flex-1 p-4 sm:p-8 max-w-5xl mx-auto w-full space-y-6">
         {/* Section 0: Cloud Firestore Database Connection */}
-        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-2xs dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-zinc-200 pb-3 dark:border-zinc-800 gap-2">
+        <div className="vercel-card p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-[#1f1f1f] pb-3.5 gap-2">
             <div>
               <div className="flex items-center gap-2">
-                <Database className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                <h2 className="text-sm font-bold text-zinc-900 dark:text-white">
+                <Database className="h-4 w-4 text-purple-400" />
+                <h2 className="text-sm font-bold text-white">
                   Database &amp; Live Real-Time Sync (Cloud Firestore)
                 </h2>
               </div>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              <p className="text-xs text-zinc-400 mt-0.5">
                 Fastest database setup for text and links: zero schema migrations, automatic offline cache, and 0ms optimistic UI updates.
               </p>
             </div>
@@ -191,13 +193,13 @@ export default function SettingsPage() {
             {/* Connection Status Pill */}
             <div>
               {isLiveConnected ? (
-                <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 px-3 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-3 py-1 text-xs font-mono font-bold text-emerald-400">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
                   <span>Cloud Firestore Live: {fbConfig.projectId}</span>
                 </div>
               ) : (
-                <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300">
-                  <span className="h-2 w-2 rounded-full bg-amber-500" />
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 px-3 py-1 text-xs font-mono font-bold text-amber-400">
+                  <span className="h-2 w-2 rounded-full bg-amber-400" />
                   <span>Local Storage Mode (Zero Setup Active)</span>
                 </div>
               )}
@@ -207,7 +209,7 @@ export default function SettingsPage() {
           <form onSubmit={handleSaveFirebaseConfig} className="mt-4 space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
               <div>
-                <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1 font-mono">
                   Firebase Project ID *
                 </label>
                 <input
@@ -215,12 +217,12 @@ export default function SettingsPage() {
                   placeholder="e.g. media-ops-pipeline-2026"
                   value={fbConfig.projectId}
                   onChange={(e) => setFbConfig({ ...fbConfig, projectId: e.target.value })}
-                  className="w-full rounded border border-zinc-300 bg-white p-2 font-mono text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+                  className="w-full rounded-md border border-[#262626] bg-black p-2 font-mono text-xs text-white focus:border-zinc-500 focus:outline-hidden"
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1 font-mono">
                   API Key (Web API Key) *
                 </label>
                 <input
@@ -228,12 +230,12 @@ export default function SettingsPage() {
                   placeholder="AIzaSy..."
                   value={fbConfig.apiKey}
                   onChange={(e) => setFbConfig({ ...fbConfig, apiKey: e.target.value })}
-                  className="w-full rounded border border-zinc-300 bg-white p-2 font-mono text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+                  className="w-full rounded-md border border-[#262626] bg-black p-2 font-mono text-xs text-white focus:border-zinc-500 focus:outline-hidden"
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1 font-mono">
                   Auth Domain (Optional)
                 </label>
                 <input
@@ -241,12 +243,12 @@ export default function SettingsPage() {
                   placeholder="project-id.firebaseapp.com"
                   value={fbConfig.authDomain}
                   onChange={(e) => setFbConfig({ ...fbConfig, authDomain: e.target.value })}
-                  className="w-full rounded border border-zinc-300 bg-white p-2 font-mono text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+                  className="w-full rounded-md border border-[#262626] bg-black p-2 font-mono text-xs text-white focus:border-zinc-500 focus:outline-hidden"
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1 font-mono">
                   App ID (Optional)
                 </label>
                 <input
@@ -254,18 +256,18 @@ export default function SettingsPage() {
                   placeholder="1:123456789:web:abcdef"
                   value={fbConfig.appId}
                   onChange={(e) => setFbConfig({ ...fbConfig, appId: e.target.value })}
-                  className="w-full rounded border border-zinc-300 bg-white p-2 font-mono text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+                  className="w-full rounded-md border border-[#262626] bg-black p-2 font-mono text-xs text-white focus:border-zinc-500 focus:outline-hidden"
                 />
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between pt-2 border-t border-zinc-200 dark:border-zinc-800 gap-2">
+            <div className="flex flex-wrap items-center justify-between pt-3 border-t border-[#1f1f1f] gap-2">
               <div className="flex items-center gap-2">
                 <button
                   type="submit"
-                  className="flex items-center gap-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 px-4 py-2 text-xs font-bold text-white shadow-2xs"
+                  className="vercel-btn-primary flex items-center gap-1.5 cursor-pointer"
                 >
-                  <Save className="h-3.5 w-3.5" />
+                  <Save className="h-3.5 w-3.5 text-black" />
                   <span>Save &amp; Connect Cloud Firestore</span>
                 </button>
 
@@ -273,10 +275,10 @@ export default function SettingsPage() {
                   <button
                     type="button"
                     onClick={handleSeedFirestore}
-                    className="flex items-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
+                    className="vercel-btn-secondary flex items-center gap-1.5 cursor-pointer"
                     title="Upload local tasks to Firestore"
                   >
-                    <RefreshCw className="h-3.5 w-3.5 text-zinc-500" />
+                    <RefreshCw className="h-3.5 w-3.5 text-zinc-400" />
                     <span>Push Local State to Firestore</span>
                   </button>
                 )}
@@ -286,31 +288,31 @@ export default function SettingsPage() {
                 <button
                   type="button"
                   onClick={handleDisconnectFirebase}
-                  className="text-xs text-rose-600 hover:underline font-semibold"
+                  className="text-xs text-rose-400 hover:underline font-semibold cursor-pointer"
                 >
                   Disconnect &amp; Reset
                 </button>
               )}
             </div>
 
-            <p className="text-[11px] text-zinc-400">
-              💡 <em>How to get these keys:</em> In your <a href="https://console.firebase.google.com" target="_blank" rel="noopener noreferrer" className="text-blue-500 underline inline-flex items-center gap-0.5">Firebase Console <ExternalLink className="h-2.5 w-2.5" /></a>, go to Project Settings &gt; General &gt; Your Apps &gt; Web App, copy the config, and paste it here or into <code>.env.local</code>.
+            <p className="text-[11px] text-zinc-500 pt-1">
+              💡 <em>How to get these keys:</em> In your <a href="https://console.firebase.google.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 underline inline-flex items-center gap-0.5">Firebase Console <ExternalLink className="h-2.5 w-2.5" /></a>, go to Project Settings &gt; General &gt; Your Apps &gt; Web App, copy the config, and paste it here.
             </p>
           </form>
         </div>
 
         {/* Section: Slack Webhook Notifications (Real-Time Team Alerts) */}
-        <div className="rounded-xl border border-purple-200 dark:border-purple-900/60 bg-white dark:bg-zinc-900 p-5 shadow-2xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-200 pb-3 dark:border-zinc-800 gap-2">
-            <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-600 text-white font-bold text-sm">
+        <div className="vercel-card p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#1f1f1f] pb-3.5 gap-2">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-7 w-7 items-center justify-center rounded-md bg-[#181818] border border-[#262626] text-white font-bold text-sm">
                 #
               </span>
               <div>
-                <h2 className="text-sm font-bold text-zinc-900 dark:text-white">
+                <h2 className="text-sm font-bold text-white">
                   Slack Notifications (Creative Submissions)
                 </h2>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                <p className="text-xs text-zinc-400">
                   Notify Charles &amp; media buyers whenever Yzah delivers new creative cuts or updates Drive files.
                 </p>
               </div>
@@ -320,7 +322,7 @@ export default function SettingsPage() {
               type="button"
               onClick={handleTestSlackNotification}
               disabled={isTestingSlack}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-950/50 px-3 py-1.5 text-xs font-bold text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors disabled:opacity-50 self-start sm:self-auto"
+              className="vercel-btn-secondary inline-flex items-center gap-1.5 cursor-pointer disabled:opacity-50 self-start sm:self-auto"
             >
               {isTestingSlack ? 'Sending Test...' : '⚡ Send Test Slack Notification'}
             </button>
@@ -328,7 +330,7 @@ export default function SettingsPage() {
 
           <form onSubmit={handleSaveSlackWebhook} className="mt-4 space-y-3">
             <div>
-              <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 block mb-1">
+              <label className="text-xs font-semibold text-zinc-300 block mb-1 font-mono">
                 Slack Incoming Webhook URL
               </label>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
@@ -337,31 +339,31 @@ export default function SettingsPage() {
                   placeholder="https://your-slack-webhook-url-here"
                   value={slackWebhookUrl}
                   onChange={(e) => setSlackWebhookUrl(e.target.value)}
-                  className="flex-1 rounded-lg border border-zinc-300 bg-white p-2 text-xs font-mono text-zinc-900 placeholder:text-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white focus:outline-hidden"
+                  className="flex-1 rounded-md border border-[#262626] bg-black p-2 text-xs font-mono text-white placeholder-zinc-500 focus:border-zinc-500 focus:outline-hidden"
                 />
                 <button
                   type="submit"
-                  className="rounded-lg bg-zinc-900 px-4 py-2 text-xs font-bold text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-100 transition-colors shrink-0 shadow-2xs"
+                  className="vercel-btn-primary cursor-pointer shrink-0"
                 >
                   Save Webhook
                 </button>
               </div>
             </div>
 
-            <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+            <p className="text-[11px] text-zinc-500">
               💡 <em>How to set up:</em> In your Slack workspace, create an <strong>Incoming Webhook</strong> for your channel (e.g. <code>#creative-deliveries</code> or <code>#media-ops</code>), and paste the URL above. The app will automatically post rich cards with Drive links, quantities, and hooks!
             </p>
           </form>
         </div>
 
         {/* Section 1: Campaign Action Types (§7) */}
-        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-2xs dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="flex items-center justify-between border-b border-zinc-200 pb-3 dark:border-zinc-800">
+        <div className="vercel-card p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#1f1f1f] pb-3.5 gap-3">
             <div>
-              <h2 className="text-sm font-bold text-zinc-900 dark:text-white">
+              <h2 className="text-sm font-bold text-white">
                 Campaign Action Types (§7)
               </h2>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-zinc-400">
                 Actions media buyers can trigger from the smart dashboard or campaign pages.
               </p>
             </div>
@@ -372,13 +374,13 @@ export default function SettingsPage() {
                 value={newAction}
                 onChange={(e) => setNewAction(e.target.value)}
                 placeholder="New action name..."
-                className="rounded-md border border-zinc-300 bg-white py-1.5 px-3 text-xs uppercase text-zinc-900 placeholder:text-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+                className="rounded-md border border-[#262626] bg-black py-1.5 px-3 text-xs uppercase text-white placeholder-zinc-500 focus:border-zinc-500 focus:outline-hidden"
               />
               <button
                 type="submit"
-                className="flex items-center gap-1 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 shadow-sm"
+                className="vercel-btn-primary flex items-center gap-1 cursor-pointer shrink-0"
               >
-                <Plus className="h-3.5 w-3.5" />
+                <Plus className="h-3.5 w-3.5 text-black" />
                 <span>Add Action</span>
               </button>
             </form>
@@ -388,14 +390,14 @@ export default function SettingsPage() {
             {settings.campaignActions.map((action) => (
               <div
                 key={action}
-                className="flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 dark:border-zinc-800 dark:bg-zinc-800/60"
+                className="flex items-center justify-between rounded-md border border-[#262626] bg-black p-2.5"
               >
-                <span className="font-mono text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate">
+                <span className="font-mono text-xs font-semibold text-zinc-200 truncate">
                   {action}
                 </span>
                 <button
                   onClick={() => handleRemoveAction(action)}
-                  className="rounded p-1 text-zinc-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40"
+                  className="rounded p-1 text-zinc-500 hover:text-rose-400 cursor-pointer"
                   title="Remove action"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
@@ -406,13 +408,13 @@ export default function SettingsPage() {
         </div>
 
         {/* Section 2: Creative Request Types (§8) */}
-        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-2xs dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="flex items-center justify-between border-b border-zinc-200 pb-3 dark:border-zinc-800">
+        <div className="vercel-card p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#1f1f1f] pb-3.5 gap-3">
             <div>
-              <h2 className="text-sm font-bold text-zinc-900 dark:text-white">
+              <h2 className="text-sm font-bold text-white">
                 Creative Request Types (§8)
               </h2>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-zinc-400">
                 Multi-select creative requirements available when creating actions (swipes, playbooks, iterations).
               </p>
             </div>
@@ -423,13 +425,13 @@ export default function SettingsPage() {
                 value={newCreativeType}
                 onChange={(e) => setNewCreativeType(e.target.value)}
                 placeholder="New creative type..."
-                className="rounded-md border border-zinc-300 bg-white py-1.5 px-3 text-xs uppercase text-zinc-900 placeholder:text-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+                className="rounded-md border border-[#262626] bg-black py-1.5 px-3 text-xs uppercase text-white placeholder-zinc-500 focus:border-zinc-500 focus:outline-hidden"
               />
               <button
                 type="submit"
-                className="flex items-center gap-1 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 shadow-sm"
+                className="vercel-btn-primary flex items-center gap-1 cursor-pointer shrink-0"
               >
-                <Plus className="h-3.5 w-3.5" />
+                <Plus className="h-3.5 w-3.5 text-black" />
                 <span>Add Type</span>
               </button>
             </form>
@@ -439,14 +441,14 @@ export default function SettingsPage() {
             {settings.creativeRequestTypes.map((type) => (
               <div
                 key={type}
-                className="flex items-center justify-between rounded-lg border border-purple-200 bg-purple-50/50 p-2.5 dark:border-purple-900/40 dark:bg-purple-950/20"
+                className="flex items-center justify-between rounded-md border border-[#262626] bg-black p-2.5"
               >
-                <span className="font-mono text-xs font-bold text-purple-900 dark:text-purple-200 truncate">
+                <span className="font-mono text-xs font-semibold text-purple-300 truncate">
                   {type}
                 </span>
                 <button
                   onClick={() => handleRemoveCreativeType(type)}
-                  className="rounded p-1 text-zinc-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40"
+                  className="rounded p-1 text-zinc-500 hover:text-rose-400 cursor-pointer"
                   title="Remove type"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
@@ -457,34 +459,34 @@ export default function SettingsPage() {
         </div>
 
         {/* Section 3: Team Directory & Roles (§3) */}
-        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-2xs dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="flex items-center justify-between border-b border-zinc-200 pb-3 dark:border-zinc-800">
+        <div className="vercel-card p-6">
+          <div className="flex items-center justify-between border-b border-[#1f1f1f] pb-3.5">
             <div>
-              <h2 className="text-sm font-bold text-zinc-900 dark:text-white">
+              <h2 className="text-sm font-bold text-white">
                 Team Roles &amp; Responsibilities (§3)
               </h2>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-zinc-400">
                 User directory defining responsibilities for media buyers, creative leads, and setup executors.
               </p>
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-zinc-500 font-semibold">
-              <Shield className="h-3.5 w-3.5 text-emerald-600" />
-              <span>Role-Based Access Control</span>
+            <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-semibold font-mono">
+              <Shield className="h-3.5 w-3.5 text-emerald-400" />
+              <span>RBAC Active</span>
             </div>
           </div>
 
-          <div className="mt-4 divide-y divide-zinc-200 dark:divide-zinc-800">
+          <div className="mt-4 divide-y divide-[#1a1a1a]">
             {users.map((user) => (
               <div key={user.uid} className="flex items-center justify-between py-3 text-xs">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-200 dark:bg-zinc-800 font-bold text-zinc-700 dark:text-zinc-300">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#181818] border border-[#262626] font-bold text-zinc-200">
                     {user.displayName.substring(0, 2).toUpperCase()}
                   </div>
                   <div>
-                    <span className="font-bold text-zinc-900 dark:text-white block">
+                    <span className="font-bold text-white block">
                       {user.displayName}
                     </span>
-                    <span className="text-[11px] text-zinc-400 font-mono">
+                    <span className="text-[11px] text-zinc-500 font-mono">
                       {user.email}
                     </span>
                   </div>
@@ -492,12 +494,12 @@ export default function SettingsPage() {
 
                 <div className="flex items-center gap-3">
                   <span
-                    className={`rounded px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase ${
+                    className={`rounded px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase border ${
                       user.role === 'media_buyer'
-                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300'
+                        ? 'bg-blue-500/10 text-blue-400 border-blue-500/25'
                         : user.role === 'creative'
-                        ? 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300'
-                        : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
+                        ? 'bg-purple-500/10 text-purple-400 border-purple-500/25'
+                        : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25'
                     }`}
                   >
                     {(user.role || 'pending').replace('_', ' ')}
