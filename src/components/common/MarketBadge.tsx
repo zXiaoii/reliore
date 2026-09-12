@@ -111,6 +111,7 @@ export function getMarketLabel(market: Market | string): string {
 interface MarketBadgeProps {
   market: Market | string;
   showName?: boolean;
+  shortCode?: boolean;
   size?: 'xs' | 'sm' | 'md';
   className?: string;
 }
@@ -118,11 +119,14 @@ interface MarketBadgeProps {
 export function MarketBadge({
   market,
   showName = true,
+  shortCode = false,
   size = 'sm',
   className = '',
 }: MarketBadgeProps) {
   const norm = (typeof market === 'string' ? market : '').toUpperCase().trim();
-  const label = getMarketLabel(market);
+  const fullName = getMarketLabel(market);
+  const code = norm === 'GB' ? 'UK' : norm === 'AU' ? 'AUS' : norm;
+  const label = shortCode ? code : fullName;
 
   // Styled colors per country
   let colorStyles =
@@ -153,6 +157,7 @@ export function MarketBadge({
 
   return (
     <span
+      title={fullName}
       className={`inline-flex items-center font-semibold rounded-md border tracking-tight shrink-0 shadow-2xs transition-colors ${colorStyles} ${sizeStyles} ${className}`}
     >
       <MarketFlagIcon market={market} className={`${flagSize} rounded-2xs shrink-0 shadow-2xs`} />

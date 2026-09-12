@@ -50,6 +50,7 @@ export default function SmartSpreadsheetDashboard() {
   const [priorityFilter, setPriorityFilter] = useState('ALL');
   const [groupBy, setGroupBy] = useState<'none' | 'campaign' | 'product' | 'owner' | 'stage'>('none');
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
+  const [tableDensity, setTableDensity] = useState<'fit' | 'relaxed'>('fit');
 
   // Modals
   const [isNewActionOpen, setIsNewActionOpen] = useState(false);
@@ -230,7 +231,7 @@ export default function SmartSpreadsheetDashboard() {
                 className="vercel-btn-primary flex items-center gap-1.5 cursor-pointer"
               >
                 <Plus className="h-3.5 w-3.5 text-black" />
-                <span>+ New Action</span>
+                <span>New Action</span>
               </button>
             )}
           </div>
@@ -564,32 +565,67 @@ export default function SmartSpreadsheetDashboard() {
         ) : (
           /* Spreadsheet Table View (Vercel Style) */
           <div className="w-full max-w-full min-w-0 space-y-2">
-            <div className="flex items-center justify-between text-[11px] text-zinc-400 px-1">
-              <div className="flex items-center gap-1.5 font-medium">
-                <ArrowRightLeft className="h-3.5 w-3.5 text-zinc-400 shrink-0" />
-                <span>Scroll table horizontally to view all 12 columns</span>
+            <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-zinc-400 px-1">
+              <div className="flex items-center gap-2">
+                <span className="flex items-center gap-1 text-emerald-400 font-semibold font-mono text-[10px] bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  {tableDensity === 'fit' ? 'FIT TO SCREEN' : 'RELAXED'}
+                </span>
+                <span className="hidden sm:inline text-zinc-500">·</span>
+                <span className="hidden sm:inline text-zinc-400">
+                  {tableDensity === 'fit' ? 'All 12 columns visible without scrolling' : 'Wide columns with horizontal scroll enabled'}
+                </span>
               </div>
-              <span className="font-mono text-[10px] bg-[#121212] px-2 py-0.5 rounded text-zinc-400 border border-[#262626]">
-                {filteredTasks.length} {filteredTasks.length === 1 ? 'task' : 'tasks'}
-              </span>
+
+              <div className="flex items-center gap-2">
+                <div className="flex items-center rounded-md bg-black border border-[#262626] p-0.5 text-[10px]">
+                  <button
+                    type="button"
+                    onClick={() => setTableDensity('fit')}
+                    className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                      tableDensity === 'fit'
+                        ? 'bg-[#1e1e1e] text-white border border-[#383838] font-semibold shadow-2xs'
+                        : 'text-zinc-500 hover:text-zinc-300'
+                    }`}
+                    title="Fit all columns to screen without horizontal scrolling"
+                  >
+                    Fit Screen
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTableDensity('relaxed')}
+                    className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                      tableDensity === 'relaxed'
+                        ? 'bg-[#1e1e1e] text-white border border-[#383838] font-semibold shadow-2xs'
+                        : 'text-zinc-500 hover:text-zinc-300'
+                    }`}
+                    title="Relaxed wider columns with horizontal scroll"
+                  >
+                    Relaxed
+                  </button>
+                </div>
+                <span className="font-mono text-[10px] bg-[#121212] px-2 py-0.5 rounded text-zinc-400 border border-[#262626]">
+                  {filteredTasks.length} {filteredTasks.length === 1 ? 'task' : 'tasks'}
+                </span>
+              </div>
             </div>
 
-            <div className="w-full max-w-full min-w-0 overflow-x-auto overscroll-x-contain touch-pan-x rounded-xl border border-[#222222] bg-[#0a0a0a] shadow-xs custom-scrollbar">
-              <table className="w-full text-left text-xs border-collapse min-w-[1100px]">
+            <div className={`w-full max-w-full min-w-0 rounded-xl border border-[#222222] bg-[#0a0a0a] shadow-xs custom-scrollbar ${tableDensity === 'fit' ? 'overflow-x-auto lg:overflow-x-visible' : 'overflow-x-auto overscroll-x-contain'}`}>
+              <table className={`w-full text-left text-xs border-collapse ${tableDensity === 'fit' ? 'w-full' : 'min-w-[1100px]'}`}>
                 <thead className="border-b border-[#222222] bg-black font-semibold text-zinc-400 uppercase tracking-wider text-[10px] sticky top-0">
                   <tr>
-                    <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Priority</th>
-                    <th className="py-2.5 px-2.5 border-r border-[#1f1f1f]">Mkt</th>
-                    <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Product</th>
-                    <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Campaign</th>
-                    <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Ad Account</th>
-                    <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Current Action</th>
-                    <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Owner</th>
-                    <th className="py-2.5 px-2.5 border-r border-[#1f1f1f]">Stage</th>
-                    <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Deadline</th>
-                    <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Status</th>
-                    <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Next Action</th>
-                    <th className="py-2.5 px-3 text-right">Details</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[48px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Priority</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[52px] py-2 px-1.5' : 'py-2.5 px-2.5'} border-r border-[#1f1f1f]`}>Mkt</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[82px] py-2 px-2' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Product</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[140px] py-2 px-2' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Campaign</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[68px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Account</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[105px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Action</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[76px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Owner</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[54px] py-2 px-1 text-center' : 'py-2.5 px-2.5'} border-r border-[#1f1f1f]`}>Stage</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[72px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Deadline</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[105px] py-2 px-1.5' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Status</th>
+                    <th className={`${tableDensity === 'fit' ? 'py-2 px-2 min-w-[110px]' : 'py-2.5 px-3'} border-r border-[#1f1f1f]`}>Next Action</th>
+                    <th className={`${tableDensity === 'fit' ? 'w-[44px] py-2 px-1 text-center' : 'py-2.5 px-3 text-right'}`}>Open</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#1a1a1a]">
@@ -619,12 +655,12 @@ export default function SmartSpreadsheetDashboard() {
                             }`}
                           >
                             {/* Priority with inline edit */}
-                            <td className="py-2.5 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
+                            <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-2.5 px-3'} border-r border-[#1a1a1a] whitespace-nowrap`}>
                               <select
                                 value={task.priority}
                                 onChange={(e) => handleInlinePriorityChange(task, e.target.value as Priority)}
                                 style={{ colorScheme: 'dark' }}
-                                className="rounded-md bg-black text-zinc-200 border border-[#262626] px-1.5 py-0.5 font-bold text-xs cursor-pointer focus:outline-hidden [color-scheme:dark] hover:border-[#444] transition-colors"
+                                className="w-full rounded-md bg-black text-zinc-200 border border-[#262626] px-1 py-0.5 font-bold text-[11px] cursor-pointer focus:outline-hidden [color-scheme:dark] hover:border-[#444] transition-colors"
                               >
                                 <option value="P1" className="bg-black text-zinc-100">🔥 P1</option>
                                 <option value="P2" className="bg-black text-zinc-100">⏱️ P2</option>
@@ -633,23 +669,25 @@ export default function SmartSpreadsheetDashboard() {
                             </td>
 
                             {/* Market with SVG flag */}
-                            <td className="py-2.5 px-2.5 border-r border-[#1a1a1a] whitespace-nowrap">
-                              <MarketBadge market={task.market} size="xs" />
+                            <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-2.5 px-2.5'} border-r border-[#1a1a1a] whitespace-nowrap`}>
+                              <MarketBadge market={task.market} size="xs" shortCode={tableDensity === 'fit'} />
                             </td>
 
                             {/* Product */}
-                            <td className="py-2.5 px-3 border-r border-[#1a1a1a] font-semibold text-white whitespace-nowrap">
-                              {task.product}
+                            <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1.5' : 'py-2.5 px-3'} border-r border-[#1a1a1a] font-semibold text-white whitespace-nowrap`}>
+                              <span className="truncate block max-w-[80px]" title={task.product}>
+                                {task.product}
+                              </span>
                             </td>
 
                             {/* Campaign */}
-                            <td className="py-2.5 px-3 border-r border-[#1a1a1a] font-mono font-bold text-white hover:text-purple-300 whitespace-nowrap">
+                            <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1.5' : 'py-2.5 px-3'} border-r border-[#1a1a1a] font-mono font-bold text-white hover:text-purple-300 whitespace-nowrap`}>
                               <button
                                 onClick={() => {
                                   const c = campaigns.find((camp) => camp.name === task.campaign);
                                   if (c) setSelectedCampaign(c);
                                 }}
-                                className="hover:underline text-left truncate max-w-[180px] block cursor-pointer"
+                                className="hover:underline text-left truncate max-w-[135px] block cursor-pointer"
                                 title={task.campaign}
                               >
                                 {task.campaign}
@@ -657,37 +695,43 @@ export default function SmartSpreadsheetDashboard() {
                             </td>
 
                             {/* Ad Account */}
-                            <td className="py-2.5 px-3 border-r border-[#1a1a1a] font-mono text-[11px] font-bold text-zinc-400 whitespace-nowrap">
-                              {task.adAccount}
+                            <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1.5' : 'py-2.5 px-3'} border-r border-[#1a1a1a] font-mono text-[10px] font-bold text-zinc-400 whitespace-nowrap`}>
+                              <span className="truncate block max-w-[65px]" title={task.adAccount}>
+                                {task.adAccount}
+                              </span>
                             </td>
 
                             {/* Current Action */}
-                            <td className="py-2.5 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
-                              <span className="rounded bg-[#141414] border border-[#262626] px-1.5 py-0.5 font-semibold text-zinc-300 text-[11px]">
+                            <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1.5' : 'py-2.5 px-3'} border-r border-[#1a1a1a] whitespace-nowrap`}>
+                              <span
+                                className="rounded bg-[#141414] border border-[#262626] px-1.5 py-0.5 font-semibold text-zinc-300 text-[10px] truncate block max-w-[100px]"
+                                title={task.action}
+                              >
                                 {task.action}
                               </span>
                             </td>
 
                             {/* Owner with inline edit */}
-                            <td className="py-2.5 px-3 border-r border-[#1a1a1a] whitespace-nowrap font-semibold">
+                            <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-2.5 px-3'} border-r border-[#1a1a1a] whitespace-nowrap font-semibold`}>
                               <select
                                 value={task.owner}
                                 onChange={(e) => handleInlineOwnerChange(task, e.target.value)}
                                 style={{ colorScheme: 'dark' }}
-                                className="rounded-md bg-black text-xs font-semibold text-zinc-200 border border-[#262626] px-2 py-1 cursor-pointer focus:outline-hidden [color-scheme:dark] hover:border-[#444] transition-colors"
+                                className="w-full rounded-md bg-black text-[11px] font-semibold text-zinc-200 border border-[#262626] px-1 py-0.5 cursor-pointer focus:outline-hidden [color-scheme:dark] hover:border-[#444] transition-colors truncate"
+                                title={`Owner: ${task.owner}`}
                               >
-                                <option value="Yzah" className="bg-black text-zinc-100 py-1">Yzah (Creative)</option>
-                                <option value="Karl" className="bg-black text-zinc-100 py-1">Karl (Setup)</option>
-                                <option value="Mark" className="bg-black text-zinc-100 py-1">Mark (Setup)</option>
-                                <option value="Christian" className="bg-black text-zinc-100 py-1">Christian (Setup)</option>
-                                <option value="Charles" className="bg-black text-zinc-100 py-1">Charles (Buyer)</option>
+                                <option value="Yzah" className="bg-black text-zinc-100 py-1">Yzah</option>
+                                <option value="Karl" className="bg-black text-zinc-100 py-1">Karl</option>
+                                <option value="Mark" className="bg-black text-zinc-100 py-1">Mark</option>
+                                <option value="Christian" className="bg-black text-zinc-100 py-1">Christian</option>
+                                <option value="Charles" className="bg-black text-zinc-100 py-1">Charles</option>
                               </select>
                             </td>
 
                             {/* Stage */}
-                            <td className="py-2.5 px-2.5 border-r border-[#1a1a1a] whitespace-nowrap">
+                            <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1 text-center' : 'py-2.5 px-2.5'} border-r border-[#1a1a1a] whitespace-nowrap`}>
                               <span
-                                className={`rounded-md px-2 py-0.5 text-[10px] font-mono font-semibold border ${
+                                className={`rounded px-1.5 py-0.5 text-[9px] font-mono font-semibold border ${
                                   task.stage === 'Creative'
                                     ? 'bg-purple-500/10 text-purple-400 border-purple-500/25'
                                     : task.stage === 'Setup'
@@ -704,25 +748,28 @@ export default function SmartSpreadsheetDashboard() {
                             </td>
 
                             {/* Deadline */}
-                            <td className="py-2.5 px-3 border-r border-[#1a1a1a] font-mono text-[11px] whitespace-nowrap text-zinc-400">
-                              {task.deadline}
+                            <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1.5' : 'py-2.5 px-3'} border-r border-[#1a1a1a] font-mono text-[10px] whitespace-nowrap text-zinc-400`}>
+                              <span className="truncate block max-w-[68px]" title={task.deadline}>
+                                {task.deadline}
+                              </span>
                             </td>
 
                             {/* Status with inline edit */}
-                            <td className="py-2.5 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
+                            <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1' : 'py-2.5 px-3'} border-r border-[#1a1a1a] whitespace-nowrap`}>
                               <select
                                 value={task.status}
                                 onChange={(e) => handleInlineStatusChange(task, e.target.value as WorkStatus)}
                                 style={{ colorScheme: 'dark' }}
-                                className={`rounded-md px-2 py-0.5 text-xs font-semibold cursor-pointer border bg-black ${getStatusBadgeStyle(task.status)} focus:outline-hidden [color-scheme:dark]`}
+                                className={`w-full rounded-md px-1.5 py-0.5 text-[10px] font-semibold cursor-pointer border bg-black ${getStatusBadgeStyle(task.status)} focus:outline-hidden [color-scheme:dark] truncate`}
+                                title={`Status: ${task.status}`}
                               >
                                 <option value="QUEUE" className="bg-black text-zinc-100">QUEUE</option>
                                 <option value="MAKING" className="bg-black text-zinc-100">MAKING</option>
                                 <option value="FOR REVIEW" className="bg-black text-zinc-100">FOR REVIEW</option>
-                                <option value="CHANGES REQUIRED" className="bg-black text-zinc-100">CHANGES REQUIRED</option>
+                                <option value="CHANGES REQUIRED" className="bg-black text-zinc-100">CHANGES REQ</option>
                                 <option value="APPROVED" className="bg-black text-zinc-100">APPROVED</option>
                                 <option value="READY" className="bg-black text-zinc-100">READY</option>
-                                <option value="IN_SETUP" className="bg-black text-zinc-100">IN_SETUP</option>
+                                <option value="IN_SETUP" className="bg-black text-zinc-100">IN SETUP</option>
                                 <option value="QA" className="bg-black text-zinc-100">QA</option>
                                 <option value="LIVE" className="bg-black text-zinc-100">LIVE</option>
                                 <option value="BLOCKED" className="bg-black text-zinc-100">BLOCKED</option>
@@ -730,15 +777,18 @@ export default function SmartSpreadsheetDashboard() {
                             </td>
 
                             {/* Next Action */}
-                            <td className="py-2.5 px-3 border-r border-[#1a1a1a] text-[11px] text-zinc-300 truncate max-w-[220px]">
-                              {task.nextAction}
+                            <td className={`${tableDensity === 'fit' ? 'py-1.5 px-2' : 'py-2.5 px-3'} border-r border-[#1a1a1a] text-[11px] text-zinc-300`}>
+                              <span className="truncate block max-w-[180px] lg:max-w-[240px]" title={task.nextAction}>
+                                {task.nextAction}
+                              </span>
                             </td>
 
                             {/* Action Details Button */}
-                            <td className="py-2.5 px-3 text-right whitespace-nowrap">
+                            <td className={`${tableDensity === 'fit' ? 'py-1.5 px-1 text-center' : 'py-2.5 px-3 text-right'} whitespace-nowrap`}>
                               <button
                                 onClick={() => setSelectedTask(task)}
-                                className="vercel-btn-secondary py-0.5 px-2.5 text-[11px] cursor-pointer"
+                                className="vercel-btn-secondary py-0.5 px-2 text-[10px] cursor-pointer"
+                                title="Open task details"
                               >
                                 Open
                               </button>

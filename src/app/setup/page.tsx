@@ -361,28 +361,32 @@ export default function SetupQueuePage() {
           /* Spreadsheet Table (Vercel Style) */
           <div className="w-full max-w-full min-w-0 space-y-2">
             <div className="flex items-center justify-between text-[11px] text-zinc-400 px-1">
-              <div className="flex items-center gap-1.5 font-medium">
-                <ArrowRightLeft className="h-3.5 w-3.5 text-zinc-400 shrink-0" />
-                <span>Scroll table horizontally for setup fields & launch</span>
+              <div className="flex items-center gap-2">
+                <span className="flex items-center gap-1 text-emerald-400 font-semibold font-mono text-[10px] bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  FIT TO SCREEN
+                </span>
+                <span className="text-zinc-500 hidden sm:inline">·</span>
+                <span className="hidden sm:inline">Setup queue & launch workflow</span>
               </div>
               <span className="font-mono text-[10px] bg-[#121212] px-2 py-0.5 rounded text-zinc-400 border border-[#262626]">
                 {filtered.length} {filtered.length === 1 ? 'task' : 'tasks'}
               </span>
             </div>
-            <div className="w-full max-w-full min-w-0 overflow-x-auto overscroll-x-contain touch-pan-x rounded-xl border border-[#222222] bg-[#0a0a0a] shadow-xs custom-scrollbar">
-              <table className="w-full text-left text-xs border-collapse min-w-[1000px]">
+            <div className="w-full max-w-full min-w-0 overflow-x-auto rounded-xl border border-[#222222] bg-[#0a0a0a] shadow-xs custom-scrollbar">
+              <table className="w-full text-left text-xs border-collapse">
               <thead className="border-b border-[#222222] bg-black font-semibold text-zinc-400 uppercase tracking-wider text-[10px]">
                 <tr>
-                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Priority</th>
-                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Product</th>
-                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Campaign</th>
-                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Action</th>
-                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Ad Account</th>
-                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Ad Set Name</th>
-                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Creative</th>
-                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Deadline</th>
-                  <th className="py-2.5 px-3 border-r border-[#1f1f1f]">Status</th>
-                  <th className="py-2.5 px-3 text-right">Launch Action</th>
+                  <th className="py-2 px-2 border-r border-[#1f1f1f] w-[46px]">Priority</th>
+                  <th className="py-2 px-2 border-r border-[#1f1f1f] w-[80px]">Product</th>
+                  <th className="py-2 px-2 border-r border-[#1f1f1f] w-[140px]">Campaign</th>
+                  <th className="py-2 px-2 border-r border-[#1f1f1f] w-[105px]">Action</th>
+                  <th className="py-2 px-2 border-r border-[#1f1f1f] w-[75px]">Ad Account</th>
+                  <th className="py-2 px-2 border-r border-[#1f1f1f] w-[140px]">Ad Set Name</th>
+                  <th className="py-2 px-2 border-r border-[#1f1f1f] w-[70px]">Creative</th>
+                  <th className="py-2 px-2 border-r border-[#1f1f1f] w-[75px]">Deadline</th>
+                  <th className="py-2 px-2 border-r border-[#1f1f1f] w-[95px]">Status</th>
+                  <th className="py-2 px-2 text-right w-[110px]">Launch</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1a1a1a]">
