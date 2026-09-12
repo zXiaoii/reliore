@@ -1029,8 +1029,7 @@ class OperationsStore {
       actor
     );
 
-    // 4. Trigger 2-Day Automation check (Ã‚Â§16)
-    this.registerNextDayCreativeTrigger(task.campaign, newAdSet.id, task.product, task.market, task.adAccount);
+    // 4. Trigger removed. Handled by 48-Hour Idle Monitor.
   }
 
   // --- AUTOMATIC 2-Day CREATIVE TRIGGER (Ã‚Â§16) ---
