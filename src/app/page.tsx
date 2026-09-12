@@ -235,10 +235,10 @@ export default function SmartSpreadsheetDashboard() {
             <button
               onClick={handleRunNextDayTrigger}
               className="vercel-btn-secondary flex items-center gap-1.5 cursor-pointer"
-              title="Scan all campaigns for 48-hour inactivity"
+              title="Simulate automatic 2-Day creative task creation"
             >
               <Zap className="h-3.5 w-3.5 text-purple-400" />
-              <span>Run 48-Hour Automation Check</span>
+              <span>48-Hour Check</span>
             </button>
 
             {isMediaBuyer && (
@@ -585,11 +585,11 @@ export default function SmartSpreadsheetDashboard() {
               <div className="flex items-center gap-2">
                 <span className="flex items-center gap-1 text-emerald-400 font-semibold font-mono text-[10px] bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  RELAXED
+                  {tableDensity === 'fit' ? 'FIT TO SCREEN' : 'RELAXED'}
                 </span>
                 <span className="hidden sm:inline text-zinc-500">·</span>
                 <span className="hidden sm:inline text-zinc-400">
-                  Wide columns with horizontal scroll enabled
+                  {tableDensity === 'fit' ? 'All 12 columns visible without scrolling' : 'Wide columns with horizontal scroll enabled'}
                 </span>
               </div>
 
@@ -597,9 +597,9 @@ export default function SmartSpreadsheetDashboard() {
                 <div className="flex items-center rounded-md bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-0.5 text-[10px]">
                   <button
                     type="button"
-                    onClick={() => () => {}}
+                    onClick={() => setTableDensity('fit')}
                     className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
-                      false
+                      tableDensity === 'fit'
                         ? 'bg-[#1e1e1e] text-zinc-900 dark:text-zinc-100 border border-[#383838] font-semibold shadow-2xs'
                         : 'text-zinc-500 hover:text-zinc-300'
                     }`}
@@ -609,9 +609,9 @@ export default function SmartSpreadsheetDashboard() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => () => {}}
+                    onClick={() => setTableDensity('relaxed')}
                     className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
-                      false
+                      tableDensity === 'relaxed'
                         ? 'bg-[#1e1e1e] text-zinc-900 dark:text-zinc-100 border border-[#383838] font-semibold shadow-2xs'
                         : 'text-zinc-500 hover:text-zinc-300'
                     }`}
