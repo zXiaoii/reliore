@@ -17,6 +17,7 @@ import {
   Target,
   Sparkles,
   HelpCircle,
+  Trash2,
 } from 'lucide-react';
 
 interface CreativeTaskDetailModalProps {
@@ -282,13 +283,30 @@ export const CreativeTaskDetailModal: React.FC<CreativeTaskDetailModalProps> = (
 
           {/* Action Buttons */}
           <div className="flex items-center justify-between pt-3 border-t border-zinc-200 dark:border-zinc-800">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
-            >
-              Close
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
+              >
+                Close
+              </button>
+              
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm('Are you sure you want to delete this task?')) {
+                    store.deleteTask(task.id);
+                    onClose();
+                    toast.success('Task deleted successfully');
+                  }
+                }}
+                className="flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100 dark:border-red-900/30 dark:bg-red-950/20 dark:text-red-400 dark:hover:bg-red-950/40"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                <span>Delete</span>
+              </button>
+            </div>
 
             {(task.status === 'FOR REVIEW' || task.status === 'APPROVED' || task.status === 'LIVE') ? (
               <button

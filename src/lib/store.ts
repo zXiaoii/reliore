@@ -532,6 +532,45 @@ class OperationsStore {
     });
   }
 
+  private deleteFromFirestore(collectionName: string, docId: string) {
+    if (typeof window === 'undefined') return;
+    const { db: firestoreDb } = initFirestoreInstance();
+    if (!firestoreDb) return;
+    import('firebase/firestore').then(({ doc, deleteDoc }) => {
+      deleteDoc(doc(firestoreDb, collectionName, docId)).catch((err) => {
+        console.warn(`Firestore ${collectionName} delete error:`, err);
+      });
+    });
+  }
+
+  public deleteAllTasks() {
+    this.tasks.forEach(t => this.deleteFromFirestore('tasks', t.id));
+    this.tasks = [];
+    this.saveTasks();
+    this.notifyAll();
+  }
+
+  public deleteTask(taskId: string) {
+    this.tasks = this.tasks.filter((t) => t.id !== taskId);
+    this.saveTasks();
+    this.deleteFromFirestore('tasks', taskId);
+    this.notifyAll();
+  }
+
+  public deleteCampaign(campaignId: string) {
+    this.campaigns = this.campaigns.filter((c) => c.id !== campaignId);
+    this.saveCampaigns();
+    this.deleteFromFirestore('campaigns', campaignId);
+    this.notifyAll();
+  }
+
+  public deleteAdSet(adSetId: string) {
+    this.adSets = this.adSets.filter((a) => a.id !== adSetId);
+    this.saveAdSets();
+    this.deleteFromFirestore('adSets', adSetId);
+    this.notifyAll();
+  }
+
   public seedToFirestore() {
     if (typeof window === 'undefined') return;
     const { db: firestoreDb } = initFirestoreInstance();

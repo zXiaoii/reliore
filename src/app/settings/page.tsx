@@ -372,6 +372,26 @@ export default function SettingsPage() {
               )}
             </div>
 
+            <div className="pt-4 border-t border-[#1f1f1f]">
+              <div className="flex flex-col gap-1 mb-2">
+                <span className="text-sm font-bold text-red-500">Danger Zone</span>
+                <span className="text-xs text-zinc-500">Permanently delete all tasks from the dashboard and database.</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm('WARNING: Are you absolutely sure you want to delete ALL tasks from the system? This action cannot be undone.')) {
+                    store.deleteAllTasks();
+                    toast.success('All tasks have been deleted.');
+                  }
+                }}
+                className="flex items-center gap-1.5 rounded-lg border border-red-500/20 bg-red-950/20 px-3 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-950/40"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                <span>Nuke All Tasks</span>
+              </button>
+            </div>
+
             <p className="text-[11px] text-zinc-500 pt-1">
               💡 <em>How to get these keys:</em> In your <a href="https://console.firebase.google.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 underline inline-flex items-center gap-0.5">Firebase Console <ExternalLink className="h-2.5 w-2.5" /></a>, go to Project Settings &gt; General &gt; Your Apps &gt; Web App, copy the config, and paste it here.
             </p>

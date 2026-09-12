@@ -19,6 +19,7 @@ import {
   Flame,
   Calendar,
   DollarSign,
+  Trash2,
 } from 'lucide-react';
 
 interface CampaignDetailModalProps {
@@ -108,12 +109,29 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({
               <option value="KILL">KILL</option>
             </select>
 
-            <button
-              onClick={onClose}
-              className="rounded-lg p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
-            >
-              <X className="h-5 w-5" />
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => {
+                  if (confirm('WARNING: Are you sure you want to delete this campaign?')) {
+                    store.deleteCampaign(campaign.id);
+                    onClose();
+                    toast.success('Campaign deleted');
+                  }
+                }}
+                className="rounded-lg p-1.5 text-red-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
+                title="Delete Campaign"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+
+              <button
+                onClick={onClose}
+                className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 transition-colors"
+                title="Close"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -206,18 +224,33 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({
                       )}
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => copyText(adSet.name, `adset-${adSet.id}`)}
-                      className="inline-flex items-center gap-1 text-[11px] font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
-                    >
-                      {copiedKey === `adset-${adSet.id}` ? (
-                        <Check className="h-3 w-3 text-emerald-600" />
-                      ) : (
-                        <Copy className="h-3 w-3" />
-                      )}
-                      <span>Copy Name</span>
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (confirm(`Delete ad set "${adSet.name}"?`)) {
+                            store.deleteAdSet(adSet.id);
+                            toast.success('Ad set deleted');
+                          }
+                        }}
+                        className="inline-flex items-center gap-1 text-[11px] font-mono text-red-500 hover:text-red-700 dark:hover:text-red-400"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        <span>Delete</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => copyText(adSet.name, `adset-${adSet.id}`)}
+                        className="inline-flex items-center gap-1 text-[11px] font-mono text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
+                      >
+                        {copiedKey === `adset-${adSet.id}` ? (
+                          <Check className="h-3.5 w-3.5 text-emerald-600" />
+                        ) : (
+                          <Copy className="h-3.5 w-3.5" />
+                        )}
+                        <span>Copy Name</span>
+                      </button>
+                    </div>
                   </div>
                 );
               })
