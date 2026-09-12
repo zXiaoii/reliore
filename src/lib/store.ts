@@ -1152,7 +1152,7 @@ class OperationsStore {
     this.notifyAll();
   }
 
-  public resetDemoData() {
+  public async resetDemoData() {
     this.tasks = INITIAL_TASKS;
     this.campaigns = INITIAL_CAMPAIGNS;
     this.adSets = INITIAL_ADSETS;
@@ -1165,6 +1165,33 @@ class OperationsStore {
     this.saveSettings();
     this.saveUsers();
     this.notifyAll();
+
+    if (typeof window === 'undefined') return;
+    const { db: firestoreDb } = initFirestoreInstance();
+    if (!firestoreDb) return;
+    
+    try {
+      const { collection, getDocs, deleteDoc, doc, setDoc } = await import('firebase/firestore');
+      
+      // Delete old data
+      for (const colName of ['tasks', 'campaigns', 'adSets']) {
+        const colRef = collection(firestoreDb, colName);
+        const snapshot = await getDocs(colRef);
+        const deletePromises = snapshot.docs.map((d) => deleteDoc(d.ref));
+        await Promise.all(deletePromises);
+      }
+
+      // Insert new data
+      await Promise.all([
+        ...INITIAL_TASKS.map((t) => setDoc(doc(firestoreDb, 'tasks', t.id), t)),
+        ...INITIAL_CAMPAIGNS.map((c) => setDoc(doc(firestoreDb, 'campaigns', c.id), c)),
+        ...INITIAL_ADSETS.map((a) => setDoc(doc(firestoreDb, 'adSets', a.id), a)),
+      ]);
+      
+      console.log('[Store] Reset demo data complete.');
+    } catch (e) {
+      console.error('[Store] Error resetting demo data:', e);
+    }
   }
 }
 

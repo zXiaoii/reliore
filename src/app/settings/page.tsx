@@ -390,6 +390,20 @@ export default function SettingsPage() {
                 <Trash2 className="h-3.5 w-3.5" />
                 <span>Nuke All Tasks</span>
               </button>
+              
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm('CRITICAL WARNING: This will delete ALL Tasks, Campaigns, and Ad Sets from the system, and reset to the default 9 Australian Campaigns. Continue?')) {
+                    store.resetDemoData();
+                    toast.success('Database has been completely nuked and reset to default.');
+                  }
+                }}
+                className="flex items-center gap-1.5 rounded-lg border border-red-500/20 bg-red-950/20 px-3 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-950/40 mt-2"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                <span>Nuke Entire Database (Reset Everything)</span>
+              </button>
             </div>
 
             <p className="text-[11px] text-zinc-500 pt-1">
