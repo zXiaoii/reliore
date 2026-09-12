@@ -28,8 +28,7 @@ export default function ProductsPage() {
       return;
     }
 
-    store.subscribeSettings(() => {}); // trigger update
-    settings.products = [newProduct.trim(), ...settings.products];
+    store.addProduct(newProduct.trim());
     setNewProduct('');
     toast.success(`Product "${newProduct.trim()}" added.`);
   };

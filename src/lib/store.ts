@@ -289,6 +289,32 @@ class OperationsStore {
   private users: TeamUser[] = INITIAL_USERS;
   private nextTaskNumber = 1;
 
+  public updateSettings(newSettings: SettingsConfig) {
+    this.settings = newSettings;
+    this.saveSettings();
+    this.notifyAll();
+    this.syncSettingsToFirestore();
+  }
+
+  private syncSettingsToFirestore() {
+    if (!this.initialized || typeof window === 'undefined') return;
+    import('firebase/firestore').then(({ setDoc, doc }) => {
+      const { db } = initFirestoreInstance();
+      if (db) {
+        setDoc(doc(db, '_meta', 'settings'), this.settings, { merge: true }).catch(() => {});
+      }
+    });
+  }
+
+  public addProduct(product: string) {
+    if (!this.settings.products.includes(product)) {
+      this.settings.products = [product, ...this.settings.products];
+      this.saveSettings();
+      this.notifyAll();
+      this.syncSettingsToFirestore();
+    }
+  }
+
   private campaignListeners: Set<Listener<Campaign[]>> = new Set();
   private adSetListeners: Set<Listener<AdSet[]>> = new Set();
   private taskListeners: Set<Listener<WorkTask[]>> = new Set();
@@ -446,11 +472,6 @@ class OperationsStore {
                 const maxNum = this.tasks.reduce((max, t) => Math.max(max, t.taskNumber || 0), 0);
                 this.nextTaskNumber = Math.max(this.nextTaskNumber, maxNum + 1);
                 this.notifyAll();
-              } else if (this.tasks.length > 0) {
-                // Initial seed to new Firestore database
-                this.tasks.forEach((t) => {
-                  setDoc(doc(firestoreDb, 'tasks', t.id), t, { merge: true }).catch(() => {});
-                });
               }
             },
             (err) => console.warn('Firestore tasks subscription:', err)
@@ -469,10 +490,6 @@ class OperationsStore {
                 this.campaigns = snapshot.docs.map((d) => d.data() as Campaign);
                 this.saveCampaigns();
                 this.notifyAll();
-              } else if (this.campaigns.length > 0) {
-                this.campaigns.forEach((c) => {
-                  setDoc(doc(firestoreDb, 'campaigns', c.id), c, { merge: true }).catch(() => {});
-                });
               }
             },
             (err) => console.warn('Firestore campaigns subscription:', err)
@@ -491,10 +508,6 @@ class OperationsStore {
                 this.adSets = snapshot.docs.map((d) => d.data() as AdSet);
                 this.saveAdSets();
                 this.notifyAll();
-              } else if (this.adSets.length > 0) {
-                this.adSets.forEach((a) => {
-                  setDoc(doc(firestoreDb, 'adSets', a.id), a, { merge: true }).catch(() => {});
-                });
               }
             },
             (err) => console.warn('Firestore adSets subscription:', err)

@@ -45,6 +45,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedEmail = localStorage.getItem('relio_user_email');
+      if (!savedEmail) {
+        setIsEmailModalOpen(true);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     const unsub = store.subscribeUsers((users) => {
       setAvailableUsers(users);
       setCurrentUser((prev) => {
@@ -54,9 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const matched = users.find((u) => u.email.toLowerCase() === savedEmail.toLowerCase());
             if (matched) return matched;
           }
-          // Default to Charles (Media Buyer)
-          const charles = users.find((u) => u.uid === 'charles-01') || users[0];
-          return charles;
+          return null;
         }
         const updated = users.find((u) => u.uid === prev.uid || u.email.toLowerCase() === prev.email.toLowerCase());
         return updated || prev;
