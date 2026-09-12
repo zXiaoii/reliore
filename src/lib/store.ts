@@ -920,7 +920,33 @@ class OperationsStore {
     if (!firestoreDb) return;
 
     try {
-      import('firebase/firestore').then(({ collection, onSnapshot, doc, setDoc }) => {
+      import('firebase/firestore').then(async ({ collection, onSnapshot, doc, getDoc, setDoc, getDocs, deleteDoc }) => {
+        try {
+          const metaRef = doc(firestoreDb, '_meta', 'dataVersion');
+          const metaSnap = await getDoc(metaRef);
+          const currentVersion = metaSnap.exists() ? metaSnap.data()?.version : null;
+
+          if (currentVersion !== 'aus_v2') {
+            console.log('Detected stale or missing data version. Resetting Firestore data...');
+            for (const colName of ['tasks', 'campaigns', 'adSets']) {
+              const colRef = collection(firestoreDb, colName);
+              const snapshot = await getDocs(colRef);
+              const deletePromises = snapshot.docs.map((d) => deleteDoc(d.ref));
+              await Promise.all(deletePromises);
+            }
+
+            await Promise.all([
+              ...this.tasks.map((t) => setDoc(doc(firestoreDb, 'tasks', t.id), t)),
+              ...this.campaigns.map((c) => setDoc(doc(firestoreDb, 'campaigns', c.id), c)),
+              ...this.adSets.map((a) => setDoc(doc(firestoreDb, 'adSets', a.id), a)),
+            ]);
+
+            await setDoc(metaRef, { version: 'aus_v2' });
+          }
+        } catch (err) {
+          console.warn('Firestore version check/migration error:', err);
+        }
+
         // 1. Real-time tasks collection
         try {
           const tasksCol = collection(firestoreDb, 'tasks');
