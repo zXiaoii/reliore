@@ -1,0 +1,104 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getUserDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isTeamMember() {
+      return isAuthenticated() && getUserDoc().active == true;
+    }
+
+    function isAdmin() {
+      return isTeamMember() && getUserDoc().role == 'admin';
+    }
+
+    function isMediaBuyer() {
+      return isTeamMember() && (getUserDoc().role == 'media_buyer' || getUserDoc().role == 'admin');
+    }
+
+    function isSetup() {
+      return isTeamMember() && (getUserDoc().role == 'setup' || getUserDoc().role == 'admin');
+    }
+
+    function isAssignedCreative(assignedToUid) {
+      return isTeamMember() && (
+        getUserDoc().role == 'admin' ||
+        (getUserDoc().role == 'creative' && request.auth.uid == assignedToUid)
+      );
+    }
+
+    // Helper to check affected keys in update
+    function affectedKeys() {
+      return request.resource.data.diff(resource.data).affectedKeys();
+    }
+
+    // --- requests/{requestId} ---
+    match /requests/{requestId} {
+      // All active signed-in team members can read all requests
+      allow read: if isTeamMember();
+
+      // Creation by media_buyer (Charles/Danny) or admin only, with source 'manual' or 'auto'
+      allow create: if isMediaBuyer()
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.approval == 'PENDING'
+        && request.resource.data.creativeStatus == 'NOT_STARTED'
+        && request.resource.data.setupStatus == 'NOT_STARTED';
+
+      // Field-level write restrictions on updates
+      allow update: if isTeamMember() && (
+        isAdmin() ||
+
+        // Media buyer updates: media buyer fields only
+        (isMediaBuyer() && affectedKeys().hasOnly([
+          'requestedAt', 'priority', 'market', 'product', 'requestType',
+          'hookAngle', 'referenceUrl', 'brief', 'assignedTo', 'adAccount',
+          'approval', 'feedback', 'updatedAt', 'history'
+        ])) ||
+
+        // Creative updates: assigned creative (Yzah) writing own fields only
+        (isAssignedCreative(resource.data.assignedTo) && affectedKeys().hasOnly([
+          'creativeStatus', 'qtyDone', 'folderUrl', 'creativeNotes',
+          'updatedAt', 'history'
+        ])) ||
+
+        // Setup updates (Karl): setup fields only
+        (isSetup() && affectedKeys().hasOnly([
+          'setupType', 'campaignName', 'adSetName', 'dailyBudget', 'setupNotes',
+          'funnelReady', 'trackingOk', 'creativesUploaded', 'launchDate', 'setupStatus',
+          'updatedAt', 'history'
+        ]))
+      );
+
+      // Nobody can delete a request — cancel it via approval = 'CANCELLED' (§8)
+      allow delete: if false;
+    }
+
+    // --- config/{docId} ---
+    match /config/{docId} {
+      allow read: if isTeamMember();
+      allow write: if isAdmin();
+    }
+
+    // --- users/{uid} ---
+    match /users/{uid} {
+      allow read: if isAuthenticated() && (request.auth.uid == uid || isAdmin());
+      allow create: if isAuthenticated() && request.auth.uid == uid
+        && request.resource.data.role == null
+        && request.resource.data.active == false;
+      allow update, delete: if isAdmin();
+    }
+
+    // --- counters/{counterId} ---
+    match /counters/{counterId} {
+      allow read: if isTeamMember();
+      allow write: if isMediaBuyer() || isAdmin();
+    }
+  }
+}
