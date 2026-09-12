@@ -1,4 +1,4 @@
-import {
+﻿import {
   Campaign,
   AdSet,
   WorkTask,
@@ -316,7 +316,7 @@ class OperationsStore {
     this.initialized = true;
 
     try {
-      const storedTasks = localStorage.getItem('media_ops_tasks_v2');
+      const storedTasks = localStorage.getItem('media_ops_tasks_v3');
       if (storedTasks) {
         this.tasks = JSON.parse(storedTasks);
         const maxNum = this.tasks.reduce((max, t) => Math.max(max, t.taskNumber || 0), 0);
@@ -326,7 +326,7 @@ class OperationsStore {
         this.saveTasks();
       }
 
-      const storedCampaigns = localStorage.getItem('media_ops_campaigns_v2');
+      const storedCampaigns = localStorage.getItem('media_ops_campaigns_v3');
       if (storedCampaigns) {
         this.campaigns = JSON.parse(storedCampaigns);
       } else {
@@ -334,7 +334,7 @@ class OperationsStore {
         this.saveCampaigns();
       }
 
-      const storedAdSets = localStorage.getItem('media_ops_adsets_v2');
+      const storedAdSets = localStorage.getItem('media_ops_adsets_v3');
       if (storedAdSets) {
         this.adSets = JSON.parse(storedAdSets);
       } else {
@@ -342,7 +342,7 @@ class OperationsStore {
         this.saveAdSets();
       }
 
-      const storedSettings = localStorage.getItem('media_ops_settings_v2');
+      const storedSettings = localStorage.getItem('media_ops_settings_v3');
       if (storedSettings) {
         this.settings = JSON.parse(storedSettings);
       } else {
@@ -350,7 +350,7 @@ class OperationsStore {
         this.saveSettings();
       }
 
-      const storedUsers = localStorage.getItem('media_ops_users_v2');
+      const storedUsers = localStorage.getItem('media_ops_users_v3');
       if (storedUsers) {
         const parsed: TeamUser[] = JSON.parse(storedUsers);
         this.users = parsed.map((u) => {
@@ -545,19 +545,19 @@ class OperationsStore {
 
   private reloadFromStorage() {
     try {
-      const storedTasks = localStorage.getItem('media_ops_tasks_v2');
+      const storedTasks = localStorage.getItem('media_ops_tasks_v3');
       if (storedTasks) this.tasks = JSON.parse(storedTasks);
 
-      const storedCampaigns = localStorage.getItem('media_ops_campaigns_v2');
+      const storedCampaigns = localStorage.getItem('media_ops_campaigns_v3');
       if (storedCampaigns) this.campaigns = JSON.parse(storedCampaigns);
 
-      const storedAdSets = localStorage.getItem('media_ops_adsets_v2');
+      const storedAdSets = localStorage.getItem('media_ops_adsets_v3');
       if (storedAdSets) this.adSets = JSON.parse(storedAdSets);
 
-      const storedSettings = localStorage.getItem('media_ops_settings_v2');
+      const storedSettings = localStorage.getItem('media_ops_settings_v3');
       if (storedSettings) this.settings = JSON.parse(storedSettings);
 
-      const storedUsers = localStorage.getItem('media_ops_users_v2');
+      const storedUsers = localStorage.getItem('media_ops_users_v3');
       if (storedUsers) this.users = JSON.parse(storedUsers);
 
       this.notifyAll();
@@ -574,35 +574,35 @@ class OperationsStore {
 
   private saveTasks() {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('media_ops_tasks_v2', JSON.stringify(this.tasks));
+      localStorage.setItem('media_ops_tasks_v3', JSON.stringify(this.tasks));
     }
     this.broadcast();
   }
 
   private saveCampaigns() {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('media_ops_campaigns_v2', JSON.stringify(this.campaigns));
+      localStorage.setItem('media_ops_campaigns_v3', JSON.stringify(this.campaigns));
     }
     this.broadcast();
   }
 
   private saveAdSets() {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('media_ops_adsets_v2', JSON.stringify(this.adSets));
+      localStorage.setItem('media_ops_adsets_v3', JSON.stringify(this.adSets));
     }
     this.broadcast();
   }
 
   private saveSettings() {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('media_ops_settings_v2', JSON.stringify(this.settings));
+      localStorage.setItem('media_ops_settings_v3', JSON.stringify(this.settings));
     }
     this.broadcast();
   }
 
   private saveUsers() {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('media_ops_users_v2', JSON.stringify(this.users));
+      localStorage.setItem('media_ops_users_v3', JSON.stringify(this.users));
     }
     this.broadcast();
   }
@@ -711,7 +711,7 @@ class OperationsStore {
     return [...this.users];
   }
 
-  // --- ACTIONS BUILDER (Â§5, Â§6, Â§7) ---
+  // --- ACTIONS BUILDER (Ã‚Â§5, Ã‚Â§6, Ã‚Â§7) ---
   public createActionTask(params: {
     product: string;
     campaign: string;
@@ -890,7 +890,7 @@ class OperationsStore {
     this.syncTaskToFirestore(updatedTask);
   }
 
-  // Complete launch of ad set (Â§5 & Â§14)
+  // Complete launch of ad set (Ã‚Â§5 & Ã‚Â§14)
   public launchAdSet(
     taskId: string,
     params: {
@@ -937,7 +937,7 @@ class OperationsStore {
         uid: actor.uid,
         userDisplayName: actor.displayName,
         action: 'Ad Set Launched',
-        detail: `${newAdSet.name} launched on ${task.adAccount} (â‚¬${params.dailyBudget}/d).`,
+        detail: `${newAdSet.name} launched on ${task.adAccount} (Ã¢â€šÂ¬${params.dailyBudget}/d).`,
       });
       this.campaigns[campIdx] = { ...camp };
       this.saveCampaigns();
@@ -960,11 +960,11 @@ class OperationsStore {
       actor
     );
 
-    // 4. Trigger Next-Day Automation check (Â§16)
+    // 4. Trigger Next-Day Automation check (Ã‚Â§16)
     this.registerNextDayCreativeTrigger(task.campaign, newAdSet.id, task.product, task.market, task.adAccount);
   }
 
-  // --- AUTOMATIC NEXT-DAY CREATIVE TRIGGER (Â§16) ---
+  // --- AUTOMATIC NEXT-DAY CREATIVE TRIGGER (Ã‚Â§16) ---
   // When an ad set is launched, register or generate next-day creative task for Yzah
   public registerNextDayCreativeTrigger(
     campaignName: string,
@@ -1113,3 +1113,4 @@ class OperationsStore {
 }
 
 export const store = new OperationsStore();
+
