@@ -89,26 +89,28 @@ export default function CreativeQueuePage() {
       t.status === 'LIVE'
   );
 
-  const currentList =
-    activeTab === 'all'
-      ? creativeTasks
-      : activeTab === 'owed'
-      ? owedQueue
-      : deliveredQueue;
-
-  const sorted = sortTasks(currentList);
-
-  const filtered = sorted.filter((t) => {
-    if (!searchQuery.trim()) return true;
+  const filterByQuery = (taskList: WorkTask[]) => {
+    if (!searchQuery.trim()) return taskList;
     const q = searchQuery.toLowerCase();
-    return (
+    return taskList.filter((t) =>
       t.product.toLowerCase().includes(q) ||
       t.campaign.toLowerCase().includes(q) ||
       t.creativeTypes.join(' ').toLowerCase().includes(q) ||
       (t.winningHook && t.winningHook.toLowerCase().includes(q)) ||
       (t.reasonTrigger && t.reasonTrigger.toLowerCase().includes(q))
     );
-  });
+  };
+
+  const filteredOwed = filterByQuery(sortTasks(owedQueue));
+  const filteredDelivered = filterByQuery(sortTasks(deliveredQueue));
+  const filteredAll = filterByQuery(sortTasks(creativeTasks));
+
+  const filtered =
+    activeTab === 'all'
+      ? filteredAll
+      : activeTab === 'owed'
+      ? filteredOwed
+      : filteredDelivered;
 
   const getDraft = (task: WorkTask) => {
     return (
@@ -248,9 +250,7 @@ export default function CreativeQueuePage() {
       }
     });
 
-    toast.success(
-      `Batch ${formatTaskNumber(task.taskNumber)} delivered to Charles for approval!`
-    );
+    toast.success(`🚀 Delivered ${task.campaign} (${task.quantity} variants) to Charles for review!`);
   };
 
   // 4. Re-deliver after revisions were requested
@@ -305,6 +305,665 @@ export default function CreativeQueuePage() {
       );
       toast.success('Drive link saved.');
     }
+  };
+
+  // Render a task row (and its accordion drawer)
+  const renderTaskRow = (task: WorkTask) => {
+    const draft = getDraft(task);
+    const isExpanded = expandedIds.has(task.id);
+    const isChangesRequired = task.status === 'CHANGES REQUIRED';
+    const isForReview = task.status === 'FOR REVIEW';
+    const isApproved = task.status === 'APPROVED' || task.status === 'READY' || task.status === 'LIVE';
+
+    return (
+      <React.Fragment key={task.id}>
+        {/* Summary Row */}
+        <tr
+          className={`transition-colors hover:bg-[#141414] ${
+            isChangesRequired
+              ? 'bg-rose-950/20'
+              : isExpanded
+              ? 'bg-purple-950/15'
+              : 'bg-[#0a0a0a]'
+          }`}
+        >
+          {/* Priority & Expand Chevron */}
+          <td className="py-3 px-2 text-center border-r border-[#1a1a1a] whitespace-nowrap">
+            <div className="flex items-center justify-center gap-1.5">
+              <button
+                onClick={() => toggleExpand(task.id)}
+                className="p-1 rounded hover:bg-[#222] text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                title={isExpanded ? 'Collapse brief' : 'Expand full brief'}
+              >
+                {isExpanded ? (
+                  <ChevronUp className="h-4 w-4 text-purple-400 font-bold" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </button>
+              <PriorityPill priority={task.priority} size="sm" compact />
+            </div>
+          </td>
+
+          {/* Campaign & Product (Full text, uncropped) */}
+          <td className="py-3 px-3 border-r border-[#1a1a1a]">
+            <div className="flex flex-col gap-0.5">
+              <button
+                onClick={() => toggleExpand(task.id)}
+                className="font-bold text-white text-xs hover:text-purple-300 text-left transition-colors cursor-pointer"
+              >
+                {task.campaign}
+              </button>
+              <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                <MarketBadge market={task.market} size="xs" />
+                <span className="text-[11px] text-zinc-300 font-medium">
+                  {task.product}
+                </span>
+                <span className="text-[10px] text-zinc-500 font-mono">
+                  · {task.adAccount}
+                </span>
+              </div>
+            </div>
+          </td>
+
+          {/* Deliverable & Winning Hook (Full text, uncropped) */}
+          <td className="py-3 px-3 border-r border-[#1a1a1a]">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="font-mono font-bold text-xs text-zinc-100">
+                  {task.creativeTypes.join(' + ')}
+                </span>
+                {task.reasonTrigger && (
+                  <span className="rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[10px] px-1.5 py-0.2 font-medium">
+                    {task.reasonTrigger}
+                  </span>
+                )}
+              </div>
+              <div className="text-[11px] text-zinc-400 font-normal leading-relaxed">
+                <span className="text-zinc-500 font-medium">Hook:</span> "{task.winningHook || 'Concept angles'}"
+              </div>
+            </div>
+          </td>
+
+          {/* Assets & Deadline */}
+          <td className="py-3 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
+            <div className="flex flex-col">
+              <span className="font-mono font-bold text-xs text-white">
+                {task.quantity} creatives
+              </span>
+              <span className="text-[10px] font-mono text-zinc-400 mt-0.5">
+                Due: {task.deadline}
+              </span>
+            </div>
+          </td>
+
+          {/* Drive Folder */}
+          <td className="py-3 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
+            {draft.folderUrl && draft.folderUrl.trim() ? (
+              <div className="flex items-center gap-1.5">
+                <a
+                  href={draft.folderUrl.trim()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="vercel-btn-secondary inline-flex items-center gap-1.5 text-[11px] text-blue-400 hover:text-blue-300 py-1 px-2.5 rounded-md cursor-pointer transition-colors"
+                  title="Open Google Drive folder"
+                >
+                  <Folder className="h-3 w-3 text-blue-400 shrink-0" />
+                  <span>Drive ↗</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => toggleExpand(task.id)}
+                  className="text-[10px] text-zinc-500 hover:text-zinc-300 underline cursor-pointer"
+                  title="Edit Drive link in brief"
+                >
+                  Edit
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => toggleExpand(task.id)}
+                className="inline-flex items-center gap-1 text-[10px] text-zinc-400 hover:text-white border border-dashed border-[#333] hover:border-[#666] px-2 py-1 rounded transition-colors cursor-pointer"
+                title="Click to expand brief and attach Drive folder"
+              >
+                <Plus className="h-3 w-3" />
+                <span>Attach Drive</span>
+              </button>
+            )}
+          </td>
+
+          {/* Status & Action Control */}
+          <td className="py-3 px-3 text-right whitespace-nowrap">
+            {isChangesRequired ? (
+              <button
+                onClick={() => {
+                  if (!isExpanded) toggleExpand(task.id);
+                  else handleReDeliver(task);
+                }}
+                className="inline-flex items-center gap-1.5 rounded-md bg-rose-600 hover:bg-rose-500 px-3 py-1.5 text-xs font-bold text-white shadow-xs cursor-pointer transition-colors"
+              >
+                <AlertTriangle className="h-3.5 w-3.5 text-white shrink-0" />
+                <span>{isExpanded ? 'Re-Submit 🚀' : 'Fix Feedback ▾'}</span>
+              </button>
+            ) : isForReview ? (
+              <button
+                onClick={() => toggleExpand(task.id)}
+                className="inline-flex items-center gap-1.5 rounded-md bg-amber-500/10 border border-amber-500/25 hover:bg-amber-500/20 text-amber-400 px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors"
+              >
+                <Clock className="h-3.5 w-3.5 shrink-0" />
+                <span>Under Review ▾</span>
+              </button>
+            ) : isApproved ? (
+              <button
+                onClick={() => toggleExpand(task.id)}
+                className="inline-flex items-center gap-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/25 hover:bg-emerald-500/20 text-emerald-400 px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors"
+              >
+                <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
+                <span>Approved (Karl) ▾</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => handleDeliver(task)}
+                className="vercel-btn-primary inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors"
+              >
+                <Rocket className="h-3.5 w-3.5 text-black shrink-0" />
+                <span>Deliver ({task.quantity}) 🚀</span>
+              </button>
+            )}
+          </td>
+        </tr>
+
+        {/* IN-PLACE EXPANDED WORKSPACE ACCORDION */}
+        {isExpanded && (
+          <tr className="bg-zinc-100/70 dark:bg-zinc-900/90 border-y-2 border-purple-300 dark:border-purple-800">
+            <td colSpan={6} className="p-4 sm:p-6">
+              <div className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+                {/* Header of expanded card */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-zinc-200 dark:border-zinc-800 gap-2">
+                  <div className="flex items-center gap-2.5">
+                    <PriorityPill priority={task.priority} size="sm" />
+                    <span className="font-mono text-sm font-extrabold text-zinc-900 dark:text-white">
+                      {formatTaskNumber(task.taskNumber)}
+                    </span>
+                    <MarketBadge market={task.market} size="xs" />
+                    <span className="rounded bg-purple-100 dark:bg-purple-950 px-2 py-0.5 text-xs font-bold text-purple-700 dark:text-purple-300 font-mono">
+                      {task.creativeTypes.join(' + ')}
+                    </span>
+                    <span className="text-xs text-zinc-500 font-medium">
+                      {task.product} — <span className="font-mono font-bold text-teal-700 dark:text-teal-300">{task.campaign}</span> ({task.adAccount})
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-3 text-xs">
+                    <span className="text-zinc-500 dark:text-zinc-400">
+                      Next Handover: <strong className="text-teal-600 dark:text-teal-400">{task.assignedSetupUser || 'Karl'}</strong> (Setup Executor)
+                    </span>
+                    <span className="font-mono font-bold text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded">
+                      Due: {task.deadline}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 2-Column Layout: Left = Brief, Right = Editable Inputs */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 text-xs">
+                  {/* LEFT: Comprehensive Creative Brief (§18) */}
+                  <div className="lg:col-span-7 space-y-3">
+                    <div className="rounded-xl border border-purple-200 bg-purple-50/40 p-4 dark:border-purple-900/50 dark:bg-purple-950/20 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-extrabold uppercase tracking-wider text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
+                          <Sparkles className="h-3.5 w-3.5" />
+                          <span>Production Brief Instructions</span>
+                        </span>
+                        <span className="font-mono text-[11px] font-bold text-purple-700 dark:text-purple-300">
+                          {task.format || '9:16 Video'} • {task.quantity} Variants
+                        </span>
+                      </div>
+
+                      {/* 1. What & Why */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div className="bg-white/80 dark:bg-zinc-900/80 p-2.5 rounded-lg border border-purple-100 dark:border-purple-900/40">
+                          <span className="text-zinc-400 text-[10px] uppercase font-bold block">
+                            1. What do I make?
+                          </span>
+                          <p className="font-bold text-zinc-900 dark:text-white mt-0.5">
+                            {task.quantity} variants of {task.creativeTypes.join(' + ')}
+                          </p>
+                        </div>
+
+                        <div className="bg-white/80 dark:bg-zinc-900/80 p-2.5 rounded-lg border border-purple-100 dark:border-purple-900/40">
+                          <span className="text-zinc-400 text-[10px] uppercase font-bold block">
+                            2. Why am I making it?
+                          </span>
+                          <p className="font-semibold text-purple-700 dark:text-purple-300 mt-0.5">
+                            {task.reasonTrigger || 'Winner iteration / CBO testing'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Reference & Winning Hook */}
+                      <div className="space-y-2 pt-1">
+                        <div>
+                          <span className="text-zinc-400 text-[10px] uppercase font-bold block">
+                            3. Winning Reference / Swipe
+                          </span>
+                          <p className="font-mono font-bold text-blue-600 dark:text-blue-400 mt-0.5 bg-white/70 dark:bg-zinc-900/70 p-2 rounded border border-zinc-200 dark:border-zinc-800">
+                            {task.winningReference || task.referenceUrl || 'None attached'}
+                          </p>
+                        </div>
+
+                        <div>
+                          <span className="text-zinc-400 text-[10px] uppercase font-bold block">
+                            4. Winning Hook / Angle
+                          </span>
+                          <div className="mt-0.5 rounded-lg bg-amber-500/10 p-2.5 border border-amber-500/30 text-zinc-900 dark:text-white">
+                            <p className="font-bold text-amber-900 dark:text-amber-200">
+                              {task.winningHook || 'Fresh hook variations'}
+                            </p>
+                            {task.winningAngle && (
+                              <p className="text-[11px] text-zinc-600 dark:text-zinc-400 mt-1">
+                                Angle: <em>{task.winningAngle}</em>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Keep vs Change */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                          <div className="rounded-lg bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40 p-2.5">
+                            <span className="text-emerald-700 dark:text-emerald-400 text-[10px] uppercase font-bold block">
+                              ✓ What To Keep
+                            </span>
+                            <p className="text-zinc-800 dark:text-zinc-200 font-medium mt-0.5">
+                              {task.whatToKeep || 'Hook structure & core offer'}
+                            </p>
+                          </div>
+
+                          <div className="rounded-lg bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 p-2.5">
+                            <span className="text-rose-700 dark:text-rose-400 text-[10px] uppercase font-bold block">
+                              ✗ What To Change
+                            </span>
+                            <p className="text-zinc-800 dark:text-zinc-200 font-medium mt-0.5">
+                              {task.whatToChange || 'Visual execution & pacing'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* RIGHT: Deliverables Workspace (Crystal Clear Action Based on Status) */}
+                  <div className="lg:col-span-5 flex flex-col justify-between rounded-xl border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-800 dark:bg-zinc-900/70 space-y-4">
+                    <div className="space-y-3">
+                      {/* 1. EXPLICIT STATUS BANNER: Explains exactly what state the task is in */}
+                      {isForReview ? (
+                        <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
+                          <div className="flex items-center gap-1.5 font-bold mb-1">
+                            <Clock className="h-4 w-4 text-amber-600" />
+                            <span>Batch Delivered — Currently Under Review</span>
+                          </div>
+                          <p className="text-[11px] leading-relaxed">
+                            Charles has this batch in his approval queue. If you need to replace files, fix a link, or add comments, edit below and click <strong>Save &amp; Update Files</strong>.
+                          </p>
+                        </div>
+                      ) : isChangesRequired ? (
+                        <div className="rounded-lg border border-rose-300 bg-rose-50 p-3 text-xs text-rose-900 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-200">
+                          <div className="flex items-center gap-1.5 font-bold mb-1 text-rose-700 dark:text-rose-300">
+                            <AlertTriangle className="h-4 w-4" />
+                            <span>Revisions Requested by Charles</span>
+                          </div>
+                          <p className="font-medium text-[11px]">
+                            &ldquo;{task.feedback || 'Please adjust hooks according to feedback.'}&rdquo;
+                          </p>
+                        </div>
+                      ) : isApproved ? (
+                        <div className="rounded-lg border border-emerald-300 bg-emerald-50 p-3 text-xs text-emerald-900 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-200">
+                          <div className="flex items-center gap-1.5 font-bold mb-1">
+                            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                            <span>Approved — Handed to Setup ({task.assignedSetupUser || 'Karl'})</span>
+                          </div>
+                          <p className="text-[11px] leading-relaxed">
+                            This batch is approved for launch in Meta. Any link changes made here will automatically sync to Karl&apos;s setup queue.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="rounded-lg border border-purple-200 bg-purple-50/70 p-2.5 text-xs text-purple-900 dark:border-purple-900/50 dark:bg-purple-950/30 dark:text-purple-200">
+                          <div className="flex items-center gap-1.5 font-bold">
+                            <Palette className="h-4 w-4 text-purple-600" />
+                            <span>In Creative Production</span>
+                          </div>
+                          <p className="text-[11px] mt-0.5">
+                            Paste your Google Drive batch folder below and click Deliver when all variants are rendered.
+                          </p>
+                        </div>
+                      )}
+
+                      {/* 2. Drive Link Input */}
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300">
+                            Google Drive Batch Folder
+                          </label>
+                          {draft.folderUrl.trim() && (
+                            <a
+                              href={draft.folderUrl.trim()}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] text-blue-600 hover:underline flex items-center gap-1 font-mono font-bold"
+                            >
+                              <ExternalLink className="h-2.5 w-2.5" />
+                              <span>Open in Drive</span>
+                            </a>
+                          )}
+                        </div>
+                        <input
+                          type="url"
+                          value={draft.folderUrl}
+                          onChange={(e) => updateDraft(task.id, 'folderUrl', e.target.value)}
+                          placeholder="https://drive.google.com/drive/folders/..."
+                          className="w-full rounded-md border border-zinc-300 bg-white p-2 text-xs font-mono text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+                        />
+                      </div>
+
+                      {/* 3. Variants Completed Counter */}
+                      <div className="space-y-1">
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300">
+                          Variants Exported ({draft.quantityDone}/{task.quantity})
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="number"
+                            min={0}
+                            max={task.quantity}
+                            value={draft.quantityDone}
+                            onChange={(e) => updateDraft(task.id, 'quantityDone', Number(e.target.value))}
+                            className="w-16 rounded border border-zinc-300 bg-white p-1 text-xs font-mono text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white text-center font-bold"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => updateDraft(task.id, 'quantityDone', Math.floor(task.quantity / 2))}
+                            className="rounded bg-zinc-200 dark:bg-zinc-700 px-2 py-1 text-[10px] font-bold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-300"
+                          >
+                            Half ({Math.floor(task.quantity / 2)})
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => updateDraft(task.id, 'quantityDone', task.quantity)}
+                            className="rounded bg-purple-100 dark:bg-purple-950 px-2 py-1 text-[10px] font-bold text-purple-700 dark:text-purple-300 hover:bg-purple-200"
+                          >
+                            All ({task.quantity}) Done
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* 4. Yzah's Creative Notes */}
+                      <div className="space-y-1">
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300">
+                          Yzah&apos;s Revision &amp; Batch Notes
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={draft.creativeNotes}
+                          onChange={(e) => updateDraft(task.id, 'creativeNotes', e.target.value)}
+                          placeholder="Add notes for Charles (e.g. 'Updated hooks 1-4 with larger text, hook 5 has new VO')..."
+                          className="w-full rounded-md border border-zinc-300 bg-white p-2 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+                        />
+                      </div>
+                    </div>
+
+                    {/* 5. SINGLE UNAMBIGUOUS ACTION FOOTER: Clear purpose for every state */}
+                    <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800">
+                      {isForReview ? (
+                        <div className="space-y-1">
+                          <button
+                            type="button"
+                            onClick={() => handleUpdateSubmittedFiles(task)}
+                            className="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-2xs transition-colors"
+                          >
+                            <Save className="h-4 w-4" />
+                            <span>Save &amp; Update Files for Charles</span>
+                          </button>
+                          <p className="text-[10px] text-zinc-500 text-center">
+                            Charles automatically receives your updated Drive folder link and notes.
+                          </p>
+                        </div>
+                      ) : isChangesRequired ? (
+                        <div className="space-y-1">
+                          <button
+                            type="button"
+                            onClick={() => handleReDeliver(task)}
+                            className="w-full flex items-center justify-center gap-2 rounded-lg bg-rose-600 hover:bg-rose-700 px-4 py-2 text-xs font-bold text-white shadow-2xs transition-colors"
+                          >
+                            <Send className="h-4 w-4" />
+                            <span>Re-Submit Revised Batch to Charles</span>
+                          </button>
+                          <p className="text-[10px] text-zinc-500 text-center">
+                            Notifies Charles that revisions are ready for re-review.
+                          </p>
+                        </div>
+                      ) : isApproved ? (
+                        <div className="space-y-1">
+                          <button
+                            type="button"
+                            onClick={() => handleUpdateSubmittedFiles(task)}
+                            className="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-2xs transition-colors"
+                          >
+                            <Save className="h-4 w-4" />
+                            <span>Save Updated Files for Karl</span>
+                          </button>
+                          <p className="text-[10px] text-zinc-500 text-center">
+                            Syncs latest folder link directly to Karl&apos;s setup queue.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleSaveDraft(task)}
+                            className="flex items-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
+                          >
+                            <Save className="h-3.5 w-3.5" />
+                            <span>Save Draft</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleDeliver(task)}
+                            className="flex items-center gap-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 px-4 py-1.5 text-xs font-bold text-white shadow-2xs"
+                          >
+                            <Send className="h-3.5 w-3.5" />
+                            <span>Deliver to Charles ({task.quantity})</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        )}
+      </React.Fragment>
+    );
+  };
+
+  // Render a task card for cards view mode
+  const renderTaskCard = (task: WorkTask) => {
+    const draft = getDraft(task);
+    const isExpanded = expandedIds.has(task.id);
+    const isChangesRequired = task.status === 'CHANGES REQUIRED';
+    const isForReview = task.status === 'FOR REVIEW';
+    const isApproved = task.status === 'APPROVED' || task.status === 'READY' || task.status === 'LIVE';
+
+    return (
+      <div
+        key={task.id}
+        className={`flex flex-col justify-between rounded-xl border p-4 shadow-2xs transition-all dark:bg-zinc-900 ${
+          isChangesRequired
+            ? 'border-rose-300 bg-rose-50/40 dark:border-rose-900 dark:bg-rose-950/20'
+            : isExpanded
+            ? 'border-purple-300 bg-purple-50/20 dark:border-purple-900 dark:bg-purple-950/10'
+            : 'border-zinc-200 bg-white'
+        }`}
+      >
+        <div className="space-y-3">
+          <div className="flex items-center justify-between border-b border-zinc-100 pb-2 dark:border-zinc-800">
+            <div className="flex items-center gap-1.5">
+              <PriorityPill priority={task.priority} size="sm" />
+              <span className="font-mono text-xs font-bold text-zinc-900 dark:text-white">
+                {formatTaskNumber(task.taskNumber)}
+              </span>
+              <MarketBadge market={task.market} size="xs" />
+              <span className="font-bold text-xs text-zinc-800 dark:text-zinc-200">
+                {task.product}
+              </span>
+            </div>
+            <span
+              className={`rounded px-2 py-0.5 text-[10px] font-extrabold ${
+                isChangesRequired
+                  ? 'bg-rose-600 text-white'
+                  : isForReview
+                  ? 'bg-amber-500 text-white'
+                  : isApproved
+                  ? 'bg-emerald-600 text-white'
+                  : task.status === 'MAKING'
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-zinc-200 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-200'
+              }`}
+            >
+              {isForReview ? 'UNDER REVIEW' : task.status}
+            </span>
+          </div>
+
+          <div>
+            <h3 className="font-mono text-sm font-extrabold text-teal-800 dark:text-teal-300 truncate">
+              {task.campaign}
+            </h3>
+            <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs">
+              <span className="rounded bg-purple-100 dark:bg-purple-950 px-2 py-0.5 font-bold font-mono text-purple-700 dark:text-purple-300 text-[11px]">
+                {task.creativeTypes.join(' + ')}
+              </span>
+              <span className="text-zinc-500 font-mono text-[11px]">
+                {task.quantity} Variants ({task.format || '9:16 Video'})
+              </span>
+            </div>
+          </div>
+
+          {task.reasonTrigger && (
+            <div className="rounded bg-zinc-50 dark:bg-zinc-800/50 p-2 text-xs border border-zinc-100 dark:border-zinc-800">
+              <span className="text-[10px] font-bold text-zinc-400 uppercase block">Why (Trigger)</span>
+              <p className="text-purple-700 dark:text-purple-300 font-medium line-clamp-1 mt-0.5">
+                {task.reasonTrigger}
+              </p>
+            </div>
+          )}
+
+          <div className="space-y-1">
+            <div className="flex items-center justify-between">
+              <label className="text-[10px] font-bold uppercase text-zinc-500">
+                Google Drive Batch Folder
+              </label>
+              {draft.folderUrl.trim() && (
+                <a
+                  href={draft.folderUrl.trim()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[10px] text-blue-600 hover:underline flex items-center gap-1 font-mono font-bold"
+                >
+                  <ExternalLink className="h-2.5 w-2.5" />
+                  <span>Open</span>
+                </a>
+              )}
+            </div>
+            <input
+              type="url"
+              placeholder="Paste Drive URL..."
+              value={draft.folderUrl}
+              onChange={(e) => updateDraft(task.id, 'folderUrl', e.target.value)}
+              onBlur={() => handleAutoSaveDriveUrl(task)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') e.currentTarget.blur();
+              }}
+              className="w-full rounded-md border border-zinc-300 bg-white p-2 text-xs font-mono text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+            />
+          </div>
+
+          <div>
+            <button
+              type="button"
+              onClick={() => toggleExpand(task.id)}
+              className="flex items-center gap-1 text-xs font-semibold text-purple-600 hover:text-purple-800 dark:text-purple-400"
+            >
+              {isExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+              <span>{isExpanded ? 'Hide Brief Details' : 'View Full Brief & Instructions ▾'}</span>
+            </button>
+
+            {isExpanded && (
+              <div className="mt-2 space-y-2 rounded-lg bg-purple-50/50 p-3 border border-purple-200 dark:border-purple-900/40 dark:bg-purple-950/20 text-xs">
+                <div>
+                  <span className="text-[10px] text-zinc-400 font-bold uppercase block">Winning Reference</span>
+                  <p className="font-mono font-bold text-blue-600 dark:text-blue-400 mt-0.5">{task.winningReference || task.referenceUrl || 'None'}</p>
+                </div>
+                <div>
+                  <span className="text-[10px] text-zinc-400 font-bold uppercase block">Winning Hook</span>
+                  <p className="font-semibold text-zinc-900 dark:text-white mt-0.5">{task.winningHook || 'Concept angles'}</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  <div className="rounded bg-emerald-50 dark:bg-emerald-950/20 p-2 border border-emerald-200 dark:border-emerald-900/40">
+                    <span className="text-emerald-700 dark:text-emerald-400 text-[10px] font-bold block">✓ Keep</span>
+                    <p className="text-zinc-800 dark:text-zinc-200 text-[11px] mt-0.5">{task.whatToKeep || 'Core hook & offer'}</p>
+                  </div>
+                  <div className="rounded bg-rose-50 dark:bg-rose-950/20 p-2 border border-rose-200 dark:border-rose-900/40">
+                    <span className="text-rose-700 dark:text-rose-400 text-[10px] font-bold block">✗ Change</span>
+                    <p className="text-zinc-800 dark:text-zinc-200 text-[11px] mt-0.5">{task.whatToChange || 'Pacing & visuals'}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800">
+          {isForReview ? (
+            <button
+              type="button"
+              onClick={() => handleUpdateSubmittedFiles(task)}
+              className="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-2xs transition-colors"
+            >
+              <Save className="h-4 w-4" />
+              <span>Save &amp; Update Files for Charles</span>
+            </button>
+          ) : isChangesRequired ? (
+            <button
+              type="button"
+              onClick={() => handleReDeliver(task)}
+              className="w-full flex items-center justify-center gap-2 rounded-lg bg-rose-600 hover:bg-rose-700 px-4 py-2 text-xs font-bold text-white shadow-2xs transition-colors"
+            >
+              <Send className="h-4 w-4" />
+              <span>Re-Submit Revised Batch to Charles</span>
+            </button>
+          ) : isApproved ? (
+            <button
+              type="button"
+              onClick={() => handleUpdateSubmittedFiles(task)}
+              className="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-2xs transition-colors"
+            >
+              <Save className="h-4 w-4" />
+              <span>Save Updated Files for Karl</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => handleDeliver(task)}
+              className="w-full flex items-center justify-center gap-2 rounded-lg bg-purple-600 hover:bg-purple-700 px-4 py-2 text-xs font-bold text-white shadow-2xs transition-colors"
+            >
+              <Send className="h-4 w-4" />
+              <span>Deliver to Charles ({task.quantity})</span>
+            </button>
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -431,11 +1090,11 @@ export default function CreativeQueuePage() {
         </div>
       </div>
 
-      {/* Main Table with In-Place Expansion */}
-      <div className="flex-1 p-4 sm:p-8 overflow-x-auto max-w-7xl mx-auto w-full">
+      {/* Main Workspace */}
+      <div className="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full">
         {filtered.length === 0 ? (
           <div className="rounded-xl border border-[#222222] bg-[#0a0a0a] p-12 text-center shadow-xs">
-            <CheckCircle className="mx-auto h-8 w-8 text-emerald-400" />
+            <CheckCircle className="mx-auto h-8 w-8 text-purple-400" />
             <h3 className="mt-2 text-sm font-bold text-white">
               {activeTab === 'owed'
                 ? 'No pending creative batches to make!'
@@ -446,188 +1105,77 @@ export default function CreativeQueuePage() {
             </p>
           </div>
         ) : viewMode === 'cards' ? (
-          /* Responsive Cards View for Mobile & Tablet */
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filtered.map((task) => {
-              const draft = getDraft(task);
-              const isExpanded = expandedIds.has(task.id);
-              const isChangesRequired = task.status === 'CHANGES REQUIRED';
-              const isForReview = task.status === 'FOR REVIEW';
-              const isApproved = task.status === 'APPROVED' || task.status === 'READY' || task.status === 'LIVE';
-
-              return (
-                <div
-                  key={task.id}
-                  className={`flex flex-col justify-between rounded-xl border p-4 shadow-2xs transition-all dark:bg-zinc-900 ${
-                    isChangesRequired
-                      ? 'border-rose-300 bg-rose-50/40 dark:border-rose-900 dark:bg-rose-950/20'
-                      : isExpanded
-                      ? 'border-purple-300 bg-purple-50/20 dark:border-purple-900 dark:bg-purple-950/10'
-                      : 'border-zinc-200 bg-white'
-                  }`}
-                >
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between border-b border-zinc-100 pb-2 dark:border-zinc-800">
-                      <div className="flex items-center gap-1.5">
-                        <PriorityPill priority={task.priority} size="sm" />
-                        <span className="font-mono text-xs font-bold text-zinc-900 dark:text-white">
-                          {formatTaskNumber(task.taskNumber)}
-                        </span>
-                        <MarketBadge market={task.market} size="xs" />
-                        <span className="font-bold text-xs text-zinc-800 dark:text-zinc-200">
-                          {task.product}
-                        </span>
-                      </div>
-                      <span
-                        className={`rounded px-2 py-0.5 text-[10px] font-extrabold ${
-                          isChangesRequired
-                            ? 'bg-rose-600 text-white'
-                            : isForReview
-                            ? 'bg-amber-500 text-white'
-                            : isApproved
-                            ? 'bg-emerald-600 text-white'
-                            : task.status === 'MAKING'
-                            ? 'bg-purple-600 text-white'
-                            : 'bg-zinc-200 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-200'
-                        }`}
-                      >
-                        {isForReview ? 'UNDER REVIEW' : task.status}
-                      </span>
-                    </div>
-
-                    <div>
-                      <h3 className="font-mono text-sm font-extrabold text-teal-800 dark:text-teal-300 truncate">
-                        {task.campaign}
-                      </h3>
-                      <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs">
-                        <span className="rounded bg-purple-100 dark:bg-purple-950 px-2 py-0.5 font-bold font-mono text-purple-700 dark:text-purple-300 text-[11px]">
-                          {task.creativeTypes.join(' + ')}
-                        </span>
-                        <span className="text-zinc-500 font-mono text-[11px]">
-                          {task.quantity} Variants ({task.format || '9:16 Video'})
-                        </span>
-                      </div>
-                    </div>
-
-                    {task.reasonTrigger && (
-                      <div className="rounded bg-zinc-50 dark:bg-zinc-800/50 p-2 text-xs border border-zinc-100 dark:border-zinc-800">
-                        <span className="text-[10px] font-bold text-zinc-400 uppercase block">Why (Trigger)</span>
-                        <p className="text-purple-700 dark:text-purple-300 font-medium line-clamp-1 mt-0.5">
-                          {task.reasonTrigger}
-                        </p>
-                      </div>
-                    )}
-
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-bold uppercase text-zinc-500">
-                          Google Drive Batch Folder
-                        </label>
-                        {draft.folderUrl.trim() && (
-                          <a
-                            href={draft.folderUrl.trim()}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[10px] text-blue-600 hover:underline flex items-center gap-1 font-mono font-bold"
-                          >
-                            <ExternalLink className="h-2.5 w-2.5" />
-                            <span>Open</span>
-                          </a>
-                        )}
-                      </div>
-                      <input
-                        type="url"
-                        placeholder="Paste Drive URL..."
-                        value={draft.folderUrl}
-                        onChange={(e) => updateDraft(task.id, 'folderUrl', e.target.value)}
-                        onBlur={() => handleAutoSaveDriveUrl(task)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') e.currentTarget.blur();
-                        }}
-                        className="w-full rounded-md border border-zinc-300 bg-white p-2 text-xs font-mono text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
-                      />
-                    </div>
-
-                    <div>
-                      <button
-                        type="button"
-                        onClick={() => toggleExpand(task.id)}
-                        className="flex items-center gap-1 text-xs font-semibold text-purple-600 hover:text-purple-800 dark:text-purple-400"
-                      >
-                        {isExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                        <span>{isExpanded ? 'Hide Brief Details' : 'View Full Brief & Instructions ▾'}</span>
-                      </button>
-
-                      {isExpanded && (
-                        <div className="mt-2 space-y-2 rounded-lg bg-purple-50/50 p-3 border border-purple-200 dark:border-purple-900/40 dark:bg-purple-950/20 text-xs">
-                          <div>
-                            <span className="text-[10px] text-zinc-400 font-bold uppercase block">Winning Reference</span>
-                            <p className="font-mono font-bold text-blue-600 dark:text-blue-400 mt-0.5">{task.winningReference || task.referenceUrl || 'None'}</p>
-                          </div>
-                          <div>
-                            <span className="text-[10px] text-zinc-400 font-bold uppercase block">Winning Hook</span>
-                            <p className="font-semibold text-zinc-900 dark:text-white mt-0.5">{task.winningHook || 'Concept angles'}</p>
-                          </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                            <div className="rounded bg-emerald-50 dark:bg-emerald-950/20 p-2 border border-emerald-200 dark:border-emerald-900/40">
-                              <span className="text-emerald-700 dark:text-emerald-400 text-[10px] font-bold block">✓ Keep</span>
-                              <p className="text-zinc-800 dark:text-zinc-200 text-[11px] mt-0.5">{task.whatToKeep || 'Core hook & offer'}</p>
-                            </div>
-                            <div className="rounded bg-rose-50 dark:bg-rose-950/20 p-2 border border-rose-200 dark:border-rose-900/40">
-                              <span className="text-rose-700 dark:text-rose-400 text-[10px] font-bold block">✗ Change</span>
-                              <p className="text-zinc-800 dark:text-zinc-200 text-[11px] mt-0.5">{task.whatToChange || 'Pacing & visuals'}</p>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+          /* Cards View Separated by Finished vs Unfinished */
+          <div className="space-y-8">
+            {/* 1. TO MAKE / IN PRODUCTION */}
+            {(activeTab === 'all' || activeTab === 'owed') && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono">
+                      To Make / In Production ({filteredOwed.length})
+                    </h2>
+                    <span className="text-[11px] text-zinc-500 hidden sm:inline">
+                      · Action required: scripting, filming, or revisions
+                    </span>
                   </div>
-
-                  <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800">
-                    {isForReview ? (
-                      <button
-                        type="button"
-                        onClick={() => handleUpdateSubmittedFiles(task)}
-                        className="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-2xs transition-colors"
-                      >
-                        <Save className="h-4 w-4" />
-                        <span>Save &amp; Update Files for Charles</span>
-                      </button>
-                    ) : isChangesRequired ? (
-                      <button
-                        type="button"
-                        onClick={() => handleReDeliver(task)}
-                        className="w-full flex items-center justify-center gap-2 rounded-lg bg-rose-600 hover:bg-rose-700 px-4 py-2 text-xs font-bold text-white shadow-2xs transition-colors"
-                      >
-                        <Send className="h-4 w-4" />
-                        <span>Re-Submit Revised Batch to Charles</span>
-                      </button>
-                    ) : isApproved ? (
-                      <button
-                        type="button"
-                        onClick={() => handleUpdateSubmittedFiles(task)}
-                        className="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-2xs transition-colors"
-                      >
-                        <Save className="h-4 w-4" />
-                        <span>Save Updated Files for Karl</span>
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => handleDeliver(task)}
-                        className="w-full flex items-center justify-center gap-2 rounded-lg bg-purple-600 hover:bg-purple-700 px-4 py-2 text-xs font-bold text-white shadow-2xs transition-colors"
-                      >
-                        <Send className="h-4 w-4" />
-                        <span>Deliver to Charles ({task.quantity})</span>
-                      </button>
-                    )}
-                  </div>
+                  <span className="text-[10px] font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">
+                    ACTION REQUIRED
+                  </span>
                 </div>
-              );
-            })}
+
+                {filteredOwed.length === 0 ? (
+                  <div className="rounded-xl border border-[#222222] bg-[#0a0a0a] p-8 text-center shadow-xs">
+                    <CheckCircle className="mx-auto h-7 w-7 text-emerald-400" />
+                    <p className="mt-2 text-xs font-semibold text-zinc-300">
+                      All caught up! No active tasks waiting for production.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {filteredOwed.map(renderTaskCard)}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* 2. FINISHED & DELIVERED */}
+            {(activeTab === 'all' || activeTab === 'delivered') && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono">
+                      Finished &amp; Delivered ({filteredDelivered.length})
+                    </h2>
+                    <span className="text-[11px] text-zinc-500 hidden sm:inline">
+                      · Submitted to Charles for review, approved by Karl, or live in Meta
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+                    DELIVERED / LIVE
+                  </span>
+                </div>
+
+                {filteredDelivered.length === 0 ? (
+                  <div className="rounded-xl border border-[#222222] bg-[#0a0a0a] p-8 text-center shadow-xs">
+                    <Clock className="mx-auto h-7 w-7 text-zinc-500" />
+                    <p className="mt-2 text-xs font-semibold text-zinc-400">
+                      No deliverables submitted or approved yet.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {filteredDelivered.map(renderTaskCard)}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         ) : (
-          <div className="w-full max-w-full min-w-0 space-y-2">
+          /* Table View Separated by Finished vs Unfinished */
+          <div className="w-full max-w-full min-w-0 space-y-8">
             <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-zinc-400 px-1">
               <div className="flex items-center gap-2">
                 <span className="flex items-center gap-1 text-emerald-400 font-semibold font-mono text-[10px] bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
@@ -636,514 +1184,122 @@ export default function CreativeQueuePage() {
                 </span>
                 <span className="hidden sm:inline text-zinc-500">·</span>
                 <span className="hidden sm:inline text-zinc-400">
-                  Full campaign, concept, and hook fully readable without cutoff
+                  Separated workflow: Active production tasks vs delivered &amp; approved assets
                 </span>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] bg-[#121212] px-2 py-0.5 rounded text-zinc-400 border border-[#262626]">
-                  {filtered.length} {filtered.length === 1 ? 'task' : 'tasks'}
+                <span className="font-mono text-[10px] bg-[#121212] px-2 py-0.5 rounded text-amber-400 border border-amber-500/30">
+                  {filteredOwed.length} To Make
+                </span>
+                <span className="font-mono text-[10px] bg-[#121212] px-2 py-0.5 rounded text-emerald-400 border border-emerald-500/30">
+                  {filteredDelivered.length} Delivered
                 </span>
               </div>
             </div>
 
-            <div className="w-full max-w-full min-w-0 rounded-xl border border-[#222222] bg-[#0a0a0a] shadow-xs">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead className="border-b border-[#222222] bg-black font-semibold text-zinc-400 uppercase tracking-wider text-[10px] sticky top-0">
-                  <tr>
-                    <th className="w-[60px] py-2.5 px-2 text-center border-r border-[#1f1f1f]">Priority</th>
-                    <th className="py-2.5 px-3 border-r border-[#1f1f1f] w-[26%]">Campaign & Product</th>
-                    <th className="py-2.5 px-3 border-r border-[#1f1f1f] w-[36%]">Deliverable & Hook</th>
-                    <th className="w-[110px] py-2.5 px-3 border-r border-[#1f1f1f]">Assets & Due</th>
-                    <th className="w-[125px] py-2.5 px-3 border-r border-[#1f1f1f]">Drive Link</th>
-                    <th className="w-[160px] py-2.5 px-3 text-right">Status / Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#1a1a1a]">
-                  {filtered.map((task) => {
-                    const draft = getDraft(task);
-                    const isExpanded = expandedIds.has(task.id);
-                    const isChangesRequired = task.status === 'CHANGES REQUIRED';
-                    const isForReview = task.status === 'FOR REVIEW';
-                    const isApproved = task.status === 'APPROVED' || task.status === 'READY' || task.status === 'LIVE';
+            {/* SECTION 1: TO MAKE / IN PRODUCTION */}
+            {(activeTab === 'all' || activeTab === 'owed') && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-amber-400 font-mono">
+                      To Make / In Production ({filteredOwed.length})
+                    </h2>
+                    <span className="text-[11px] text-zinc-500 hidden sm:inline">
+                      · Action required: scripting, filming, or revisions
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">
+                    ACTION REQUIRED
+                  </span>
+                </div>
 
-                    return (
-                      <React.Fragment key={task.id}>
-                        {/* Summary Row */}
-                        <tr
-                          className={`transition-colors hover:bg-[#141414] ${
-                            isChangesRequired
-                              ? 'bg-rose-950/20'
-                              : isExpanded
-                              ? 'bg-purple-950/15'
-                              : 'bg-[#0a0a0a]'
-                          }`}
-                        >
-                          {/* Priority & Expand Chevron */}
-                          <td className="py-3 px-2 text-center border-r border-[#1a1a1a] whitespace-nowrap">
-                            <div className="flex items-center justify-center gap-1.5">
-                              <button
-                                onClick={() => toggleExpand(task.id)}
-                                className="p-1 rounded hover:bg-[#222] text-zinc-400 hover:text-white transition-colors cursor-pointer"
-                                title={isExpanded ? 'Collapse brief' : 'Expand full brief'}
-                              >
-                                {isExpanded ? (
-                                  <ChevronUp className="h-4 w-4 text-purple-400 font-bold" />
-                                ) : (
-                                  <ChevronDown className="h-4 w-4" />
-                                )}
-                              </button>
-                              <PriorityPill priority={task.priority} size="sm" compact />
-                            </div>
-                          </td>
-
-                          {/* Campaign & Product (Full text, uncropped) */}
-                          <td className="py-3 px-3 border-r border-[#1a1a1a]">
-                            <div className="flex flex-col gap-0.5">
-                              <button
-                                onClick={() => toggleExpand(task.id)}
-                                className="font-bold text-white text-xs hover:text-purple-300 text-left transition-colors cursor-pointer"
-                              >
-                                {task.campaign}
-                              </button>
-                              <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                                <MarketBadge market={task.market} size="xs" />
-                                <span className="text-[11px] text-zinc-300 font-medium">
-                                  {task.product}
-                                </span>
-                                <span className="text-[10px] text-zinc-500 font-mono">
-                                  · {task.adAccount}
-                                </span>
-                              </div>
-                            </div>
-                          </td>
-
-                          {/* Deliverable & Winning Hook (Full text, uncropped) */}
-                          <td className="py-3 px-3 border-r border-[#1a1a1a]">
-                            <div className="flex flex-col gap-1">
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <span className="font-mono font-bold text-xs text-zinc-100">
-                                  {task.creativeTypes.join(' + ')}
-                                </span>
-                                {task.reasonTrigger && (
-                                  <span className="rounded bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[10px] px-1.5 py-0.2 font-medium">
-                                    {task.reasonTrigger}
-                                  </span>
-                                )}
-                              </div>
-                              <div className="text-[11px] text-zinc-400 font-normal leading-relaxed">
-                                <span className="text-zinc-500 font-medium">Hook:</span> "{task.winningHook || 'Concept angles'}"
-                              </div>
-                            </div>
-                          </td>
-
-                          {/* Assets & Deadline */}
-                          <td className="py-3 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
-                            <div className="flex flex-col">
-                              <span className="font-mono font-bold text-xs text-white">
-                                {task.quantity} creatives
-                              </span>
-                              <span className="text-[10px] font-mono text-zinc-400 mt-0.5">
-                                Due: {task.deadline}
-                              </span>
-                            </div>
-                          </td>
-
-                          {/* Drive Folder */}
-                          <td className="py-3 px-3 border-r border-[#1a1a1a] whitespace-nowrap">
-                            {draft.folderUrl && draft.folderUrl.trim() ? (
-                              <div className="flex items-center gap-1.5">
-                                <a
-                                  href={draft.folderUrl.trim()}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="vercel-btn-secondary inline-flex items-center gap-1.5 text-[11px] text-blue-400 hover:text-blue-300 py-1 px-2.5 rounded-md cursor-pointer transition-colors"
-                                  title="Open Google Drive folder"
-                                >
-                                  <Folder className="h-3 w-3 text-blue-400 shrink-0" />
-                                  <span>Drive ↗</span>
-                                </a>
-                                <button
-                                  type="button"
-                                  onClick={() => toggleExpand(task.id)}
-                                  className="text-[10px] text-zinc-500 hover:text-zinc-300 underline cursor-pointer"
-                                  title="Edit Drive link in brief"
-                                >
-                                  Edit
-                                </button>
-                              </div>
-                            ) : (
-                              <button
-                                type="button"
-                                onClick={() => toggleExpand(task.id)}
-                                className="inline-flex items-center gap-1 text-[10px] text-zinc-400 hover:text-white border border-dashed border-[#333] hover:border-[#666] px-2 py-1 rounded transition-colors cursor-pointer"
-                                title="Click to expand brief and attach Drive folder"
-                              >
-                                <Plus className="h-3 w-3" />
-                                <span>Attach Drive</span>
-                              </button>
-                            )}
-                          </td>
-
-                          {/* Status & Action Control */}
-                          <td className="py-3 px-3 text-right whitespace-nowrap">
-                            {isChangesRequired ? (
-                              <button
-                                onClick={() => {
-                                  if (!isExpanded) toggleExpand(task.id);
-                                  else handleReDeliver(task);
-                                }}
-                                className="inline-flex items-center gap-1.5 rounded-md bg-rose-600 hover:bg-rose-500 px-3 py-1.5 text-xs font-bold text-white shadow-xs cursor-pointer transition-colors"
-                              >
-                                <AlertTriangle className="h-3.5 w-3.5 text-white shrink-0" />
-                                <span>{isExpanded ? 'Re-Submit 🚀' : 'Fix Feedback ▾'}</span>
-                              </button>
-                            ) : isForReview ? (
-                              <button
-                                onClick={() => toggleExpand(task.id)}
-                                className="inline-flex items-center gap-1.5 rounded-md bg-amber-500/10 border border-amber-500/25 hover:bg-amber-500/20 text-amber-400 px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors"
-                              >
-                                <Clock className="h-3.5 w-3.5 shrink-0" />
-                                <span>Under Review ▾</span>
-                              </button>
-                            ) : isApproved ? (
-                              <button
-                                onClick={() => toggleExpand(task.id)}
-                                className="inline-flex items-center gap-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/25 hover:bg-emerald-500/20 text-emerald-400 px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors"
-                              >
-                                <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
-                                <span>Approved (Karl) ▾</span>
-                              </button>
-                            ) : (
-                              <button
-                                onClick={() => handleDeliver(task)}
-                                className="vercel-btn-primary inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors"
-                              >
-                                <Rocket className="h-3.5 w-3.5 text-black shrink-0" />
-                                <span>Deliver ({task.quantity}) 🚀</span>
-                              </button>
-                            )}
-                          </td>
+                {filteredOwed.length === 0 ? (
+                  <div className="rounded-xl border border-[#222222] bg-[#0a0a0a] p-8 text-center shadow-xs">
+                    <CheckCircle className="mx-auto h-7 w-7 text-emerald-400" />
+                    <h3 className="mt-2 text-sm font-bold text-white">
+                      All caught up!
+                    </h3>
+                    <p className="mt-1 text-xs text-zinc-400">
+                      No creative batches are currently waiting to be made.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="w-full max-w-full min-w-0 rounded-xl border border-[#222222] bg-[#0a0a0a] shadow-xs">
+                    <table className="w-full text-left text-xs border-collapse">
+                      <thead className="border-b border-[#222222] bg-black font-semibold text-zinc-400 uppercase tracking-wider text-[10px] sticky top-0">
+                        <tr>
+                          <th className="w-[60px] py-2.5 px-2 text-center border-r border-[#1f1f1f]">Priority</th>
+                          <th className="py-2.5 px-3 border-r border-[#1f1f1f] w-[26%]">Campaign &amp; Product</th>
+                          <th className="py-2.5 px-3 border-r border-[#1f1f1f] w-[36%]">Deliverable &amp; Hook</th>
+                          <th className="w-[110px] py-2.5 px-3 border-r border-[#1f1f1f]">Assets &amp; Due</th>
+                          <th className="w-[125px] py-2.5 px-3 border-r border-[#1f1f1f]">Drive Link</th>
+                          <th className="w-[160px] py-2.5 px-3 text-right">Status / Action</th>
                         </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[#1a1a1a]">
+                        {filteredOwed.map(renderTaskRow)}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
 
-                      {/* IN-PLACE EXPANDED WORKSPACE ACCORDION */}
-                      {isExpanded && (
-                        <tr className="bg-zinc-100/70 dark:bg-zinc-900/90 border-y-2 border-purple-300 dark:border-purple-800">
-                          <td colSpan={6} className="p-4 sm:p-6">
-                            <div className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
-                              {/* Header of expanded card */}
-                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-zinc-200 dark:border-zinc-800 gap-2">
-                                <div className="flex items-center gap-2.5">
-                                  <PriorityPill priority={task.priority} size="sm" />
-                                  <span className="font-mono text-sm font-extrabold text-zinc-900 dark:text-white">
-                                    {formatTaskNumber(task.taskNumber)}
-                                  </span>
-                                  <MarketBadge market={task.market} size="xs" />
-                                  <span className="rounded bg-purple-100 dark:bg-purple-950 px-2 py-0.5 text-xs font-bold text-purple-700 dark:text-purple-300 font-mono">
-                                    {task.creativeTypes.join(' + ')}
-                                  </span>
-                                  <span className="text-xs text-zinc-500 font-medium">
-                                    {task.product} — <span className="font-mono font-bold text-teal-700 dark:text-teal-300">{task.campaign}</span> ({task.adAccount})
-                                  </span>
-                                </div>
+            {/* SECTION 2: FINISHED & DELIVERED */}
+            {(activeTab === 'all' || activeTab === 'delivered') && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono">
+                      Finished &amp; Delivered ({filteredDelivered.length})
+                    </h2>
+                    <span className="text-[11px] text-zinc-500 hidden sm:inline">
+                      · Submitted to Charles for review, approved by Karl, or live in Meta
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+                    DELIVERED / COMPLETED
+                  </span>
+                </div>
 
-                                <div className="flex items-center gap-3 text-xs">
-                                  <span className="text-zinc-500 dark:text-zinc-400">
-                                    Next Handover: <strong className="text-teal-600 dark:text-teal-400">{task.assignedSetupUser || 'Karl'}</strong> (Setup Executor)
-                                  </span>
-                                  <span className="font-mono font-bold text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded">
-                                    Due: {task.deadline}
-                                  </span>
-                                </div>
-                              </div>
-
-                              {/* 2-Column Layout: Left = Brief, Right = Editable Inputs */}
-                              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 text-xs">
-                                {/* LEFT: Comprehensive Creative Brief (§18) */}
-                                <div className="lg:col-span-7 space-y-3">
-                                  <div className="rounded-xl border border-purple-200 bg-purple-50/40 p-4 dark:border-purple-900/50 dark:bg-purple-950/20 space-y-3">
-                                    <div className="flex items-center justify-between">
-                                      <span className="text-[11px] font-extrabold uppercase tracking-wider text-purple-700 dark:text-purple-300 flex items-center gap-1.5">
-                                        <Sparkles className="h-3.5 w-3.5" />
-                                        <span>Production Brief Instructions</span>
-                                      </span>
-                                      <span className="font-mono text-[11px] font-bold text-purple-700 dark:text-purple-300">
-                                        {task.format || '9:16 Video'} • {task.quantity} Variants
-                                      </span>
-                                    </div>
-
-                                    {/* 1. What & Why */}
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                                      <div className="bg-white/80 dark:bg-zinc-900/80 p-2.5 rounded-lg border border-purple-100 dark:border-purple-900/40">
-                                        <span className="text-zinc-400 text-[10px] uppercase font-bold block">
-                                          1. What do I make?
-                                        </span>
-                                        <p className="font-bold text-zinc-900 dark:text-white mt-0.5">
-                                          {task.quantity} variants of {task.creativeTypes.join(' + ')}
-                                        </p>
-                                      </div>
-
-                                      <div className="bg-white/80 dark:bg-zinc-900/80 p-2.5 rounded-lg border border-purple-100 dark:border-purple-900/40">
-                                        <span className="text-zinc-400 text-[10px] uppercase font-bold block">
-                                          2. Why am I making it?
-                                        </span>
-                                        <p className="font-semibold text-purple-700 dark:text-purple-300 mt-0.5">
-                                          {task.reasonTrigger || 'Winner iteration / CBO testing'}
-                                        </p>
-                                      </div>
-                                    </div>
-
-                                    {/* Reference & Winning Hook */}
-                                    <div className="space-y-2 pt-1">
-                                      <div>
-                                        <span className="text-zinc-400 text-[10px] uppercase font-bold block">
-                                          3. Winning Reference / Swipe
-                                        </span>
-                                        <p className="font-mono font-bold text-blue-600 dark:text-blue-400 mt-0.5 bg-white/70 dark:bg-zinc-900/70 p-2 rounded border border-zinc-200 dark:border-zinc-800">
-                                          {task.winningReference || task.referenceUrl || 'None attached'}
-                                        </p>
-                                      </div>
-
-                                      <div>
-                                        <span className="text-zinc-400 text-[10px] uppercase font-bold block">
-                                          4. Winning Hook / Angle
-                                        </span>
-                                        <div className="mt-0.5 rounded-lg bg-amber-500/10 p-2.5 border border-amber-500/30 text-zinc-900 dark:text-white">
-                                          <p className="font-bold text-amber-900 dark:text-amber-200">
-                                            {task.winningHook || 'Fresh hook variations'}
-                                          </p>
-                                          {task.winningAngle && (
-                                            <p className="text-[11px] text-zinc-600 dark:text-zinc-400 mt-1">
-                                              Angle: <em>{task.winningAngle}</em>
-                                            </p>
-                                          )}
-                                        </div>
-                                      </div>
-
-                                      {/* Keep vs Change */}
-                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                                        <div className="rounded-lg bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40 p-2.5">
-                                          <span className="text-emerald-700 dark:text-emerald-400 text-[10px] uppercase font-bold block">
-                                            ✓ What To Keep
-                                          </span>
-                                          <p className="text-zinc-800 dark:text-zinc-200 font-medium mt-0.5">
-                                            {task.whatToKeep || 'Hook structure & core offer'}
-                                          </p>
-                                        </div>
-
-                                        <div className="rounded-lg bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 p-2.5">
-                                          <span className="text-rose-700 dark:text-rose-400 text-[10px] uppercase font-bold block">
-                                            ✗ What To Change
-                                          </span>
-                                          <p className="text-zinc-800 dark:text-zinc-200 font-medium mt-0.5">
-                                            {task.whatToChange || 'Visual execution & pacing'}
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* RIGHT: Deliverables Workspace (Crystal Clear Action Based on Status) */}
-                                <div className="lg:col-span-5 flex flex-col justify-between rounded-xl border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-800 dark:bg-zinc-900/70 space-y-4">
-                                  <div className="space-y-3">
-                                    {/* 1. EXPLICIT STATUS BANNER: Explains exactly what state the task is in */}
-                                    {isForReview ? (
-                                      <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
-                                        <div className="flex items-center gap-1.5 font-bold mb-1">
-                                          <Clock className="h-4 w-4 text-amber-600" />
-                                          <span>Batch Delivered — Currently Under Review</span>
-                                        </div>
-                                        <p className="text-[11px] leading-relaxed">
-                                          Charles has this batch in his approval queue. If you need to replace files, fix a link, or add comments, edit below and click <strong>Save &amp; Update Files</strong>.
-                                        </p>
-                                      </div>
-                                    ) : isChangesRequired ? (
-                                      <div className="rounded-lg border border-rose-300 bg-rose-50 p-3 text-xs text-rose-900 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-200">
-                                        <div className="flex items-center gap-1.5 font-bold mb-1 text-rose-700 dark:text-rose-300">
-                                          <AlertTriangle className="h-4 w-4" />
-                                          <span>Revisions Requested by Charles</span>
-                                        </div>
-                                        <p className="font-medium text-[11px]">
-                                          &ldquo;{task.feedback || 'Please adjust hooks according to feedback.'}&rdquo;
-                                        </p>
-                                      </div>
-                                    ) : isApproved ? (
-                                      <div className="rounded-lg border border-emerald-300 bg-emerald-50 p-3 text-xs text-emerald-900 dark:border-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-200">
-                                        <div className="flex items-center gap-1.5 font-bold mb-1">
-                                          <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                                          <span>Approved — Handed to Setup ({task.assignedSetupUser || 'Karl'})</span>
-                                        </div>
-                                        <p className="text-[11px] leading-relaxed">
-                                          This batch is approved for launch in Meta. Any link changes made here will automatically sync to Karl&apos;s setup queue.
-                                        </p>
-                                      </div>
-                                    ) : (
-                                      <div className="rounded-lg border border-purple-200 bg-purple-50/70 p-2.5 text-xs text-purple-900 dark:border-purple-900/50 dark:bg-purple-950/30 dark:text-purple-200">
-                                        <div className="flex items-center gap-1.5 font-bold">
-                                          <Palette className="h-4 w-4 text-purple-600" />
-                                          <span>In Creative Production</span>
-                                        </div>
-                                        <p className="text-[11px] mt-0.5">
-                                          Paste your Google Drive batch folder below and click Deliver when all variants are rendered.
-                                        </p>
-                                      </div>
-                                    )}
-
-                                    {/* 2. Drive Link Input */}
-                                    <div className="space-y-1">
-                                      <div className="flex items-center justify-between">
-                                        <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300">
-                                          Google Drive Batch Folder
-                                        </label>
-                                        {draft.folderUrl.trim() && (
-                                          <a
-                                            href={draft.folderUrl.trim()}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-[10px] text-blue-600 hover:underline flex items-center gap-1 font-mono font-bold"
-                                          >
-                                            <ExternalLink className="h-2.5 w-2.5" />
-                                            <span>Open in Drive</span>
-                                          </a>
-                                        )}
-                                      </div>
-                                      <input
-                                        type="url"
-                                        value={draft.folderUrl}
-                                        onChange={(e) => updateDraft(task.id, 'folderUrl', e.target.value)}
-                                        placeholder="https://drive.google.com/drive/folders/..."
-                                        className="w-full rounded-md border border-zinc-300 bg-white p-2 text-xs font-mono text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
-                                      />
-                                    </div>
-
-                                    {/* 3. Variants Completed Counter */}
-                                    <div className="space-y-1">
-                                      <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300">
-                                        Variants Exported ({draft.quantityDone}/{task.quantity})
-                                      </label>
-                                      <div className="flex items-center gap-2">
-                                        <input
-                                          type="number"
-                                          min={0}
-                                          max={task.quantity}
-                                          value={draft.quantityDone}
-                                          onChange={(e) => updateDraft(task.id, 'quantityDone', Number(e.target.value))}
-                                          className="w-16 rounded border border-zinc-300 bg-white p-1 text-xs font-mono text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white text-center font-bold"
-                                        />
-                                        <button
-                                          type="button"
-                                          onClick={() => updateDraft(task.id, 'quantityDone', Math.floor(task.quantity / 2))}
-                                          className="rounded bg-zinc-200 dark:bg-zinc-700 px-2 py-1 text-[10px] font-bold text-zinc-700 dark:text-zinc-200 hover:bg-zinc-300"
-                                        >
-                                          Half ({Math.floor(task.quantity / 2)})
-                                        </button>
-                                        <button
-                                          type="button"
-                                          onClick={() => updateDraft(task.id, 'quantityDone', task.quantity)}
-                                          className="rounded bg-purple-100 dark:bg-purple-950 px-2 py-1 text-[10px] font-bold text-purple-700 dark:text-purple-300 hover:bg-purple-200"
-                                        >
-                                          All ({task.quantity}) Done
-                                        </button>
-                                      </div>
-                                    </div>
-
-                                    {/* 4. Yzah's Creative Notes */}
-                                    <div className="space-y-1">
-                                      <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300">
-                                        Yzah&apos;s Revision &amp; Batch Notes
-                                      </label>
-                                      <textarea
-                                        rows={2}
-                                        value={draft.creativeNotes}
-                                        onChange={(e) => updateDraft(task.id, 'creativeNotes', e.target.value)}
-                                        placeholder="Add notes for Charles (e.g. 'Updated hooks 1-4 with larger text, hook 5 has new VO')..."
-                                        className="w-full rounded-md border border-zinc-300 bg-white p-2 text-xs text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
-                                      />
-                                    </div>
-                                  </div>
-
-                                  {/* 5. SINGLE UNAMBIGUOUS ACTION FOOTER: Clear purpose for every state */}
-                                  <div className="pt-3 border-t border-zinc-200 dark:border-zinc-800">
-                                    {isForReview ? (
-                                      <div className="space-y-1">
-                                        <button
-                                          type="button"
-                                          onClick={() => handleUpdateSubmittedFiles(task)}
-                                          className="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-2xs transition-colors"
-                                        >
-                                          <Save className="h-4 w-4" />
-                                          <span>Save &amp; Update Files for Charles</span>
-                                        </button>
-                                        <p className="text-[10px] text-zinc-500 text-center">
-                                          Charles automatically receives your updated Drive folder link and notes.
-                                        </p>
-                                      </div>
-                                    ) : isChangesRequired ? (
-                                      <div className="space-y-1">
-                                        <button
-                                          type="button"
-                                          onClick={() => handleReDeliver(task)}
-                                          className="w-full flex items-center justify-center gap-2 rounded-lg bg-rose-600 hover:bg-rose-700 px-4 py-2 text-xs font-bold text-white shadow-2xs transition-colors"
-                                        >
-                                          <Send className="h-4 w-4" />
-                                          <span>Re-Submit Revised Batch to Charles</span>
-                                        </button>
-                                        <p className="text-[10px] text-zinc-500 text-center">
-                                          Notifies Charles that revisions are ready for re-review.
-                                        </p>
-                                      </div>
-                                    ) : isApproved ? (
-                                      <div className="space-y-1">
-                                        <button
-                                          type="button"
-                                          onClick={() => handleUpdateSubmittedFiles(task)}
-                                          className="w-full flex items-center justify-center gap-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-2xs transition-colors"
-                                        >
-                                          <Save className="h-4 w-4" />
-                                          <span>Save Updated Files for Karl</span>
-                                        </button>
-                                        <p className="text-[10px] text-zinc-500 text-center">
-                                          Syncs latest folder link directly to Karl&apos;s setup queue.
-                                        </p>
-                                      </div>
-                                    ) : (
-                                      <div className="flex items-center justify-between gap-2">
-                                        <button
-                                          type="button"
-                                          onClick={() => handleSaveDraft(task)}
-                                          className="flex items-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
-                                        >
-                                          <Save className="h-3.5 w-3.5" />
-                                          <span>Save Draft</span>
-                                        </button>
-
-                                        <button
-                                          type="button"
-                                          onClick={() => handleDeliver(task)}
-                                          className="flex items-center gap-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 px-4 py-1.5 text-xs font-bold text-white shadow-2xs"
-                                        >
-                                          <Send className="h-3.5 w-3.5" />
-                                          <span>Deliver to Charles ({task.quantity})</span>
-                                        </button>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </td>
+                {filteredDelivered.length === 0 ? (
+                  <div className="rounded-xl border border-[#222222] bg-[#0a0a0a] p-8 text-center shadow-xs">
+                    <Clock className="mx-auto h-7 w-7 text-zinc-500" />
+                    <h3 className="mt-2 text-sm font-bold text-white">
+                      No finished deliverables yet
+                    </h3>
+                    <p className="mt-1 text-xs text-zinc-400">
+                      Deliver your creative batches above to see them in review here.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="w-full max-w-full min-w-0 rounded-xl border border-[#222222] bg-[#0a0a0a] shadow-xs">
+                    <table className="w-full text-left text-xs border-collapse">
+                      <thead className="border-b border-[#222222] bg-black font-semibold text-zinc-400 uppercase tracking-wider text-[10px] sticky top-0">
+                        <tr>
+                          <th className="w-[60px] py-2.5 px-2 text-center border-r border-[#1f1f1f]">Priority</th>
+                          <th className="py-2.5 px-3 border-r border-[#1f1f1f] w-[26%]">Campaign &amp; Product</th>
+                          <th className="py-2.5 px-3 border-r border-[#1f1f1f] w-[36%]">Deliverable &amp; Hook</th>
+                          <th className="w-[110px] py-2.5 px-3 border-r border-[#1f1f1f]">Assets &amp; Due</th>
+                          <th className="w-[125px] py-2.5 px-3 border-r border-[#1f1f1f]">Drive Link</th>
+                          <th className="w-[160px] py-2.5 px-3 text-right">Status / Action</th>
                         </tr>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-              </tbody>
-            </table>
+                      </thead>
+                      <tbody className="divide-y divide-[#1a1a1a]">
+                        {filteredDelivered.map(renderTaskRow)}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
 
       {/* Standalone Task Detail Modal */}
       {selectedTask && (
