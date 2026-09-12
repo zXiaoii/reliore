@@ -402,8 +402,8 @@ class OperationsStore {
           const metaSnap = await getDoc(metaRef);
           const currentVersion = metaSnap.exists() ? metaSnap.data()?.version : null;
 
-          if (currentVersion !== 'aus_v3') {
-            console.log('[Store] Firestore version mismatch. Migrating to aus_v3...');
+          if (currentVersion !== 'aus_v4') {
+            console.log('[Store] Firestore version mismatch. Migrating to aus_v4...');
             for (const colName of ['tasks', 'campaigns', 'adSets']) {
               const colRef = collection(firestoreDb, colName);
               const snapshot = await getDocs(colRef);
@@ -411,14 +411,23 @@ class OperationsStore {
               await Promise.all(deletePromises);
             }
 
+            this.tasks = INITIAL_TASKS;
+            this.campaigns = INITIAL_CAMPAIGNS;
+            this.adSets = INITIAL_ADSETS;
+            this.saveTasks();
+            this.saveCampaigns();
+            this.saveAdSets();
+
             await Promise.all([
               ...this.tasks.map((t) => setDoc(doc(firestoreDb, 'tasks', t.id), t)),
               ...this.campaigns.map((c) => setDoc(doc(firestoreDb, 'campaigns', c.id), c)),
               ...this.adSets.map((a) => setDoc(doc(firestoreDb, 'adSets', a.id), a)),
             ]);
 
-            await setDoc(metaRef, { version: 'aus_v3' });
-            console.log('[Store] Migration to aus_v3 complete.');
+            await setDoc(metaRef, { version: 'aus_v4' });
+            console.log('[Store] Migration to aus_v4 complete.');
+            
+            this.notifyAll();
           }
         } catch (err) {
           console.warn('Firestore version check/migration error:', err);
