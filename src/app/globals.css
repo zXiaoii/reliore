@@ -38,14 +38,7 @@ body {
 }
 
 .vercel-btn-primary {
-  background-color: #ffffff;
-  color: #000000;
-  font-weight: 600;
-  font-size: 12px;
-  border-radius: 6px;
-  padding: 6px 14px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  transition: background-color 0.15s ease, opacity 0.15s ease;
+  @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 bg-zinc-900 text-zinc-50 shadow hover:bg-zinc-900/90 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-50/90;
 }
 
 .vercel-btn-primary:hover {
@@ -53,14 +46,7 @@ body {
 }
 
 .vercel-btn-secondary {
-  background-color: #111111;
-  color: #ededed;
-  border: 1px solid #262626;
-  font-weight: 600;
-  font-size: 12px;
-  border-radius: 6px;
-  padding: 6px 12px;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 border border-zinc-200 bg-white shadow-sm hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-800 dark:hover:text-zinc-50;
 }
 
 .vercel-btn-secondary:hover {
@@ -116,19 +102,14 @@ select option {
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  height: 6px;
   width: 6px;
+  height: 6px;
 }
-
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(10, 10, 10, 0.4);
-  border-radius: 9999px;
+  background: transparent;
 }
-
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #333333;
-  border-radius: 9999px;
-  transition: background-color 0.2s;
+  @apply bg-zinc-300 dark:bg-zinc-700 rounded-full;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {

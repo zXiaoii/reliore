@@ -1029,12 +1029,12 @@ class OperationsStore {
       actor
     );
 
-    // 4. Trigger Next-Day Automation check (Ã‚Â§16)
+    // 4. Trigger 2-Day Automation check (Ã‚Â§16)
     this.registerNextDayCreativeTrigger(task.campaign, newAdSet.id, task.product, task.market, task.adAccount);
   }
 
-  // --- AUTOMATIC NEXT-DAY CREATIVE TRIGGER (Ã‚Â§16) ---
-  // When an ad set is launched, register or generate next-day creative task for Yzah
+  // --- AUTOMATIC 2-Day CREATIVE TRIGGER (Ã‚Â§16) ---
+  // When an ad set is launched, register or generate 2-Day creative task for Yzah
   public registerNextDayCreativeTrigger(
     campaignName: string,
     adSetId: string,
@@ -1060,7 +1060,7 @@ class OperationsStore {
       owner: 'Yzah',
       ownerUid: 'yzah-03',
       status: 'QUEUE',
-      deadline: 'Tomorrow 6 PM',
+      deadline: 'In 2 Days 6 PM',
       nextAction: 'Yzah create next Swipe + Playbook batch',
       market,
       adAccount,
@@ -1085,7 +1085,7 @@ class OperationsStore {
           at: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }),
           uid: 'system',
           userDisplayName: 'Automation Engine',
-          action: 'Automatic Next-Day Trigger Created',
+          action: 'Automatic 2-Day Trigger Created',
           detail: `Triggered 1 day after ad set launch for ${campaignName}. Assigned to Yzah.`,
         },
       ],
@@ -1103,7 +1103,7 @@ class OperationsStore {
         uid: 'system',
         userDisplayName: 'Automation Engine',
         action: 'Automatic Creative Trigger',
-        detail: `Next-day creative task generated for Yzah.`,
+        detail: `2-Day creative task generated for Yzah.`,
       });
       this.saveCampaigns();
       this.syncCampaignToFirestore(camp);

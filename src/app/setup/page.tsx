@@ -152,7 +152,7 @@ export default function SetupQueuePage() {
     );
 
     toast.success(
-      `🚀 Ad Set "${vals.adSetName}" launched in Meta! Campaign status is LIVE and next-day automation trigger is scheduled.`
+      `🚀 Ad Set "${vals.adSetName}" launched in Meta! Campaign status is LIVE and 2-Day automation trigger is scheduled.`
     );
   };
 
@@ -728,7 +728,7 @@ export default function SetupQueuePage() {
                                         className="w-full vercel-btn-primary flex items-center justify-center gap-2 py-2.5 cursor-pointer font-bold"
                                       >
                                         <Rocket className="h-4 w-4 text-black" />
-                                        <span>Confirm Launch in Meta (Trigger Next-Day Automation)</span>
+                                        <span>Confirm Launch in Meta (Trigger 2-Day Automation)</span>
                                       </button>
                                     </div>
                                   </div>
