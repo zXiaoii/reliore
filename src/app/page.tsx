@@ -630,7 +630,7 @@ export default function SmartSpreadsheetDashboard() {
                         return (
                           <tr
                             key={task.id}
-                            className={`transition-colors hover:bg-[#141414] ${
+                            className={`transition-colors hover:bg-zinc-900 ${
                               isBlocked
                                 ? 'bg-rose-950/15'
                                 : isLive
