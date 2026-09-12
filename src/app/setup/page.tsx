@@ -516,7 +516,7 @@ export default function SetupQueuePage() {
                                 </button>
                               </div>
                               <div className="flex items-center gap-2 text-[10px] text-zinc-400 font-mono">
-                                <span className="text-teal-400 font-semibold">${vals.dailyBudget}/day</span>
+                                <span className="text-teal-400 font-semibold">€{vals.dailyBudget}/day</span>
                                 <span>·</span>
                                 <span className="text-zinc-500">{task.creativeTypes.join(' + ')}</span>
                                 {task.reasonTrigger && (
@@ -684,7 +684,7 @@ export default function SetupQueuePage() {
                                       <div className="grid grid-cols-2 gap-3">
                                         <div className="space-y-1">
                                           <label className="text-[10px] font-bold uppercase text-zinc-400 font-mono">
-                                            Daily Budget ($USD)
+                                            Daily Budget (€EUR)
                                           </label>
                                           <input
                                             type="number"

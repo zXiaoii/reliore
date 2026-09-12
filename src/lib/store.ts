@@ -16,6 +16,14 @@ import { initFirestoreInstance, isFirebaseConfigured } from './firebase';
 
 export const INITIAL_USERS: TeamUser[] = [
   {
+    uid: 'danny-01',
+    email: 'danny@operations.internal',
+    displayName: 'Danny (CEO)',
+    role: 'admin',
+    active: true,
+    password: 'danny2026',
+  },
+  {
     uid: 'charles-01',
     email: 'charles@operations.internal',
     displayName: 'Charles',
@@ -55,115 +63,297 @@ export const INITIAL_USERS: TeamUser[] = [
     active: true,
     password: 'christian2026',
   },
-  {
-    uid: 'danny-01',
-    email: 'danny@operations.internal',
-    displayName: 'Danny',
-    role: 'admin',
-    active: true,
-    password: 'danny2026',
-  },
 ];
 
 const INITIAL_CAMPAIGNS: Campaign[] = [
   {
-    id: 'camp-flexi-3',
-    name: 'CBO FlexiVita 3',
-    product: 'FlexiVita',
-    market: 'CA',
-    adAccount: 'CA AD 24',
+    id: 'camp-vitalith-3',
+    name: 'MAIN CBO Vitalith 3',
+    product: 'Vitalith',
+    market: 'AUS',
+    adAccount: '#8167 - AUS | AD 3 - Danny - ADSC',
     status: 'LIVE',
     stage: 'Winner Expansion',
-    launchDate: '09/10/26',
-    createdAt: new Date(Date.now() - 3 * 86400000).toISOString(),
+    launchDate: '09/07/26',
+    createdAt: '2026-09-07T10:00:00.000Z',
     history: [
       {
-        at: '09/10/26 10:00 AM',
-        uid: 'charles-01',
-        userDisplayName: 'Charles',
+        at: '09/07/26 10:00 AM',
+        uid: 'danny-01',
+        userDisplayName: 'Danny (CEO)',
         action: 'Campaign Created',
-        detail: 'Created CBO FlexiVita 3 on CA AD 24 for Canada market.',
+        detail: 'Created MAIN CBO Vitalith 3 on #8167 - AUS | AD 3 - Danny - ADSC for Australia market.',
       },
       {
-        at: '09/10/26 04:30 PM',
-        uid: 'charles-01',
-        userDisplayName: 'Charles',
-        action: 'Creatives Approved',
-        detail: 'Approved initial 8 swipe variants.',
-      },
-      {
-        at: '09/10/26 06:15 PM',
-        uid: 'karl-04',
-        userDisplayName: 'Karl',
-        action: 'Campaign Launched',
-        detail: 'Launched campaign with ad set: 09/10/26 Initial Swipes.',
-      },
-      {
-        at: '09/12/26 05:00 PM',
+        at: '09/07/26 04:30 PM',
         uid: 'karl-04',
         userDisplayName: 'Karl',
         action: 'Ad Set Launched',
-        detail: 'Launched ad set: 09/12/26 Swipes.',
+        detail: 'Launched ad set: 09/07/26.',
+      },
+      {
+        at: '09/11/26 05:00 PM',
+        uid: 'karl-04',
+        userDisplayName: 'Karl',
+        action: 'Ad Set Launched',
+        detail: 'Launched ad set: 09/11/26 swipes 2.',
       },
     ],
   },
   {
-    id: 'camp-flexi-curiosity',
-    name: 'CBO FlexiVita Curiosity 1',
-    product: 'FlexiVita',
-    market: 'CA',
-    adAccount: 'CA AD 19',
+    id: 'camp-drycontrol',
+    name: 'MAIN CBO DryControl',
+    product: 'DryControl',
+    market: 'AUS',
+    adAccount: '#8167 - AUS | AD 3 - Danny - ADSC',
     status: 'LIVE',
-    stage: 'Initial Testing',
-    launchDate: '09/11/26',
-    createdAt: new Date(Date.now() - 2 * 86400000).toISOString(),
+    stage: 'Winner Expansion',
+    launchDate: '09/12/26',
+    createdAt: '2026-09-12T10:00:00.000Z',
     history: [
       {
-        at: '09/11/26 11:00 AM',
+        at: '09/12/26 11:00 AM',
+        uid: 'danny-01',
+        userDisplayName: 'Danny (CEO)',
+        action: 'Campaign Created',
+        detail: 'Created MAIN CBO DryControl on #8167 - AUS | AD 3.',
+      },
+      {
+        at: '09/12/26 06:00 PM',
+        uid: 'christian-06',
+        userDisplayName: 'Christian',
+        action: 'Ad Set Launched',
+        detail: 'Launched ad set: 09/12/26 swipes.',
+      },
+    ],
+  },
+  {
+    id: 'camp-revida-4',
+    name: 'MAIN CBO Revida 4',
+    product: 'Revida',
+    market: 'AUS',
+    adAccount: '#8178 - AUS | AD 4 - Danny - ADSC',
+    status: 'LIVE',
+    stage: 'Winner Expansion',
+    launchDate: '09/07/26',
+    createdAt: '2026-09-07T09:00:00.000Z',
+    history: [
+      {
+        at: '09/07/26 09:30 AM',
+        uid: 'danny-01',
+        userDisplayName: 'Danny (CEO)',
+        action: 'Campaign Created',
+        detail: 'Created MAIN CBO Revida 4 on #8178 - AUS | AD 4.',
+      },
+      {
+        at: '09/07/26 05:00 PM',
+        uid: 'karl-04',
+        userDisplayName: 'Karl',
+        action: 'Ad Set Launched',
+        detail: 'Launched ad set: 09/07/26 SWIPES.',
+      },
+      {
+        at: '09/11/26 04:00 PM',
+        uid: 'karl-04',
+        userDisplayName: 'Karl',
+        action: 'Ad Set Launched',
+        detail: 'Launched ad set: 09/11/26 SWIPES 2.',
+      },
+    ],
+  },
+  {
+    id: 'camp-heradem-4',
+    name: 'MAIN CBO Heradem 4',
+    product: 'Heradem',
+    market: 'AUS',
+    adAccount: '#8178 - AUS | AD 4 - Danny - ADSC',
+    status: 'LIVE',
+    stage: 'Winner Expansion',
+    launchDate: '09/08/26',
+    createdAt: '2026-09-08T09:00:00.000Z',
+    history: [
+      {
+        at: '09/08/26 10:00 AM',
+        uid: 'danny-01',
+        userDisplayName: 'Danny (CEO)',
+        action: 'Campaign Created',
+        detail: 'Created MAIN CBO Heradem 4 on #8178 - AUS | AD 4.',
+      },
+      {
+        at: '09/08/26 04:30 PM',
+        uid: 'mark-05',
+        userDisplayName: 'Mark',
+        action: 'Ad Set Launched',
+        detail: 'Launched ad set: 09/08/26 SWIPES.',
+      },
+      {
+        at: '09/12/26 03:30 PM',
+        uid: 'mark-05',
+        userDisplayName: 'Mark',
+        action: 'Ad Set Launched',
+        detail: 'Launched ad set: 09/12/26 SWIPES 2.',
+      },
+    ],
+  },
+  {
+    id: 'camp-lidlift',
+    name: 'MAIN CBO Lidlift',
+    product: 'Lidlift',
+    market: 'AUS',
+    adAccount: '#8178 - AUS | AD 4 - Danny - ADSC',
+    status: 'LIVE',
+    stage: 'Winner Expansion',
+    launchDate: '09/07/26',
+    createdAt: '2026-09-07T08:00:00.000Z',
+    history: [
+      {
+        at: '09/07/26 09:00 AM',
+        uid: 'danny-01',
+        userDisplayName: 'Danny (CEO)',
+        action: 'Campaign Created',
+        detail: 'Created MAIN CBO Lidlift on #8178 - AUS | AD 4.',
+      },
+      {
+        at: '09/07/26 04:00 PM',
+        uid: 'karl-04',
+        userDisplayName: 'Karl',
+        action: 'Ad Set Launched',
+        detail: 'Launched ad set: 09/07/26 SWIPES.',
+      },
+      {
+        at: '09/12/26 02:00 PM',
+        uid: 'karl-04',
+        userDisplayName: 'Karl',
+        action: 'Ad Set Launched',
+        detail: 'Launched ad set: 09/12/26 SWIPES 2.',
+      },
+    ],
+  },
+  {
+    id: 'camp-gutflush-go',
+    name: 'MAIN CBO GUTFLUSH GO',
+    product: 'Gutflush',
+    market: 'AUS',
+    adAccount: '50647 aurmacy [GO DGTL]',
+    status: 'LIVE',
+    stage: 'Initial Testing',
+    launchDate: '09/13/26',
+    createdAt: '2026-09-13T08:00:00.000Z',
+    history: [
+      {
+        at: '09/13/26 08:30 AM',
         uid: 'charles-01',
         userDisplayName: 'Charles',
         action: 'Campaign Created',
-        detail: 'Launched new curiosity angle campaign.',
+        detail: 'Created MAIN CBO GUTFLUSH GO on 50647 aurmacy [GO DGTL].',
       },
-    ],
-  },
-  {
-    id: 'camp-glowvita-2',
-    name: 'CBO GlowVita 2',
-    product: 'GlowVita',
-    market: 'AUS',
-    adAccount: 'AU AD 11',
-    status: 'WATCH',
-    stage: 'Broad Scaling',
-    launchDate: '09/08/26',
-    createdAt: new Date(Date.now() - 5 * 86400000).toISOString(),
-    history: [
       {
-        at: '09/08/26 02:00 PM',
-        uid: 'charles-01',
-        userDisplayName: 'Charles',
-        action: 'Campaign Launched',
-        detail: 'Launched in Australia on AU AD 11.',
+        at: '09/13/26 01:00 PM',
+        uid: 'karl-04',
+        userDisplayName: 'Karl',
+        action: 'Ad Set Launched',
+        detail: 'Launched ad set: 09/13/26 swipes.',
       },
     ],
   },
   {
-    id: 'camp-flexi-uk',
-    name: 'UK - FlexiVita - Scale',
+    id: 'camp-flexivita-go',
+    name: 'MAIN CBO Flexivita GO',
     product: 'FlexiVita',
-    market: 'UK',
-    adAccount: 'RL-01',
-    status: 'SCALE',
-    stage: 'Scale Phase',
-    launchDate: '09/05/26',
-    createdAt: new Date(Date.now() - 8 * 86400000).toISOString(),
+    market: 'AUS',
+    adAccount: '50647 aurmacy [GO DGTL]',
+    status: 'LIVE',
+    stage: 'Winner Expansion',
+    launchDate: '09/10/26',
+    createdAt: '2026-09-10T09:00:00.000Z',
     history: [
       {
-        at: '09/05/26 09:00 AM',
+        at: '09/10/26 09:30 AM',
         uid: 'charles-01',
         userDisplayName: 'Charles',
-        action: 'Campaign Scaled',
-        detail: 'Budget raised to €500/day after 2.6x ROAS.',
+        action: 'Campaign Created',
+        detail: 'Created MAIN CBO Flexivita GO on 50647 aurmacy [GO DGTL].',
+      },
+      {
+        at: '09/10/26 03:00 PM',
+        uid: 'christian-06',
+        userDisplayName: 'Christian',
+        action: 'Ad Set Launched',
+        detail: 'Launched ad set: 09/10/26 swipes.',
+      },
+    ],
+  },
+  {
+    id: 'camp-healvix',
+    name: 'MAIN CBO Healvix',
+    product: 'Healvix',
+    market: 'AUS',
+    adAccount: '#8179 - AUS | AD 5 - Danny - ADSC',
+    status: 'LIVE',
+    stage: 'Initial Testing',
+    launchDate: '09/13/26',
+    createdAt: '2026-09-13T09:00:00.000Z',
+    history: [
+      {
+        at: '09/13/26 09:00 AM',
+        uid: 'danny-01',
+        userDisplayName: 'Danny (CEO)',
+        action: 'Campaign Created',
+        detail: 'Created MAIN CBO Healvix on #8179 - AUS | AD 5.',
+      },
+      {
+        at: '09/13/26 02:00 PM',
+        uid: 'mark-05',
+        userDisplayName: 'Mark',
+        action: 'Ad Set Launched',
+        detail: 'Launched ad set: 09/13/26 swipes.',
+      },
+    ],
+  },
+  {
+    id: 'camp-omegamax-6',
+    name: 'MAIN CBO OMEGAMAX 6',
+    product: 'OmegaMax',
+    market: 'AUS',
+    adAccount: '#8180 - AUS | AD 6 - Danny - ADSC',
+    status: 'LIVE',
+    stage: 'Winner Expansion',
+    launchDate: '09/10/26',
+    createdAt: '2026-09-10T10:00:00.000Z',
+    history: [
+      {
+        at: '09/10/26 10:30 AM',
+        uid: 'danny-01',
+        userDisplayName: 'Danny (CEO)',
+        action: 'Campaign Created',
+        detail: 'Created MAIN CBO OMEGAMAX 6 on #8180 - AUS | AD 6.',
+      },
+      {
+        at: '09/10/26 04:30 PM',
+        uid: 'christian-06',
+        userDisplayName: 'Christian',
+        action: 'Ad Set Launched',
+        detail: 'Launched ad set: 09/10/26 SWIPES.',
+      },
+    ],
+  },
+  {
+    id: 'camp-lidlift-13',
+    name: 'NEW CBO Lidlift 13',
+    product: 'Lidlift',
+    market: 'AUS',
+    adAccount: '#8977 - AUS | AD 13 - Danny - 6 - ADSC',
+    status: 'LIVE',
+    stage: 'New Funnel Launch',
+    launchDate: '09/13/26',
+    createdAt: '2026-09-13T10:00:00.000Z',
+    history: [
+      {
+        at: '09/13/26 10:00 AM',
+        uid: 'danny-01',
+        userDisplayName: 'Danny (CEO)',
+        action: 'Campaign Created',
+        detail: 'Launched NEW CBO Lidlift 13 on #8977 - AUS | AD 13 - Danny - 6 - ADSC.',
       },
     ],
   },
@@ -171,237 +361,391 @@ const INITIAL_CAMPAIGNS: Campaign[] = [
 
 const INITIAL_ADSETS: AdSet[] = [
   {
-    id: 'adset-01',
-    campaignId: 'camp-flexi-3',
-    campaignName: 'CBO FlexiVita 3',
-    name: '09/10/26 Initial Swipes',
-    launchDate: '09/10/26',
+    id: 'adset-120250536582690696',
+    campaignId: 'camp-vitalith-3',
+    campaignName: 'MAIN CBO Vitalith 3',
+    name: '09/07/26',
+    launchDate: '09/07/26',
     status: 'LIVE',
     creativeType: 'SWIPES',
     assignedSetupUser: 'Karl',
-    notes: 'Initial launch batch, performing at 2.4x ROAS.',
-    createdAt: '09/10/26',
-    launchedAt: '09/10/26',
+    notes: 'Initial swipe batch on #8167 - AUS | AD 3.',
+    createdAt: '09/07/26',
+    launchedAt: '09/07/26',
   },
   {
-    id: 'adset-02',
-    campaignId: 'camp-flexi-3',
-    campaignName: 'CBO FlexiVita 3',
-    name: '09/12/26 Swipes',
-    launchDate: '09/12/26',
-    status: 'LIVE',
-    creativeType: 'SWIPES',
-    assignedSetupUser: 'Karl',
-    notes: 'Second swipe batch testing doctor whiteboard hooks.',
-    createdAt: '09/12/26',
-    launchedAt: '09/12/26',
-  },
-  {
-    id: 'adset-03',
-    campaignId: 'camp-flexi-curiosity',
-    campaignName: 'CBO FlexiVita Curiosity 1',
-    name: '09/11/26 Curiosity Batch',
+    id: 'adset-120250600010230696',
+    campaignId: 'camp-vitalith-3',
+    campaignName: 'MAIN CBO Vitalith 3',
+    name: '09/11/26 swipes 2',
     launchDate: '09/11/26',
     status: 'LIVE',
-    creativeType: 'CURIOSITY ADS',
-    assignedSetupUser: 'Mark',
-    notes: 'Curiosity blind test angle.',
+    creativeType: 'SWIPES',
+    assignedSetupUser: 'Karl',
+    notes: 'Swipe batch 2 on #8167 - AUS | AD 3.',
     createdAt: '09/11/26',
     launchedAt: '09/11/26',
   },
   {
-    id: 'adset-04',
-    campaignId: 'camp-glowvita-2',
-    campaignName: 'CBO GlowVita 2',
-    name: '09/08/26 Iterations',
+    id: 'adset-120250617426590696',
+    campaignId: 'camp-drycontrol',
+    campaignName: 'MAIN CBO DryControl',
+    name: '09/12/26 swipes',
+    launchDate: '09/12/26',
+    status: 'LIVE',
+    creativeType: 'SWIPES',
+    assignedSetupUser: 'Christian',
+    notes: 'Swipe launch on #8167 - AUS | AD 3.',
+    createdAt: '09/12/26',
+    launchedAt: '09/12/26',
+  },
+  {
+    id: 'adset-120249553142180232',
+    campaignId: 'camp-revida-4',
+    campaignName: 'MAIN CBO Revida 4',
+    name: '09/07/26 SWIPES',
+    launchDate: '09/07/26',
+    status: 'LIVE',
+    creativeType: 'SWIPES',
+    assignedSetupUser: 'Karl',
+    notes: 'Swipe batch 1 on #8178 - AUS | AD 4.',
+    createdAt: '09/07/26',
+    launchedAt: '09/07/26',
+  },
+  {
+    id: 'adset-120249617010530232',
+    campaignId: 'camp-revida-4',
+    campaignName: 'MAIN CBO Revida 4',
+    name: '09/11/26 SWIPES 2',
+    launchDate: '09/11/26',
+    status: 'LIVE',
+    creativeType: 'SWIPES',
+    assignedSetupUser: 'Karl',
+    notes: 'Swipe batch 2 on #8178 - AUS | AD 4.',
+    createdAt: '09/11/26',
+    launchedAt: '09/11/26',
+  },
+  {
+    id: 'adset-120249580624150232',
+    campaignId: 'camp-heradem-4',
+    campaignName: 'MAIN CBO Heradem 4',
+    name: '09/08/26 SWIPES',
     launchDate: '09/08/26',
     status: 'LIVE',
-    creativeType: 'WINNER ITERATIONS',
-    assignedSetupUser: 'Christian',
-    notes: 'Collagen comparison cuts.',
+    creativeType: 'SWIPES',
+    assignedSetupUser: 'Mark',
+    notes: 'Swipe batch 1 on #8178 - AUS | AD 4.',
     createdAt: '09/08/26',
     launchedAt: '09/08/26',
+  },
+  {
+    id: 'adset-120249636262790232',
+    campaignId: 'camp-heradem-4',
+    campaignName: 'MAIN CBO Heradem 4',
+    name: '09/12/26 SWIPES 2',
+    launchDate: '09/12/26',
+    status: 'LIVE',
+    creativeType: 'SWIPES',
+    assignedSetupUser: 'Mark',
+    notes: 'Swipe batch 2 on #8178 - AUS | AD 4.',
+    createdAt: '09/12/26',
+    launchedAt: '09/12/26',
+  },
+  {
+    id: 'adset-120249550857590232',
+    campaignId: 'camp-lidlift',
+    campaignName: 'MAIN CBO Lidlift',
+    name: '09/07/26 SWIPES',
+    launchDate: '09/07/26',
+    status: 'LIVE',
+    creativeType: 'SWIPES',
+    assignedSetupUser: 'Karl',
+    notes: 'Swipe batch 1 on #8178 - AUS | AD 4.',
+    createdAt: '09/07/26',
+    launchedAt: '09/07/26',
+  },
+  {
+    id: 'adset-120249636114800232',
+    campaignId: 'camp-lidlift',
+    campaignName: 'MAIN CBO Lidlift',
+    name: '09/12/26 SWIPES 2',
+    launchDate: '09/12/26',
+    status: 'LIVE',
+    creativeType: 'SWIPES',
+    assignedSetupUser: 'Karl',
+    notes: 'Swipe batch 2 on #8178 - AUS | AD 4.',
+    createdAt: '09/12/26',
+    launchedAt: '09/12/26',
+  },
+  {
+    id: 'adset-120254662478960045',
+    campaignId: 'camp-gutflush-go',
+    campaignName: 'MAIN CBO GUTFLUSH GO',
+    name: '09/13/26 swipes',
+    launchDate: '09/13/26',
+    status: 'LIVE',
+    creativeType: 'SWIPES',
+    assignedSetupUser: 'Karl',
+    notes: 'Launched on 50647 aurmacy [GO DGTL].',
+    createdAt: '09/13/26',
+    launchedAt: '09/13/26',
+  },
+  {
+    id: 'adset-120254607736930045',
+    campaignId: 'camp-flexivita-go',
+    campaignName: 'MAIN CBO Flexivita GO',
+    name: '09/10/26 swipes',
+    launchDate: '09/10/26',
+    status: 'LIVE',
+    creativeType: 'SWIPES',
+    assignedSetupUser: 'Christian',
+    notes: 'Launched on 50647 aurmacy [GO DGTL].',
+    createdAt: '09/10/26',
+    launchedAt: '09/10/26',
+  },
+  {
+    id: 'adset-120251156014290564',
+    campaignId: 'camp-healvix',
+    campaignName: 'MAIN CBO Healvix',
+    name: '09/13/26 swipes',
+    launchDate: '09/13/26',
+    status: 'LIVE',
+    creativeType: 'SWIPES',
+    assignedSetupUser: 'Mark',
+    notes: 'Launched on #8179 - AUS | AD 5.',
+    createdAt: '09/13/26',
+    launchedAt: '09/13/26',
+  },
+  {
+    id: 'adset-120248176536440618',
+    campaignId: 'camp-omegamax-6',
+    campaignName: 'MAIN CBO OMEGAMAX 6',
+    name: '09/10/26 SWIPES',
+    launchDate: '09/10/26',
+    status: 'LIVE',
+    creativeType: 'SWIPES',
+    assignedSetupUser: 'Christian',
+    notes: 'Launched on #8180 - AUS | AD 6.',
+    createdAt: '09/10/26',
+    launchedAt: '09/10/26',
   },
 ];
 
 const INITIAL_TASKS: WorkTask[] = [
-  // Task 1: Use Case 1 from User Brief!
   {
-    id: 'task-001',
+    id: 'task-aus-001',
     taskNumber: 1,
-    product: 'FlexiVita',
-    campaign: 'CBO FlexiVita 3',
-    campaignId: 'camp-flexi-3',
+    product: 'Gutflush',
+    campaign: 'MAIN CBO GUTFLUSH GO',
+    campaignId: 'camp-gutflush-go',
     action: 'ADD NEW AD SET',
     owner: 'Karl',
     ownerUid: 'karl-04',
     status: 'READY',
     deadline: 'Today 6 PM',
-    nextAction: 'Karl set up ad set in CBO FlexiVita 3',
-    market: 'CA',
-    adAccount: 'CA AD 24',
+    nextAction: 'Karl set up ad set in MAIN CBO GUTFLUSH GO',
+    market: 'AUS',
+    adAccount: '50647 aurmacy [GO DGTL]',
     priority: 'P1',
     stage: 'Setup',
-    creativeTypes: ['SWIPES', 'PLAYBOOK CONCEPTS'],
+    creativeTypes: ['SWIPES'],
     quantity: 8,
     quantityDone: 8,
-    reasonTrigger: 'Add New Ad Set to Winning CBO',
-    winningReference: 'CA AD 14 Creative 03',
-    winningHook: 'Orthopedic surgeon explains joint mobility failure',
-    winningAngle: 'Doctor whiteboard breakdown with 3D joint animation clip',
+    reasonTrigger: 'Add New Ad Set to Winning CBO (Australia)',
+    winningReference: 'AUS AD 12 Gut Health Hook',
+    winningHook: 'The Australian morning gut cleanse habit doctors recommend',
+    winningAngle: 'Doctor whiteboard breakdown with digestion timeline',
     whatToKeep: 'Hook, Offer, Core copy',
     whatToChange: 'Visual execution, safe-zone framing',
     format: '9:16 Video',
-    folderUrl: 'https://drive.google.com/drive/folders/flexivita-swipe-playbook-0913',
-    creativeNotes: 'All 8 variants approved by Charles. Ready for Karl to launch.',
-    adSetName: '09/13/26 Swipes + Playbook',
-    dailyBudget: 250,
-    setupNotes: 'Inserting into CBO FlexiVita 3, broad 35+, pixel verified.',
+    folderUrl: 'https://drive.google.com/drive/folders/gutflush-aus-swipes-0914',
+    creativeNotes: 'All 8 variants approved by Danny. Ready for Karl to launch on 50647 aurmacy [GO DGTL].',
+    adSetName: '09/14/26 Swipes',
+    dailyBudget: 150,
+    setupNotes: 'Inserting into MAIN CBO GUTFLUSH GO, broad 35+, Australian pixel verified.',
     assignedSetupUser: 'Karl',
     funnelReady: true,
     pixelOk: true,
     trackingOk: true,
-    createdBy: 'charles-01',
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
+    createdBy: 'danny-01',
+    createdAt: new Date(Date.now() - 43200000).toISOString(),
     updatedAt: new Date().toISOString(),
     history: [
       {
-        at: '09/12/26 10:00 AM',
-        uid: 'charles-01',
-        userDisplayName: 'Charles',
+        at: '09/13/26 10:00 AM',
+        uid: 'danny-01',
+        userDisplayName: 'Danny (CEO)',
         action: 'Created Request',
-        detail: 'Created 8 Swipes + Playbook Concepts assigned to Yzah.',
+        detail: 'Created 8 Swipes assigned to Yzah. Setup assigned to Karl.',
       },
       {
-        at: '09/12/26 03:00 PM',
+        at: '09/13/26 03:00 PM',
         uid: 'yzah-03',
         userDisplayName: 'Yzah',
         action: 'Delivered Creative',
         detail: 'Uploaded 8 variants to Google Drive folder.',
       },
       {
-        at: '09/12/26 04:15 PM',
-        uid: 'charles-01',
-        userDisplayName: 'Charles',
+        at: '09/13/26 04:30 PM',
+        uid: 'danny-01',
+        userDisplayName: 'Danny (CEO)',
         action: 'Approved Creative',
         detail: 'Approved batch and assigned setup to Karl.',
       },
     ],
   },
-  // Task 2: Use Case 2 from User Brief!
   {
-    id: 'task-002',
+    id: 'task-aus-002',
     taskNumber: 2,
-    product: 'FlexiVita',
-    campaign: 'CBO FlexiVita Curiosity 1',
-    campaignId: 'camp-flexi-curiosity',
+    product: 'Healvix',
+    campaign: 'MAIN CBO Healvix',
+    campaignId: 'camp-healvix',
+    action: 'ADD NEW AD SET',
+    owner: 'Mark',
+    ownerUid: 'mark-05',
+    status: 'IN_SETUP',
+    deadline: 'Today 8 PM',
+    nextAction: 'Mark verify pixel & upload ads',
+    market: 'AUS',
+    adAccount: '#8179 - AUS | AD 5 - Danny - ADSC',
+    priority: 'P1',
+    stage: 'Setup',
+    creativeTypes: ['SWIPES + PLAYBOOK'],
+    quantity: 8,
+    quantityDone: 8,
+    reasonTrigger: 'Scale Winning Angle on #8179 AD 5',
+    winningReference: 'AUS AD 05 Whiteboard Hook',
+    winningHook: 'Joint discomfort breakthrough tested across Australia',
+    winningAngle: 'Clinical evidence & before/after patient testimonials',
+    format: '9:16 Video',
+    folderUrl: 'https://drive.google.com/drive/folders/healvix-aus-swipes-0914',
+    creativeNotes: 'Approved batch for Healvix scale.',
+    adSetName: '09/14/26 Swipes 2',
+    dailyBudget: 180,
+    setupNotes: 'Mark currently verifying Australian tracking pixel and building ad set.',
+    assignedSetupUser: 'Mark',
+    funnelReady: true,
+    pixelOk: true,
+    trackingOk: false,
+    createdBy: 'danny-01',
+    createdAt: new Date(Date.now() - 36000000).toISOString(),
+    updatedAt: new Date().toISOString(),
+    history: [
+      {
+        at: '09/13/26 11:00 AM',
+        uid: 'danny-01',
+        userDisplayName: 'Danny (CEO)',
+        action: 'Created Request',
+        detail: 'Assigned to Yzah and Mark for fast setup.',
+      },
+    ],
+  },
+  {
+    id: 'task-aus-003',
+    taskNumber: 3,
+    product: 'Lidlift',
+    campaign: 'NEW CBO Lidlift 13',
+    campaignId: 'camp-lidlift-13',
     action: 'LAUNCH NEW CBO',
     owner: 'Yzah',
     ownerUid: 'yzah-03',
     status: 'MAKING',
-    deadline: 'Today',
+    deadline: 'Tomorrow 2 PM',
     nextAction: 'Yzah finish cuts & attach Drive link',
-    market: 'CA',
-    adAccount: 'CA AD 19',
+    market: 'AUS',
+    adAccount: '#8977 - AUS | AD 13 - Danny - 6 - ADSC',
     priority: 'P1',
     stage: 'Creative',
-    creativeTypes: ['CURIOSITY ADS'],
+    creativeTypes: ['SWIPES', 'CURIOSITY ADS'],
     quantity: 8,
-    quantityDone: 4,
-    reasonTrigger: 'Launch New CBO Testing Curiosity Angle',
-    winningReference: 'TikTok Viral Clip #8821',
-    winningHook: 'The 30-second morning habit that keeps European grandmothers hiking',
-    winningAngle: 'Curiosity blind test angle',
-    whatToKeep: 'Curiosity hook structure',
-    whatToChange: 'Modernized lifestyle visuals',
+    quantityDone: 5,
+    reasonTrigger: 'New Funnel Launch for Lidlift in Australia',
+    winningReference: 'Viral Skincare Demonstration #7741',
+    winningHook: 'The 3-minute hooded eye lifting routine taking Sydney by storm',
+    winningAngle: 'Side-by-side application demonstration with immediate firmness visual',
     format: '9:16 Video',
-    folderUrl: 'https://drive.google.com/drive/folders/flexivita-curiosity-batch-2',
-    creativeNotes: 'Hooks 1-4 rendered, editing hooks 5-8 now.',
-    adSetName: '09/13/26 Curiosity',
+    folderUrl: 'https://drive.google.com/drive/folders/lidlift-cbo-13-aus',
+    creativeNotes: '5 variants rendered, finishing remaining 3 variations for Australian market.',
+    adSetName: '09/14/26 New CBO Batch',
     dailyBudget: 200,
-    assignedSetupUser: 'Mark',
-    createdBy: 'charles-01',
-    createdAt: new Date(Date.now() - 43200000).toISOString(),
+    assignedSetupUser: 'Christian',
+    createdBy: 'danny-01',
+    createdAt: new Date(Date.now() - 28800000).toISOString(),
     updatedAt: new Date().toISOString(),
     history: [
       {
-        at: '09/12/26 11:30 AM',
-        uid: 'charles-01',
-        userDisplayName: 'Charles',
+        at: '09/13/26 12:00 PM',
+        uid: 'danny-01',
+        userDisplayName: 'Danny (CEO)',
         action: 'Created Request',
-        detail: 'Created 8 Curiosity Ads assigned to Yzah. Setup assigned to Mark.',
+        detail: 'Created 8 Swipe variants for NEW CBO Lidlift 13. Setup assigned to Christian.',
       },
     ],
   },
-  // Task 3: Performance Review / Scale
   {
-    id: 'task-003',
-    taskNumber: 3,
-    product: 'GlowVita',
-    campaign: 'CBO GlowVita 2',
-    campaignId: 'camp-glowvita-2',
-    action: 'SCALE CAMPAIGN',
-    owner: 'Charles',
-    ownerUid: 'charles-01',
+    id: 'task-aus-004',
+    taskNumber: 4,
+    product: 'DryControl',
+    campaign: 'MAIN CBO DryControl',
+    campaignId: 'camp-drycontrol',
+    action: 'ADD NEW AD SET',
+    owner: 'Christian',
+    ownerUid: 'christian-06',
     status: 'LIVE',
-    deadline: '10 PM',
-    nextAction: 'Media buyer monitor ROAS & trigger next iteration',
+    deadline: 'Completed',
+    nextAction: 'Monitor ROAS & review ad set delivery',
     market: 'AUS',
-    adAccount: 'AU AD 11',
+    adAccount: '#8167 - AUS | AD 3 - Danny - ADSC',
     priority: 'P2',
     stage: 'Live',
-    creativeTypes: ['WINNER ITERATIONS'],
+    creativeTypes: ['SWIPES'],
     quantity: 6,
     quantityDone: 6,
-    reasonTrigger: 'Campaign reached 2.4x ROAS over 48h',
-    folderUrl: 'https://drive.google.com/drive/folders/glowvita-iterations-aus',
-    adSetName: '09/08/26 Iterations',
-    dailyBudget: 350,
-    setupNotes: 'Scaled budget to €350/d. Tracking healthy.',
+    reasonTrigger: 'Initial winner test batch',
+    folderUrl: 'https://drive.google.com/drive/folders/drycontrol-aus-swipes',
+    adSetName: '09/12/26 swipes',
+    dailyBudget: 200,
+    setupNotes: 'Launched successfully on #8167 - AUS | AD 3. Operating at healthy CPM.',
     assignedSetupUser: 'Christian',
-    launchDate: '09/08/26',
-    createdBy: 'charles-01',
-    createdAt: new Date(Date.now() - 4 * 86400000).toISOString(),
+    launchDate: '09/12/26',
+    createdBy: 'danny-01',
+    createdAt: new Date(Date.now() - 86400000).toISOString(),
     updatedAt: new Date().toISOString(),
     history: [],
   },
-  // Task 4: Blocked task for Blockers page!
   {
-    id: 'task-004',
-    taskNumber: 4,
-    product: 'SleepGlow',
-    campaign: 'US - SleepGlow - Advantage+ Broad',
-    action: 'LAUNCH WINNER ITERATIONS',
-    owner: 'Yzah',
-    ownerUid: 'yzah-03',
-    status: 'CHANGES REQUIRED',
-    deadline: 'Tomorrow 2 PM',
-    nextAction: 'Yzah resolve feedback & re-export',
-    market: 'US',
-    adAccount: 'RL-02',
-    priority: 'P2',
-    stage: 'Review',
-    creativeTypes: ['WINNER ITERATIONS', 'HOOK VARIATIONS'],
+    id: 'task-aus-005',
+    taskNumber: 5,
+    product: 'Revida',
+    campaign: 'MAIN CBO Revida 4',
+    campaignId: 'camp-revida-4',
+    action: 'SCALE CAMPAIGN',
+    owner: 'Danny',
+    ownerUid: 'danny-01',
+    status: 'BLOCKED',
+    deadline: 'Immediate Action Required',
+    nextAction: 'CEO complete Australian financial services advertiser declaration in Meta Business Suite',
+    market: 'AUS',
+    adAccount: '#8178 - AUS | AD 4 - Danny - ADSC',
+    priority: 'P1',
+    stage: 'Blocked',
+    creativeTypes: ['SWIPES'],
     quantity: 8,
-    quantityDone: 6,
-    reasonTrigger: 'Winner scaling iteration',
-    winningReference: 'US AD 04 Tart Cherry Hook',
-    winningHook: 'Why melatonin fails you / tart cherry comparison',
-    whatToKeep: 'Voiceover & script',
-    whatToChange: 'Safe zone text placement',
-    folderUrl: 'https://drive.google.com/drive/folders/sleepglow-tart-cherry-revisions',
-    feedback: 'Hook caption was cut off on 9:16 border in first 3 seconds. Please adjust safe-zone framing and re-export.',
+    quantityDone: 8,
+    reasonTrigger: 'Meta Verification Blocker for Australia',
+    feedback: 'Verification required for financial services ads for Australia: To run financial services ads in Australia, you need to declare that they are related to financial products and services and provide additional information, including a verified advertiser and payer.',
+    folderUrl: 'https://adsmanager.facebook.com/adsmanager/manage/campaigns?act=1859294648271560',
     assignedSetupUser: 'Karl',
-    createdBy: 'charles-01',
-    createdAt: new Date(Date.now() - 2 * 86400000).toISOString(),
+    createdBy: 'danny-01',
+    createdAt: new Date(Date.now() - 172800000).toISOString(),
     updatedAt: new Date().toISOString(),
     history: [
       {
-        at: '09/11/26 05:00 PM',
-        uid: 'charles-01',
-        userDisplayName: 'Charles',
-        action: 'Changes Required',
-        detail: 'Feedback sent to Yzah: Safe-zone framing issue on border.',
+        at: '09/13/26 09:00 AM',
+        uid: 'danny-01',
+        userDisplayName: 'Danny (CEO)',
+        action: 'Flagged Blocker',
+        detail: 'Meta compliance alert triggered: Australian financial services declaration required.',
       },
     ],
   },
@@ -409,7 +753,14 @@ const INITIAL_TASKS: WorkTask[] = [
 
 const INITIAL_SETTINGS: SettingsConfig = {
   defaultBatchQty: 8,
-  adAccounts: ['CA AD 24', 'CA AD 19', 'AU AD 11', 'RL-01', 'RL-02', 'RL-03', 'RL-04', 'RL-05'],
+  adAccounts: [
+    '#8167 - AUS | AD 3 - Danny - ADSC',
+    '#8178 - AUS | AD 4 - Danny - ADSC',
+    '50647 aurmacy [GO DGTL]',
+    '#8179 - AUS | AD 5 - Danny - ADSC',
+    '#8180 - AUS | AD 6 - Danny - ADSC',
+    '#8977 - AUS | AD 13 - Danny - 6 - ADSC',
+  ],
   campaignActions: [
     'ADD NEW AD SET',
     'LAUNCH NEW CBO',
@@ -440,7 +791,17 @@ const INITIAL_SETTINGS: SettingsConfig = {
     'STATIC',
     'VIDEO',
   ],
-  products: ['FlexiVita', 'SleepGlow', 'GlowVita'],
+  products: [
+    'Vitalith',
+    'DryControl',
+    'Revida',
+    'Heradem',
+    'Lidlift',
+    'Gutflush',
+    'FlexiVita',
+    'Healvix',
+    'OmegaMax',
+  ],
 };
 
 type Listener<T> = (data: T) => void;
@@ -479,7 +840,7 @@ class OperationsStore {
     this.initialized = true;
 
     try {
-      const storedTasks = localStorage.getItem('media_ops_tasks_v1');
+      const storedTasks = localStorage.getItem('media_ops_tasks_v2');
       if (storedTasks) {
         this.tasks = JSON.parse(storedTasks);
         const maxNum = this.tasks.reduce((max, t) => Math.max(max, t.taskNumber || 0), 0);
@@ -489,7 +850,7 @@ class OperationsStore {
         this.saveTasks();
       }
 
-      const storedCampaigns = localStorage.getItem('media_ops_campaigns_v1');
+      const storedCampaigns = localStorage.getItem('media_ops_campaigns_v2');
       if (storedCampaigns) {
         this.campaigns = JSON.parse(storedCampaigns);
       } else {
@@ -497,7 +858,7 @@ class OperationsStore {
         this.saveCampaigns();
       }
 
-      const storedAdSets = localStorage.getItem('media_ops_adsets_v1');
+      const storedAdSets = localStorage.getItem('media_ops_adsets_v2');
       if (storedAdSets) {
         this.adSets = JSON.parse(storedAdSets);
       } else {
@@ -505,7 +866,7 @@ class OperationsStore {
         this.saveAdSets();
       }
 
-      const storedSettings = localStorage.getItem('media_ops_settings_v1');
+      const storedSettings = localStorage.getItem('media_ops_settings_v2');
       if (storedSettings) {
         this.settings = JSON.parse(storedSettings);
       } else {
@@ -513,7 +874,7 @@ class OperationsStore {
         this.saveSettings();
       }
 
-      const storedUsers = localStorage.getItem('media_ops_users_v1');
+      const storedUsers = localStorage.getItem('media_ops_users_v2');
       if (storedUsers) {
         const parsed: TeamUser[] = JSON.parse(storedUsers);
         this.users = parsed.map((u) => {
@@ -681,19 +1042,19 @@ class OperationsStore {
 
   private reloadFromStorage() {
     try {
-      const storedTasks = localStorage.getItem('media_ops_tasks_v1');
+      const storedTasks = localStorage.getItem('media_ops_tasks_v2');
       if (storedTasks) this.tasks = JSON.parse(storedTasks);
 
-      const storedCampaigns = localStorage.getItem('media_ops_campaigns_v1');
+      const storedCampaigns = localStorage.getItem('media_ops_campaigns_v2');
       if (storedCampaigns) this.campaigns = JSON.parse(storedCampaigns);
 
-      const storedAdSets = localStorage.getItem('media_ops_adsets_v1');
+      const storedAdSets = localStorage.getItem('media_ops_adsets_v2');
       if (storedAdSets) this.adSets = JSON.parse(storedAdSets);
 
-      const storedSettings = localStorage.getItem('media_ops_settings_v1');
+      const storedSettings = localStorage.getItem('media_ops_settings_v2');
       if (storedSettings) this.settings = JSON.parse(storedSettings);
 
-      const storedUsers = localStorage.getItem('media_ops_users_v1');
+      const storedUsers = localStorage.getItem('media_ops_users_v2');
       if (storedUsers) this.users = JSON.parse(storedUsers);
 
       this.notifyAll();
@@ -710,35 +1071,35 @@ class OperationsStore {
 
   private saveTasks() {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('media_ops_tasks_v1', JSON.stringify(this.tasks));
+      localStorage.setItem('media_ops_tasks_v2', JSON.stringify(this.tasks));
     }
     this.broadcast();
   }
 
   private saveCampaigns() {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('media_ops_campaigns_v1', JSON.stringify(this.campaigns));
+      localStorage.setItem('media_ops_campaigns_v2', JSON.stringify(this.campaigns));
     }
     this.broadcast();
   }
 
   private saveAdSets() {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('media_ops_adsets_v1', JSON.stringify(this.adSets));
+      localStorage.setItem('media_ops_adsets_v2', JSON.stringify(this.adSets));
     }
     this.broadcast();
   }
 
   private saveSettings() {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('media_ops_settings_v1', JSON.stringify(this.settings));
+      localStorage.setItem('media_ops_settings_v2', JSON.stringify(this.settings));
     }
     this.broadcast();
   }
 
   private saveUsers() {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('media_ops_users_v1', JSON.stringify(this.users));
+      localStorage.setItem('media_ops_users_v2', JSON.stringify(this.users));
     }
     this.broadcast();
   }

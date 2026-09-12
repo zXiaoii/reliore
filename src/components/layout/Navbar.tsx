@@ -215,7 +215,9 @@ export const Navbar: React.FC = () => {
               >
                 <div
                   className={`h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                    isSetupUser
+                    currentUser?.role === 'admin'
+                      ? 'bg-amber-500/25 text-amber-300 border border-amber-500/40 shadow-xs'
+                      : isSetupUser
                       ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30'
                       : isCreativeUser
                       ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
@@ -225,7 +227,7 @@ export const Navbar: React.FC = () => {
                   {currentUser?.displayName ? currentUser.displayName[0].toUpperCase() : 'U'}
                 </div>
                 <div className="flex flex-col text-left">
-                  <span className="text-xs font-bold text-white group-hover:text-teal-300 transition-colors truncate max-w-[90px] sm:max-w-[130px]">
+                  <span className="text-xs font-bold text-white group-hover:text-amber-300 transition-colors truncate max-w-[90px] sm:max-w-[130px]">
                     {currentUser?.displayName || 'Sign in'}
                   </span>
                   <span className="text-[9px] font-mono text-zinc-400 truncate max-w-[90px] sm:max-w-[130px] hidden sm:block">
@@ -234,14 +236,16 @@ export const Navbar: React.FC = () => {
                 </div>
                 <span
                   className={`ml-1 rounded px-1.5 py-0.2 text-[9px] font-mono font-bold uppercase tracking-wider ${
-                    isSetupUser
+                    currentUser?.role === 'admin'
+                      ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-2xs'
+                      : isSetupUser
                       ? 'bg-teal-500/10 text-teal-400 border border-teal-500/25'
                       : isCreativeUser
                       ? 'bg-purple-500/10 text-purple-400 border border-purple-500/25'
                       : 'bg-blue-500/10 text-blue-400 border border-blue-500/25'
                   }`}
                 >
-                  {isSetupUser ? 'SETUP' : isCreativeUser ? 'CREATIVE' : 'BUYER'}
+                  {currentUser?.role === 'admin' ? 'CEO' : isSetupUser ? 'SETUP' : isCreativeUser ? 'CREATIVE' : 'BUYER'}
                 </span>
               </button>
 
